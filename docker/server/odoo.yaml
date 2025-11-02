@@ -1,12 +1,16 @@
-# version: '3'
-# (Optional) when using custom network
+version: "3.8"
+
 networks:
-  lp-apps:
-    external: False # create new network with name "<folder_name>-lp-apps"
+  thmar-apps:
+    driver: bridge
+
+volumes:
+  pgadmin:
+  db-data:
+  odoo-web-data:
 
 services:
   pg-db:
-    # (Recommended) replace "latest" with specific version
     image: postgres:15
     container_name: pg-db
     environment:
@@ -14,58 +18,42 @@ services:
       - POSTGRES_PASSWORD=odoo19
     ports:
       - "5433:5432"
-    # (Optional) when using custom network
     networks:
       - lp-apps
     volumes:
       - db-data:/var/lib/postgresql/data
     restart: always
 
-
   pgadmin:
     image: dpage/pgadmin4:8.4
     container_name: pgadmin
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com # TODO change
-      PGADMIN_DEFAULT_PASSWORD: postgres # TODO change
-      # SCRIPT_NAME: /pgadmin4
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: postgres
     ports:
-    - "5050:80"
+      - "5050:80"
     networks:
-      - lp-apps  
+      - lp-apps
     volumes:
-    - pgadmin:/var/lib/pgadmin
+      - pgadmin:/var/lib/pgadmin
 
   odoo:
     image: odoo:19.0
     container_name: odoo
+    depends_on:
+      - pg-db
     ports:
       - "8019:8019"
-      # - "7072:7072"
+      - "8072:8072"
+    environment:
+      HOST: pg-db
     volumes:
-      # - /home/mohsen/Documents/Laplace/Projects/odoo18/addons_ams:/mnt/extra-addons
-      # mirror third party custom modules
-      # - /home/mohsen/Documents/Laplace/Projects/odoo18/addons_thp/muk_web_theme:/mnt/odoo18/addons_thp/muk_web_theme:ro #
-      # - /home/mohsen/Documents/Laplace/Projects/odoo18/addons_thp/lp:/mnt/odoo18/addons_thp/lp:ro #
-      - /root/odoo19/thmar_dani/docker/server/odoo_e/etc/:/etc/odoo/ # mirror odoo config
-      # - /etc:/etc/odoo # mirror odoo config
-
-      # /var/log/odoo/odoo #shoulde be exist before compose with full permission any user
-      # sudo mkdir -p /var/log/odoo/odoo , sudo chmod 777 /var/log/odoo/odoo
-      - /var/log/odoo/odoo:/var/log/odoo/odoo
+      # Mirror Odoo config
+      - /root/odoo19/thmar_dani/docker/server/odoo_e/etc/:/etc/odoo/
+      # Optional: Mount addons if needed
+      # - /root/odoo19/thmar_dani/addons:/mnt/extra-addons
       - odoo-web-data:/var/lib/odoo
-    environment: # avoid this u should use it in etc/odoo.conf
-      - HOST=pg-db # Using the container ID from your output
-#       - USER=odoo19
-    #   - PASSWORD=odoo
-    restart: always             # run as a service
-
     networks:
       - lp-apps
-
-
-volumes:
-  pgadmin:
-  db-data:
-  odoo-web-data:
+    restart: always
