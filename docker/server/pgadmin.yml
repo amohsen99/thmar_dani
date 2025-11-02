@@ -1,0 +1,23 @@
+
+networks:
+  lp-apps:
+    external: true
+
+services:
+  pgadmin:
+    image: dpage/pgadmin4:8.4
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com # TODO change
+      PGADMIN_DEFAULT_PASSWORD: postgres # TODO change
+      #SCRIPT_NAME: /pgadmin4
+    ports:
+    - "5050:80"
+    # networks:
+    #   - lp-apps  
+    volumes:
+    - pgadmin:/var/lib/pgadmin
+
+volumes:
+  pgadmin:

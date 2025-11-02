@@ -1,0 +1,18 @@
+
+volumes:
+  portainer-data:
+    driver: local
+services:
+  app:
+    container_name: portainer
+    image: portainer/portainer-ce:latest
+    ports:
+      - 9000:9000
+      - 9443:9443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-data:/data
+    restart: always
+
+#   - Email: `admin`
+#   - Password: `LP_P@ssw0rdLP_P@ssw0rd`
