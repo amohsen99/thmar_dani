@@ -44,7 +44,7 @@ services:
     depends_on:
       - pg-db
     ports:
-      - "8019:8019"
+      - "8019:8069"
       - "8072:8072"
     environment:
       HOST: pg-db
