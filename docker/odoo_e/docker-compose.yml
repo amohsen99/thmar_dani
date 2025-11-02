@@ -1,0 +1,34 @@
+# docker network create lp-apps
+networks:
+  odoo_lp-apps:
+    external: true
+
+services:
+  odoo:
+    build: .
+    container_name: odoo
+    ports:
+      - "8069:8069"
+      # - "7072:7072"
+    volumes:
+      # - /home/mohsen/Documents/Laplace/Projects/odoo18/addons_ams:/mnt/extra-addons
+      # mirror third party custom modules
+      # - /home/mohsen/Documents/Laplace/Projects/odoo18/addons_thp/muk_web_theme:/mnt/odoo18/addons_thp/muk_web_theme:ro #
+      # - /home/mohsen/Documents/Laplace/Projects/odoo18/addons_thp/lp:/mnt/odoo18/addons_thp/lp:ro #
+      - /home/ubuntu/docker-projects/odoo/odoo_e/etc:/etc/odoo # mirror odoo config
+
+      # /var/log/odoo/odoo #shoulde be exist before compose with full permission any user
+      # sudo mkdir -p /var/log/odoo/odoo , sudo chmod 777 /var/log/odoo/odoo
+      - /var/log/odoo/mep18:/var/log/odoo
+      - odoo-web-data:/var/lib/odoo
+    environment: # avoid this u should use it in etc/odoo.conf
+      - HOST=pg-db # Using the container ID from your output
+    #   - USER=odoo18
+    #   - PASSWORD=odoo 
+    restart: always             # run as a service
+
+    networks:
+      - odoo_lp-apps
+
+volumes:
+  odoo-web-data:

@@ -1,0 +1,25 @@
+version: '3'
+# (Optional) when using custom network
+networks:
+  lp-apps:
+    external: true
+
+services:
+  pg-db:
+    # (Recommended) replace "latest" with specific version
+    image: postgres:15
+    container_name: pg-db
+    environment:
+      - POSTGRES_USER=odoo18
+      - POSTGRES_PASSWORD=odoo18
+    ports:
+      - 5433:5432
+    # (Optional) when using custom network
+    # networks:
+    #   - lp-apps
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  db-data:
