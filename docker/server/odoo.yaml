@@ -19,7 +19,7 @@ services:
     ports:
       - "5433:5432"
     networks:
-      - lp-apps
+      - thmar-apps
     volumes:
       - db-data:/var/lib/postgresql/data
     restart: always
@@ -34,7 +34,7 @@ services:
     ports:
       - "5050:80"
     networks:
-      - lp-apps
+      - thmar-apps
     volumes:
       - pgadmin:/var/lib/pgadmin
 
@@ -55,5 +55,5 @@ services:
       # - /root/odoo19/thmar_dani/addons:/mnt/extra-addons
       - odoo-web-data:/var/lib/odoo
     networks:
-      - lp-apps
+      - thmar-apps
     restart: always
