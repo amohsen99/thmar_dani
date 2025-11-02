@@ -48,8 +48,8 @@ services:
       # mirror third party custom modules
       # - /home/mohsen/Documents/Laplace/Projects/odoo18/addons_thp/muk_web_theme:/mnt/odoo18/addons_thp/muk_web_theme:ro #
       # - /home/mohsen/Documents/Laplace/Projects/odoo18/addons_thp/lp:/mnt/odoo18/addons_thp/lp:ro #
-      - /root/odoo19/thmar_dani/docker/server/odoo_e/etc:/etc/odoo # mirror odoo config
-      - /etc:/etc/odoo # mirror odoo config
+      - /root/odoo19/thmar_dani/docker/server/odoo_e/etc/:/etc/odoo/ # mirror odoo config
+      # - /etc:/etc/odoo # mirror odoo config
 
       # /var/log/odoo/odoo #shoulde be exist before compose with full permission any user
       # sudo mkdir -p /var/log/odoo/odoo , sudo chmod 777 /var/log/odoo/odoo
