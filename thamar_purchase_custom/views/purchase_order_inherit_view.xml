@@ -1,0 +1,13 @@
+<odoo>
+    <record id="view_purchase_order_form_inherit_custom" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.custom</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Add field below existing note field -->
+            <xpath expr="//field[@name='date_order']" position="after">
+                <field name="attachment" filename="attachment_name"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
