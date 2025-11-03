@@ -53,7 +53,7 @@ services:
       - /root/odoo19/thmar_dani/docker/server/odoo_e/etc/:/etc/odoo/
       # Optional: Mount addons if needed
       - /root/odoo19/enterprise-19.0:/mnt/enterprise_addons
-      - /root/odoo19/thamar_dani:/mnt/thamar_addons
+      - /root/odoo19/thmar_dani:/mnt/thamar_addons
       - odoo-web-data:/var/lib/odoo
     networks:
       - thmar-apps
