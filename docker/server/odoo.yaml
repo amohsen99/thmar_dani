@@ -10,7 +10,7 @@ volumes:
   odoo-web-data:
 
 services:
-  pg-db:
+#  pg-db:http://72.61.186.1:9000/#!/3/docker/containers
     image: postgres:15
     container_name: pg-db
     environment:
@@ -52,7 +52,7 @@ services:
       # Mirror Odoo config
       - /root/odoo19/thmar_dani/docker/server/odoo_e/etc/:/etc/odoo/
       # Optional: Mount addons if needed
-      # - /root/odoo19/thmar_dani/addons:/mnt/extra-addons
+      - /root/odoo19/enterprise-19.0:/mnt/enterprise_addons
       - odoo-web-data:/var/lib/odoo
     networks:
       - thmar-apps
