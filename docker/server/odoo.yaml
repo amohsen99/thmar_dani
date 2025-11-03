@@ -10,7 +10,7 @@ volumes:
   odoo-web-data:
 
 services:
-#  pg-db:http://72.61.186.1:9000/#!/3/docker/containers
+  pg-db:
     image: postgres:15
     container_name: pg-db
     environment:
