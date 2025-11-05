@@ -1,7 +1,9 @@
 ### connect to server
 ssh user@serverip
 ```
-ssh root@72.61.186.1
+    ssh root@72.61.186.1
+
+Hit&man@2025
 ```
 
 ### copy

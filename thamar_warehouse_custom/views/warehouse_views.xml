@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add Manager and Keeper fields to Warehouse Form -->
+    <record id="view_warehouse_form_inherit" model="ir.ui.view">
+        <field name="name">stock.warehouse.form.thamar.custom</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="manager_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="keeper_id" options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Add Manager and Keeper to Warehouse Tree View -->
+    <record id="view_warehouse_tree_inherit" model="ir.ui.view">
+        <field name="name">stock.warehouse.tree.thamar.custom</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="manager_id" optional="show"/>
+                <field name="keeper_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Menu item for Warehouse Keepers/Managers to see their warehouses -->
+    <record id="action_warehouse_my_warehouses" model="ir.actions.act_window">
+        <field name="name">My Warehouses</field>
+        <field name="res_model">stock.warehouse</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">['|', ('keeper_id', '=', uid), ('manager_id', '=', uid)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No warehouses assigned to you
+            </p>
+            <p>
+                Contact your administrator to be assigned as a keeper or manager of a warehouse.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_warehouse_my_warehouses"
+              name="My Warehouses"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="action_warehouse_my_warehouses"
+              groups="thamar_warehouse_custom.group_warehouse_keeper"
+              sequence="1"/>
+
+</odoo>
