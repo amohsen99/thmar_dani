@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Product Template Form View -->
+    <record id="product_template_form_view_inherit_barcode" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.barcode</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+
+            <!-- Add Auto Generate Barcode checkbox -->
+            <xpath expr="//field[@name='barcode']" position="before">
+                <field name="auto_generate_barcode"/>
+            </xpath>
+
+            <!-- Add Barcode Preview -->
+            <xpath expr="//field[@name='barcode']" position="after">
+                <field name="barcode_preview" readonly="1"
+                       invisible="not auto_generate_barcode"
+                       string="Barcode Structure"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- Product Variant Form View -->
+    <record id="product_variant_easy_edit_view_inherit_barcode" model="ir.ui.view">
+        <field name="name">product.product.view.form.easy.inherit.barcode</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+        <field name="arch" type="xml">
+
+            <!-- Add Regenerate Barcode Button in the Codes group -->
+            <xpath expr="//group[@name='codes']" position="inside">
+                <button name="action_regenerate_barcode"
+                        string="Generate Barcode"
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-barcode"
+                        invisible="not product_tmpl_id.auto_generate_barcode"
+                        colspan="2"/>
+                <field name="barcode_generation_log"
+                       widget="text"
+                       readonly="1"
+                       invisible="not barcode_generation_log"
+                       string="Generation Log"
+                       colspan="2"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
+
