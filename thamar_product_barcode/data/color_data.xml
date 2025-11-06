@@ -1,0 +1,130 @@
+<odoo>
+    <data noupdate="1">
+
+        <record id="color_7001" model="product.attribute.value">
+            <field name="name">اكوا مصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">253001</field>
+        </record>
+
+        <record id="color_7002" model="product.attribute.value">
+            <field name="name">تركواز</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">254009</field>
+        </record>
+
+        <record id="color_7003" model="product.attribute.value">
+            <field name="name">اكوا</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">254002</field>
+        </record>
+
+        <record id="color_7004" model="product.attribute.value">
+            <field name="name">بترولى</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">214019</field>
+        </record>
+
+        <record id="color_7006" model="product.attribute.value">
+            <field name="name">جنزارى</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">214008</field>
+        </record>
+
+        <record id="color_7007" model="product.attribute.value">
+            <field name="name">تركواز</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">214011</field>
+        </record>
+
+        <record id="color_7008" model="product.attribute.value">
+            <field name="name">جنزارى فاتح</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">214015</field>
+        </record>
+
+        <record id="color_7009" model="product.attribute.value">
+            <field name="name">جنزارى</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">244001</field>
+        </record>
+
+        <record id="color_7010" model="product.attribute.value">
+            <field name="name">تركواز</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">244007</field>
+        </record>
+
+        <record id="color_7011" model="product.attribute.value">
+            <field name="name">اكوا</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">5777</field>
+        </record>
+
+        <record id="color_7012" model="product.attribute.value">
+            <field name="name">جنزارى</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">5751</field>
+        </record>
+
+        <record id="color_7013" model="product.attribute.value">
+            <field name="name">تركواز</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">5604</field>
+        </record>
+
+        <record id="color_7014" model="product.attribute.value">
+            <field name="name">بترولى</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">5686</field>
+        </record>
+
+        <record id="color_7015" model="product.attribute.value">
+            <field name="name">فيروزى</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+        </record>
+
+        <record id="color_7016" model="product.attribute.value">
+            <field name="name">تركواز</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+        </record>
+
+        <record id="color_7017" model="product.attribute.value">
+            <field name="name">اكوا</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+        </record>
+
+        <record id="color_7019" model="product.attribute.value">
+            <field name="name">اكوا فاتح</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+        </record>
+
+        <record id="color_7020" model="product.attribute.value">
+            <field name="name">تركواز فاتح</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+        </record>
+
+        <record id="color_7021" model="product.attribute.value">
+            <field name="name">بترولى</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+        </record>
+
+        <record id="color_7022" model="product.attribute.value">
+            <field name="name">تركواز</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+        </record>
+
+        <record id="color_7023" model="product.attribute.value">
+            <field name="name">اكوا</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+        </record>
+
+        <record id="color_7024" model="product.attribute.value">
+            <field name="name">تركواز</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+        </record>
+
+        <!-- and so on until color_7093 -->
+        
+    </data>
+</odoo>

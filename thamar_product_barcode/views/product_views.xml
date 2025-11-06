@@ -27,11 +27,21 @@
     <record id="product_variant_easy_edit_view_inherit_barcode" model="ir.ui.view">
         <field name="name">product.product.view.form.easy.inherit.barcode</field>
         <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
 
+            <!-- Add Generate Barcode Button in Header -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_regenerate_barcode"
+                        string="Generate Barcode"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-barcode"
+                        invisible="not product_tmpl_id.auto_generate_barcode"/>
+            </xpath>
+
             <!-- Add Regenerate Barcode Button in the Codes group -->
-            <xpath expr="//group[@name='codes']" position="inside">
+            <xpath expr="//field[@name='barcode']" position="after">
                 <button name="action_regenerate_barcode"
                         string="Generate Barcode"
                         type="object"
@@ -42,11 +52,59 @@
                 <field name="barcode_generation_log"
                        widget="text"
                        readonly="1"
-                       invisible="not barcode_generation_log"
                        string="Generation Log"
                        colspan="2"/>
             </xpath>
 
+        </field>
+    </record>
+
+    <!-- Product Variant List View - Add Barcode Column -->
+    <record id="productf_product_tree_view_inherit_barcode" model="ir.ui.view">
+        <field name="name">product.product.tree.inherit.barcode</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='default_code']" position="after">
+                <field name="barcode_generation_log" optional="view"/>
+                 <button name="action_regenerate_barcode"
+                        string="Generate Barcode"
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-barcode"
+                        colspan="2"/>
+
+            </xpath>
+        </field>
+    </record>
+    <record id="product_product_tfree_view_inherit_barcode" model="ir.ui.view">
+    <field name="name">product.product.tree.inherit.barcode.header</field>
+    <field name="model">product.product</field>
+    <field name="inherit_id" ref="product.product_product_tree_view"/>
+    <field name="arch" type="xml">
+        <xpath expr="//list" position="inside">
+            <header>
+                <button name="action_regenerate_barcode"
+                        string="Generate Barcode"
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-barcode"
+                        help="Generate barcode for selected products"
+                />
+            </header>
+        </xpath>
+    </field>
+</record>
+    <!-- Server Action for Batch Barcode Generation -->
+    <record id="action_generate_barcode_batch" model="ir.actions.server">
+        <field name="name">Generate Barcodes</field>
+        <field name="model_id" ref="product.model_product_product"/>
+        <field name="binding_model_id" ref="product.model_product_product"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    action = records.action_regenerate_barcode()
         </field>
     </record>
 

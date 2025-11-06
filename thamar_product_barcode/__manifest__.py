@@ -23,6 +23,7 @@
     'data': [
         'security/ir.model.access.csv',
         'data/product_attribute_data.xml',
+        # 'data/color_data.xml',
         'views/product_category_views.xml',
         'views/product_attribute_views.xml',
         'views/product_views.xml',
