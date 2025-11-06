@@ -1,0 +1,61 @@
+name: Deploy Odoo Modules
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Deploy to remote Odoo server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            set -e  # Exit on any error
+            
+            # Variables
+            PROJECT_DIR="/root/odoo19/thmar_dani"
+            COMPOSE_FILE="docker/server/odoo.yaml"
+            
+            # Navigate to project directory
+            cd "$PROJECT_DIR" || { echo "Project directory not found"; exit 1; }
+            
+            # Verify docker-compose file exists
+            if [ ! -f "$COMPOSE_FILE" ]; then
+              echo "Docker compose file not found: $COMPOSE_FILE"
+              exit 1
+            fi
+            
+            # Pull latest changes
+            echo "Pulling latest changes from Git..."
+            git pull origin master
+            
+            # Stop and remove existing containers
+            echo "Stopping existing containers..."
+            docker compose -f "$COMPOSE_FILE" down
+            
+            # Start new containers
+            echo "Starting new containers..."
+            docker compose -f "$COMPOSE_FILE" up -d
+            
+            # Wait for services to be healthy
+            echo "Waiting for services to be ready..."
+            sleep 30
+            
+            # Check if Odoo container is running
+            if docker compose -f "$COMPOSE_FILE" ps | grep -q "Up"; then
+              echo "Deployment completed successfully!"
+            else
+              echo "Warning: Some containers may not be running properly"
+              docker compose -f "$COMPOSE_FILE" ps
+              exit 1
+            fi
