@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Add Barcode Position to Attribute Form View -->
+    <record id="product_attribute_view_form_inherit_barcode" model="ir.ui.view">
+        <field name="name">product.attribute.view.form.inherit.barcode</field>
+        <field name="model">product.attribute</field>
+        <field name="inherit_id" ref="product.product_attribute_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='display_type']" position="after">
+                <field name="barcode_position"/>
+            </xpath>
+            <!-- Add Barcode Code column to attribute values tree -->
+            <xpath expr="//field[@name='value_ids']//field[@name='name']" position="after">
+                <field name="barcode_code" string="Barcode Code"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+
