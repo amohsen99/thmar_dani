@@ -22,6 +22,14 @@ class ProductAttributeValue(models.Model):
         string='Barcode Code',
         help='Code used in barcode generation'
     )
+    notes = fields.Char(
+        string="Notes",
+        help="Additional notes about this color/attribute value"
+    )
+    customer_id = fields.Char(
+        string="Customer",
+        help="Customer or source associated with this color/attribute value"
+    )
 
     @api.constrains('barcode_code', 'attribute_id')
     def _check_barcode_code(self):
