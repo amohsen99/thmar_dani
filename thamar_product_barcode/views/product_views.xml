@@ -11,6 +11,8 @@
             <!-- Add Auto Generate Barcode checkbox -->
             <xpath expr="//field[@name='barcode']" position="before">
                 <field name="auto_generate_barcode"/>
+                <field name="barcode_generation_strategy"/>
+
             </xpath>
 
             <!-- Add Barcode Preview -->
