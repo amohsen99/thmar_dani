@@ -10,81 +10,6 @@
             <field name="create_variant">always</field>
         </record>
 
-        <!-- Sample Color Values -->
-        <record id="color_red" model="product.attribute.value">
-            <field name="name">Red</field>
-            <field name="attribute_id" ref="product_attribute_color"/>
-            <field name="barcode_code">0001</field>
-        </record>
-
-        <record id="color_blue" model="product.attribute.value">
-            <field name="name">Blue</field>
-            <field name="attribute_id" ref="product_attribute_color"/>
-            <field name="barcode_code">0002</field>
-        </record>
-
-        <record id="color_green" model="product.attribute.value">
-            <field name="name">Green</field>
-            <field name="attribute_id" ref="product_attribute_color"/>
-            <field name="barcode_code">0003</field>
-        </record>
-
-        <record id="color_yellow" model="product.attribute.value">
-            <field name="name">Yellow</field>
-            <field name="attribute_id" ref="product_attribute_color"/>
-            <field name="barcode_code">0004</field>
-        </record>
-
-        <record id="color_black" model="product.attribute.value">
-            <field name="name">Black</field>
-            <field name="attribute_id" ref="product_attribute_color"/>
-            <field name="barcode_code">0005</field>
-        </record>
-
-        <record id="color_white" model="product.attribute.value">
-            <field name="name">White</field>
-            <field name="attribute_id" ref="product_attribute_color"/>
-            <field name="barcode_code">0006</field>
-        </record>
-
-        <!-- Design Attribute -->
-        <record id="product_attribute_design" model="product.attribute">
-            <field name="name">Design</field>
-            <field name="display_type">radio</field>
-            <field name="barcode_position">design</field>
-            <field name="create_variant">always</field>
-        </record>
-
-        <!-- Sample Design Values -->
-        <record id="design_plain" model="product.attribute.value">
-            <field name="name">Plain</field>
-            <field name="attribute_id" ref="product_attribute_design"/>
-            <field name="barcode_code">0001</field>
-        </record>
-
-        <record id="design_striped" model="product.attribute.value">
-            <field name="name">Striped</field>
-            <field name="attribute_id" ref="product_attribute_design"/>
-            <field name="barcode_code">0002</field>
-        </record>
-
-        <record id="design_dotted" model="product.attribute.value">
-            <field name="name">Dotted</field>
-            <field name="attribute_id" ref="product_attribute_design"/>
-            <field name="barcode_code">0003</field>
-        </record>
-
-        <record id="design_floral" model="product.attribute.value">
-            <field name="name">Floral</field>
-            <field name="attribute_id" ref="product_attribute_design"/>
-            <field name="barcode_code">0004</field>
-        </record>
-
-        <record id="design_geometric" model="product.attribute.value">
-            <field name="name">Geometric</field>
-            <field name="attribute_id" ref="product_attribute_design"/>
-            <field name="barcode_code">0005</field>
-        </record>
 
         <!-- Grade Attribute -->
         <record id="product_attribute_grade" model="product.attribute">
@@ -94,44 +19,17 @@
             <field name="create_variant">always</field>
         </record>
 
-        <!-- Sample Grade Values -->
-        <record id="grade_1" model="product.attribute.value">
-            <field name="name">Grade 1 (Premium)</field>
-            <field name="attribute_id" ref="product_attribute_grade"/>
-            <field name="barcode_code">1</field>
-        </record>
-
-        <record id="grade_2" model="product.attribute.value">
-            <field name="name">Grade 2 (Standard)</field>
-            <field name="attribute_id" ref="product_attribute_grade"/>
-            <field name="barcode_code">2</field>
-        </record>
-
-        <record id="grade_3" model="product.attribute.value">
-            <field name="name">Grade 3 (Economy)</field>
-            <field name="attribute_id" ref="product_attribute_grade"/>
-            <field name="barcode_code">3</field>
-        </record>
-
-        <!-- Type Attribute -->
-        <record id="product_attribute_type" model="product.attribute">
-            <field name="name">Type</field>
+        <record id="product_attribute_design" model="product.attribute">
+            <field name="name">Design</field>
             <field name="display_type">radio</field>
-            <field name="barcode_position">type</field>
+            <field name="barcode_position">design</field>
             <field name="create_variant">always</field>
         </record>
 
-        <!-- Sample Type Values -->
-        <record id="type_printing" model="product.attribute.value">
-            <field name="name">Printing</field>
-            <field name="attribute_id" ref="product_attribute_type"/>
-            <field name="barcode_code">P</field>
-        </record>
-
-        <record id="type_drying" model="product.attribute.value">
-            <field name="name">Drying</field>
-            <field name="attribute_id" ref="product_attribute_type"/>
-            <field name="barcode_code">D</field>
+        <record id="product_attribute_product_type" model="product.attribute">
+            <field name="name">Product Type</field>
+            <field name="display_type">select</field>
+            <field name="create_variant">always</field>
         </record>
 
     </data>

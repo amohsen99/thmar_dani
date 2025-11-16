@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sample Grade Values -->
+        <record id="grade_1" model="product.attribute.value">
+            <field name="name">Grade 1 (Premium)</field>
+            <field name="attribute_id" ref="product_attribute_grade"/>
+            <field name="barcode_code">1</field>
+        </record>
+
+        <record id="grade_2" model="product.attribute.value">
+            <field name="name">Grade 2 (Standard)</field>
+            <field name="attribute_id" ref="product_attribute_grade"/>
+            <field name="barcode_code">2</field>
+        </record>
+
+        <record id="grade_3" model="product.attribute.value">
+            <field name="name">Grade 3 (Economy)</field>
+            <field name="attribute_id" ref="product_attribute_grade"/>
+            <field name="barcode_code">3</field>
+        </record>
+    </data>
+</odoo>
+

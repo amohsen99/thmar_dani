@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+
+        <!-- Sample Design Values -->
+        <record id="design_plain" model="product.attribute.value">
+            <field name="name">Plain</field>
+            <field name="attribute_id" ref="product_attribute_design"/>
+            <field name="barcode_code">0001</field>
+        </record>
+
+        <record id="design_striped" model="product.attribute.value">
+            <field name="name">Striped</field>
+            <field name="attribute_id" ref="product_attribute_design"/>
+            <field name="barcode_code">0002</field>
+        </record>
+
+        <record id="design_dotted" model="product.attribute.value">
+            <field name="name">Dotted</field>
+            <field name="attribute_id" ref="product_attribute_design"/>
+            <field name="barcode_code">0003</field>
+        </record>
+
+        <record id="design_floral" model="product.attribute.value">
+            <field name="name">Floral</field>
+            <field name="attribute_id" ref="product_attribute_design"/>
+            <field name="barcode_code">0004</field>
+        </record>
+
+        <record id="design_geometric" model="product.attribute.value">
+            <field name="name">Geometric</field>
+            <field name="attribute_id" ref="product_attribute_design"/>
+            <field name="barcode_code">0005</field>
+        </record>
+    </data>
+</odoo>
+

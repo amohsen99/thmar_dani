@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Attribute Values -->
+        <record id="product_type_single" model="product.attribute.value">
+            <field name="name">سنجل</field>
+            <field name="attribute_id" ref="product_attribute_product_type"/>
+            <field name="barcode_code"></field>
+        </record>
+
+        <record id="product_type_double" model="product.attribute.value">
+            <field name="name">دبل</field>
+            <field name="attribute_id" ref="product_attribute_product_type"/>
+            <field name="barcode_code"></field>
+        </record>
+
+        <record id="product_type_interlock" model="product.attribute.value">
+            <field name="name">انترلوك</field>
+            <field name="attribute_id" ref="product_attribute_product_type"/>
+            <field name="barcode_code"></field>
+        </record>
+
+        <record id="product_type_milton" model="product.attribute.value">
+            <field name="name">ميلتون</field>
+            <field name="attribute_id" ref="product_attribute_product_type"/>
+            <field name="barcode_code"></field>
+        </record>
+
+        <record id="product_type_summer_milton" model="product.attribute.value">
+            <field name="name">سمر ميلتون</field>
+            <field name="attribute_id" ref="product_attribute_product_type"/>
+            <field name="barcode_code"></field>
+        </record>
+
+        <record id="product_type_blouse" model="product.attribute.value">
+            <field name="name">بلوش</field>
+            <field name="attribute_id" ref="product_attribute_product_type"/>
+            <field name="barcode_code"></field>
+        </record>
+
+        <record id="product_type_fur" model="product.attribute.value">
+            <field name="name">فرو</field>
+            <field name="attribute_id" ref="product_attribute_product_type"/>
+            <field name="barcode_code"></field>
+        </record>
+
+    </data>
+</odoo>

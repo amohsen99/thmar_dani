@@ -1,0 +1,1146 @@
+<odoo>
+        <data noupdate="1">
+                <record id="product_attribute_color" model="product.attribute">
+                        <field name="name">color</field>
+                        <field name="display_type">color</field>
+                        <field name="barcode_position">color</field>
+                        <field name="create_variant">always</field>
+                </record>
+                <record id="color_8001" model="product.attribute.value">
+                        <field name="name">هافان 255006</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8001</field>
+                        <field name="notes">المصنع</field>
+                        <field name="customer_id">بلوش</field>
+                </record>
+
+                <record id="color_8002" model="product.attribute.value">
+                        <field name="name">عسلى 255005</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8002</field>
+                        <field name="notes">المصنع</field>
+                        <field name="customer_id">بلوش</field>
+                </record>
+
+                <record id="color_8003" model="product.attribute.value">
+                        <field name="name">بيج 235006</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8003</field>
+                        <field name="notes">المصنع</field>
+                        <field name="customer_id">بوبلين</field>
+                </record>
+
+                <record id="color_8004" model="product.attribute.value">
+                        <field name="name">كافيه 215007</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8004</field>
+                        <field name="notes">ابو احمد تركيا</field>
+                        <field name="customer_id">فينيسيا</field>
+                </record>
+
+                <record id="color_8005" model="product.attribute.value">
+                        <field name="name">كمونى 215008</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8005</field>
+                        <field name="notes">ابو احمد تركيا</field>
+                        <field name="customer_id">فينيسيا</field>
+                </record>
+
+                <record id="color_8006" model="product.attribute.value">
+                        <field name="name">جملى 2115001</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8006</field>
+                        <field name="notes">ابو احمد تركيا</field>
+                        <field name="customer_id">انترلوك</field>
+                </record>
+
+                <record id="color_8007" model="product.attribute.value">
+                        <field name="name">عسلى غامق 245008</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8007</field>
+                        <field name="notes">المصنع</field>
+                        <field name="customer_id">سمر ميلتون اسبن</field>
+                </record>
+
+                <record id="color_8008" model="product.attribute.value">
+                        <field name="name">هافان 245005</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8008</field>
+                        <field name="notes">المصنع</field>
+                        <field name="customer_id">سمر ميلتون اسبن</field>
+                </record>
+
+                <record id="color_8009" model="product.attribute.value">
+                        <field name="name">عسلى 245003</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8009</field>
+                        <field name="notes">المصنع</field>
+                        <field name="customer_id">سمر ميلتون اسبن</field>
+                </record>
+
+                <record id="color_8010" model="product.attribute.value">
+                        <field name="name">TCX 17-1320</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8010</field>
+                        <field name="notes">امريكانا جروب</field>
+                        <field name="customer_id">بلوش</field>
+                </record>
+
+                <record id="color_8011" model="product.attribute.value">
+                        <field name="name">بنى محروق</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8011</field>
+                        <field name="notes">بلوش مقفول</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8012" model="product.attribute.value">
+                        <field name="name">جملى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8012</field>
+                        <field name="notes">بلوش مقفول</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8013" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8013</field>
+                        <field name="notes">براسولا قطن</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8014" model="product.attribute.value">
+                        <field name="name">جملى 2053</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8014</field>
+                        <field name="notes">فينيسيا</field>
+                        <field name="customer_id">ابو احمد تركيا</field>
+                </record>
+
+                <record id="color_8015" model="product.attribute.value">
+                        <field name="name">بنى محروق</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8015</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">ابو احمد تركيا</field>
+                </record>
+
+                <record id="color_8016" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8016</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">ابو احمد تركيا</field>
+                </record>
+
+                <record id="color_8017" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8017</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8018" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8018</field>
+                        <field name="notes">بلوش</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8019" model="product.attribute.value">
+                        <field name="name">هافان 215003</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8019</field>
+                        <field name="notes">شعيرات</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8020" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8020</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">مافاس</field>
+                </record>
+
+                <record id="color_8021" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8021</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">مافاس</field>
+                </record>
+
+                <record id="color_8022" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8022</field>
+                        <field name="notes">ملاية بوليستر</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8023" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8023</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8024" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8024</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">مافاس</field>
+                </record>
+
+                <record id="color_8025" model="product.attribute.value">
+                        <field name="name">بنى محروق</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8025</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">مافاس</field>
+                </record>
+
+                <record id="color_8026" model="product.attribute.value">
+                        <field name="name">كافيه ماتش مقلم</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8026</field>
+                        <field name="notes">شعيرات 100</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8027" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8027</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8028" model="product.attribute.value">
+                        <field name="name">كافيه 8005 شعيرات</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8028</field>
+                        <field name="notes">براسولا قطن</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8029" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8029</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8030" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8030</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8031" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8031</field>
+                        <field name="notes">انترلوك</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8032" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8032</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8033" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8033</field>
+                        <field name="notes">انترلوك ليكرا</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8034" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8034</field>
+                        <field name="notes">تك فليز</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8035" model="product.attribute.value">
+                        <field name="name">كافيه 669</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8035</field>
+                        <field name="notes">شعيرات 100</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8036" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8036</field>
+                        <field name="notes">انترلوك شعيرات 100</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8037" model="product.attribute.value">
+                        <field name="name">طوبى فاتح</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8037</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8038" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8038</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8039" model="product.attribute.value">
+                        <field name="name">طوبى غامق</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8039</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8040" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8040</field>
+                        <field name="notes">وافل</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8041" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8041</field>
+                        <field name="notes">اثينا</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8042" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8042</field>
+                        <field name="notes">بوليفار</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8043" model="product.attribute.value">
+                        <field name="name">كافيه فاتح</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8043</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8044" model="product.attribute.value">
+                        <field name="name">كافيه فاتح</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8044</field>
+                        <field name="notes">باربى</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8045" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8045</field>
+                        <field name="notes">باربى</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8046" model="product.attribute.value">
+                        <field name="name">بنى فاتح</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8046</field>
+                        <field name="notes">باربى</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8047" model="product.attribute.value">
+                        <field name="name">بنى وسط</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8047</field>
+                        <field name="notes">باربى</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8048" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8048</field>
+                        <field name="notes">بوليفار</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8049" model="product.attribute.value">
+                        <field name="name">كافيه غامق</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8049</field>
+                        <field name="notes">بوليفار</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8050" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8050</field>
+                        <field name="notes">فينيسيا</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8051" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8051</field>
+                        <field name="notes">فينيسيا</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8052" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8052</field>
+                        <field name="notes">بوبلين 90/10</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8053" model="product.attribute.value">
+                        <field name="name">جملى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8053</field>
+                        <field name="notes">بسكوتة+بلوش</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8054" model="product.attribute.value">
+                        <field name="name">طوبى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8054</field>
+                        <field name="notes">فينيسيا</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8055" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8055</field>
+                        <field name="notes">فينيسيا</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8056" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8056</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8057" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8057</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8058" model="product.attribute.value">
+                        <field name="name">عسلى فاتح</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8058</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8059" model="product.attribute.value">
+                        <field name="name">عسلى غامق</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8059</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8060" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8060</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8061" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8061</field>
+                        <field name="notes">بوليفار</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8062" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8062</field>
+                        <field name="notes">بوليفار</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8063" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8063</field>
+                        <field name="notes">ملاية بوليستر</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8064" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8064</field>
+                        <field name="notes">شعيرات 100 ماتش</field>
+                        <field name="customer_id">مافاس</field>
+                </record>
+
+                <record id="color_8065" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8065</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">احمد عبدالسلام</field>
+                </record>
+
+                <record id="color_8066" model="product.attribute.value">
+                        <field name="name">جملى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8066</field>
+                        <field name="notes">بلوش اسبن</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8067" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8067</field>
+                        <field name="notes">فينيسيا</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8068" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8068</field>
+                        <field name="notes">ريكوستا</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8069" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8069</field>
+                        <field name="notes">شعيرات</field>
+                        <field name="customer_id">ياسر وحيد</field>
+                </record>
+
+                <record id="color_8070" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8070</field>
+                        <field name="notes">ريب اسبن</field>
+                        <field name="customer_id">38</field>
+                </record>
+
+                <record id="color_8071" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8071</field>
+                        <field name="notes">براسولا قطن</field>
+                        <field name="customer_id">محمد الشافعى</field>
+                </record>
+
+                <record id="color_8072" model="product.attribute.value">
+                        <field name="name">كمونى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8072</field>
+                        <field name="notes">ريكوستا</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8073" model="product.attribute.value">
+                        <field name="name">بنى محروق</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8073</field>
+                        <field name="notes">ملاية هوبسيك</field>
+                        <field name="customer_id">حاج حسين</field>
+                </record>
+
+                <record id="color_8074" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8074</field>
+                        <field name="notes">ملاية تافتة</field>
+                        <field name="customer_id">الجزائر</field>
+                </record>
+
+                <record id="color_8075" model="product.attribute.value">
+                        <field name="name">طوبى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8075</field>
+                        <field name="notes">بلوش سوفت</field>
+                        <field name="customer_id">محمد نور</field>
+                </record>
+
+                <record id="color_8076" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8076</field>
+                        <field name="notes">بلوش سوفت</field>
+                        <field name="customer_id">محمد نور</field>
+                </record>
+
+                <record id="color_8077" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8077</field>
+                        <field name="notes">باربى</field>
+                        <field name="customer_id">زينب</field>
+                </record>
+
+                <record id="color_8078" model="product.attribute.value">
+                        <field name="name">جملي</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8078</field>
+                        <field name="notes">ملايه خفيف</field>
+                        <field name="customer_id">امير عبد الكافي</field>
+                </record>
+
+                <record id="color_8079" model="product.attribute.value">
+                        <field name="name">كافيه tpg 17 1327</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8079</field>
+                        <field name="notes">ميلتون مخلوط 60ق/40ب</field>
+                        <field name="customer_id">الامبراطور</field>
+                </record>
+
+                <record id="color_8080" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8080</field>
+                        <field name="notes">بلوش سوفت</field>
+                        <field name="customer_id">محمد ابو العظام</field>
+                </record>
+
+                <record id="color_8081" model="product.attribute.value">
+                        <field name="name">كافيه غامق</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8081</field>
+                        <field name="notes">بلوش سوفت</field>
+                        <field name="customer_id">محمد ابو العظام</field>
+                </record>
+
+                <record id="color_8082" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8082</field>
+                        <field name="notes">بلوش سوفت</field>
+                        <field name="customer_id">محمد ابو العظام</field>
+                </record>
+
+                <record id="color_8083" model="product.attribute.value">
+                        <field name="name">بنى محروق</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8083</field>
+                        <field name="notes">بلوش سوفت</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8084" model="product.attribute.value">
+                        <field name="name">لبنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8084</field>
+                        <field name="notes">بلوش سوفت</field>
+                        <field name="customer_id">محمد ابو العظام</field>
+                </record>
+
+                <record id="color_8085" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8085</field>
+                        <field name="notes">ميلتون مخلوط 60ق/40ب</field>
+                        <field name="customer_id">محمد نور</field>
+                </record>
+
+                <record id="color_8086" model="product.attribute.value">
+                        <field name="name">عسلى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8086</field>
+                        <field name="notes">قطن ليكرا</field>
+                        <field name="customer_id">محمد مصطفى</field>
+                </record>
+
+                <record id="color_8087" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8087</field>
+                        <field name="notes">شعيرات 100 صينى</field>
+                        <field name="customer_id">الحاج</field>
+                </record>
+
+                <record id="color_8088" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8088</field>
+                        <field name="notes">شعيرات 100 صينى</field>
+                        <field name="customer_id">درويش</field>
+                </record>
+
+                <record id="color_8089" model="product.attribute.value">
+                        <field name="name">جملى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8089</field>
+                        <field name="notes">ميلتون MO 287</field>
+                        <field name="customer_id">تاون تيم</field>
+                </record>
+
+                <record id="color_8090" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8090</field>
+                        <field name="notes">فبران</field>
+                        <field name="customer_id">55</field>
+                </record>
+
+                <record id="color_8091" model="product.attribute.value">
+                        <field name="name">كافيه رسمة 769</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8091</field>
+                        <field name="notes">شعيرات 100 صينى</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8092" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8092</field>
+                        <field name="notes">شعيرات 38 بوصة</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8093" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8093</field>
+                        <field name="notes">ميلتون مخلوط 319</field>
+                        <field name="customer_id">تاج الدين</field>
+                </record>
+
+                <record id="color_8094" model="product.attribute.value">
+                        <field name="name">بنى رسمة 1319</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8094</field>
+                        <field name="notes">شعيرات صينى</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8095" model="product.attribute.value">
+                        <field name="name">كافيه BEIGE 336</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8095</field>
+                        <field name="notes">ميلتون مخلوط 319</field>
+                        <field name="customer_id">تاون تيم</field>
+                </record>
+
+                <record id="color_8096" model="product.attribute.value">
+                        <field name="name">بنى فاتح</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8096</field>
+                        <field name="notes">بوبلين90/10</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8097" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8097</field>
+                        <field name="notes">قطن ليكرا</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8098" model="product.attribute.value">
+                        <field name="name">بنى فاتح</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8098</field>
+                        <field name="notes">شعيرات 100</field>
+                        <field name="customer_id">21</field>
+                </record>
+
+                <record id="color_8099" model="product.attribute.value">
+                        <field name="name">بنى فاتح رسمة 1320</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8099</field>
+                        <field name="notes">شعيرات صينى</field>
+                        <field name="customer_id">الحاج محمود</field>
+                </record>
+
+                <record id="color_8100" model="product.attribute.value">
+                        <field name="name">كافيه مخضر رسمة 1312</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8100</field>
+                        <field name="notes">شعيرات صينى</field>
+                        <field name="customer_id">الحاج محمود</field>
+                </record>
+
+                <record id="color_8101" model="product.attribute.value">
+                        <field name="name">بنى رسمة 1312</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8101</field>
+                        <field name="notes">شعيرات صينى</field>
+                        <field name="customer_id">الحاج محمود</field>
+                </record>
+
+                <record id="color_8102" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8102</field>
+                        <field name="notes">ميلتون مخلوط MO319</field>
+                        <field name="customer_id">الحاج محمود</field>
+                </record>
+
+                <record id="color_8103" model="product.attribute.value">
+                        <field name="name">بني</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8103</field>
+                        <field name="notes">ملايه فوربد</field>
+                        <field name="customer_id">فوربد</field>
+                </record>
+
+                <record id="color_8104" model="product.attribute.value">
+                        <field name="name">بني</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8104</field>
+                        <field name="notes">شعبرات 125</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8105" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8105</field>
+                        <field name="notes">شعبرات 125</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8106" model="product.attribute.value">
+                        <field name="name">كافيه TCX 16-1210</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8106</field>
+                        <field name="notes">تيجو</field>
+                        <field name="customer_id">54</field>
+                </record>
+
+                <record id="color_8107" model="product.attribute.value">
+                        <field name="name">HAVAN 271</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8107</field>
+                        <field name="notes">سمر ميلتون قطن ليكرا</field>
+                        <field name="customer_id">تاون تيم</field>
+                </record>
+
+                <record id="color_8108" model="product.attribute.value">
+                        <field name="name">DARK MAUVE900</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8108</field>
+                        <field name="notes">سمر ميلتون قطن ليكرا</field>
+                        <field name="customer_id">تاون تيم</field>
+                </record>
+
+                <record id="color_8109" model="product.attribute.value">
+                        <field name="name">KHAKI 353</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8109</field>
+                        <field name="notes">سمر ميلتون قطن ليكرا</field>
+                        <field name="customer_id">تاون تيم</field>
+                </record>
+
+                <record id="color_8110" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8110</field>
+                        <field name="notes">شعيرات 100 بوصة 38</field>
+                        <field name="customer_id">1</field>
+                </record>
+
+                <record id="color_8111" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8111</field>
+                        <field name="notes">شعيرات 100 ب 38</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8112" model="product.attribute.value">
+                        <field name="name">عسلى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8112</field>
+                        <field name="notes">سنجل قطن ليكرا</field>
+                        <field name="customer_id">الدباغ</field>
+                </record>
+
+                <record id="color_8113" model="product.attribute.value">
+                        <field name="name">كافيه F15</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8113</field>
+                        <field name="notes">ميلتون MO 015</field>
+                        <field name="customer_id">ميرامارOR</field>
+                </record>
+
+                <record id="color_8114" model="product.attribute.value">
+                        <field name="name">عسلى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8114</field>
+                        <field name="notes">مازراتى شعيرات 125</field>
+                        <field name="customer_id">درويش</field>
+                </record>
+
+                <record id="color_8115" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8115</field>
+                        <field name="notes">شعيرات 100</field>
+                        <field name="customer_id">اجياد</field>
+                </record>
+
+                <record id="color_8116" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8116</field>
+                        <field name="notes">كنزو+ بوبلين</field>
+                        <field name="customer_id">الحاج حسبن</field>
+                </record>
+
+                <record id="color_8117" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8117</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">26</field>
+                </record>
+
+                <record id="color_8118" model="product.attribute.value">
+                        <field name="name">بنى محروق</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8118</field>
+                        <field name="notes">باربى</field>
+                        <field name="customer_id">50</field>
+                </record>
+
+                <record id="color_8119" model="product.attribute.value">
+                        <field name="name">طوبى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8119</field>
+                        <field name="notes">مازراتى شعيرات 125</field>
+                        <field name="customer_id">درويش</field>
+                </record>
+
+                <record id="color_8120" model="product.attribute.value">
+                        <field name="name">بنى محمر</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8120</field>
+                        <field name="notes">بوليفار قطن</field>
+                        <field name="customer_id">المتوكل</field>
+                </record>
+
+                <record id="color_8121" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8121</field>
+                        <field name="notes">تحويل من 6111 ملكية</field>
+                        <field name="customer_id">المصنع</field>
+                </record>
+
+                <record id="color_8122" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8122</field>
+                        <field name="notes">بوليفار 20\1</field>
+                        <field name="customer_id">المتوكل</field>
+                </record>
+
+                <record id="color_8123" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8123</field>
+                        <field name="notes">ملاية افلاطون</field>
+                        <field name="customer_id">الحاج حسين</field>
+                </record>
+
+                <record id="color_8124" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8124</field>
+                        <field name="notes">بسكوتة MO 358</field>
+                        <field name="customer_id">خالد ملينيرو</field>
+                </record>
+
+                <record id="color_8125" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8125</field>
+                        <field name="notes">ميلتون MO 015</field>
+                        <field name="customer_id">DEFACTO MIRAMAR</field>
+                </record>
+
+                <record id="color_8126" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8126</field>
+                        <field name="notes">بوليفار 201</field>
+                        <field name="customer_id">المتوكل</field>
+                </record>
+
+                <record id="color_8127" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8127</field>
+                        <field name="notes">شعيرات 100</field>
+                        <field name="customer_id">يوسف ميلاد</field>
+                </record>
+
+                <record id="color_8128" model="product.attribute.value">
+                        <field name="name">بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8128</field>
+                        <field name="notes">ميلتون MO-428</field>
+                        <field name="customer_id">LCW MIRAMAR</field>
+                </record>
+
+                <record id="color_8129" model="product.attribute.value">
+                        <field name="name">نحاسى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8129</field>
+                        <field name="notes">ميلتون MO-428</field>
+                        <field name="customer_id">LCW MIRAMAR</field>
+                </record>
+
+                <record id="color_8130" model="product.attribute.value">
+                        <field name="name">BROWN بنى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8130</field>
+                        <field name="notes">ميلتون MO-319</field>
+                        <field name="customer_id">T TEAM</field>
+                </record>
+
+                <record id="color_8131" model="product.attribute.value">
+                        <field name="name">D BROWN بنى غامق</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8131</field>
+                        <field name="notes">ميلتون MO-319</field>
+                        <field name="customer_id">T TEAM</field>
+                </record>
+
+                <record id="color_8132" model="product.attribute.value">
+                        <field name="name">بنى TCX 19-1228</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8132</field>
+                        <field name="notes">ميلتون MO-428</field>
+                        <field name="customer_id">LCW MIRAMAR</field>
+                </record>
+
+                <record id="color_8133" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8133</field>
+                        <field name="notes">مزراتى</field>
+                        <field name="customer_id">روتانا</field>
+                </record>
+
+                <record id="color_8134" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8134</field>
+                        <field name="notes">ميلتون MO-319</field>
+                        <field name="customer_id">خالد ملينيرو</field>
+                </record>
+
+                <record id="color_8135" model="product.attribute.value">
+                        <field name="name">بنى محروق</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8135</field>
+                        <field name="notes">ميلتون MO-319</field>
+                        <field name="customer_id">خالد ملينيرو</field>
+                </record>
+
+                <record id="color_8136" model="product.attribute.value">
+                        <field name="name">هافان</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8136</field>
+                        <field name="notes">نفرتيتى</field>
+                        <field name="customer_id">الحاج محمود</field>
+                </record>
+
+                <record id="color_8137" model="product.attribute.value">
+                        <field name="name">كمونى TCX 18-1108</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8137</field>
+                        <field name="notes">وافل 50/50</field>
+                        <field name="customer_id">WIZER</field>
+                </record>
+
+                <record id="color_8138" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8138</field>
+                        <field name="notes">CY</field>
+                        <field name="customer_id">يوسف مرجان</field>
+                </record>
+
+                <record id="color_8139" model="product.attribute.value">
+                        <field name="name">كافيه</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8139</field>
+                        <field name="notes">ريب مسحب 2*2 بوليستر</field>
+                        <field name="customer_id">اجياد</field>
+                </record>
+
+                <record id="color_8140" model="product.attribute.value">
+                        <field name="name">كافيه*بيج</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8140</field>
+                        <field name="notes">وافل مقلم بوليستر*فسكوز</field>
+                        <field name="customer_id">الحاج محمود</field>
+                </record>
+
+                <record id="color_8141" model="product.attribute.value">
+                        <field name="name">بنى * زيتى</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8141</field>
+                        <field name="notes">وافل مقلم بوليستر*فسكوز</field>
+                        <field name="customer_id">الحاج محمود</field>
+                </record>
+
+                <record id="color_8142" model="product.attribute.value">
+                        <field name="name">بنى محروق</field>
+                        <field name="attribute_id" ref="product_attribute_color"/>
+                        <field name="barcode_code">8142</field>
+                        <field name="notes">م وفيق</field>
+                        <field name="customer_id">الحاج محمود</field>
+                </record>
+
+        </data>
+</odoo>

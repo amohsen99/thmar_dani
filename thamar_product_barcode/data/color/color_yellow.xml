@@ -1,0 +1,1041 @@
+<odoo>
+    <data noupdate="1">
+        <record id="product_attribute_color" model="product.attribute">
+            <field name="name">Color</field>
+            <field name="display_type">color</field>
+            <field name="barcode_position">color</field>
+            <field name="create_variant">always</field>
+        </record>
+        <record id="color_3001" model="product.attribute.value">
+            <field name="name">اصفر 212001</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3001</field>
+            <field name="notes">شعيرات</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3002" model="product.attribute.value">
+            <field name="name">اصفر دهبى 212003</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3002</field>
+            <field name="notes">شعيرات</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3003" model="product.attribute.value">
+            <field name="name">اصفر دهبى فاتح 212004</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3003</field>
+            <field name="notes">شعيرات</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3004" model="product.attribute.value">
+            <field name="name">اصفر ليمونى 212002</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3004</field>
+            <field name="notes">شعيرات</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3005" model="product.attribute.value">
+            <field name="name">اصفر ذهبى 212003</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3005</field>
+            <field name="notes">شعيرات</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3006" model="product.attribute.value">
+            <field name="name">اورانج 216017</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3006</field>
+            <field name="notes">شعيرات</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3007" model="product.attribute.value">
+            <field name="name">اورانج 216022</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3007</field>
+            <field name="notes">فينيسيا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3009" model="product.attribute.value">
+            <field name="name">اورانج 256004</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3009</field>
+            <field name="notes">بلوش</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3010" model="product.attribute.value">
+            <field name="name">مسطردة 252002</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3010</field>
+            <field name="notes">بلوش</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3011" model="product.attribute.value">
+            <field name="name">اصفر 252001</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3011</field>
+            <field name="notes">بلوش</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3012" model="product.attribute.value">
+            <field name="name">مسطردة 242001</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3012</field>
+            <field name="notes">سمر ميلتون اسبن</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3013" model="product.attribute.value">
+            <field name="name">ذهبى فاتح 242002</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3013</field>
+            <field name="notes">سمر ميلتو ناسبن</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3014" model="product.attribute.value">
+            <field name="name">اورانج محمر 246012</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3014</field>
+            <field name="notes">سمر ميلتو ناسبن</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3015" model="product.attribute.value">
+            <field name="name">ليمونى 232001</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3015</field>
+            <field name="notes">بوبلين</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3016" model="product.attribute.value">
+            <field name="name">اورانج 216001</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3016</field>
+            <field name="notes">شعيرات</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3017" model="product.attribute.value">
+            <field name="name">منجاوى 2112001</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3017</field>
+            <field name="notes">فينيسيا + انترلوك</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3018" model="product.attribute.value">
+            <field name="name">اصفر 222001</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3018</field>
+            <field name="notes">ملاية</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3019" model="product.attribute.value">
+            <field name="name">اصفر ذهبى 66</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3019</field>
+            <field name="notes">CY</field>
+            <field name="customer_id">أبو احمد تركيا</field>
+        </record>
+
+        <record id="color_3020" model="product.attribute.value">
+            <field name="name">مسطردة 53M</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3020</field>
+            <field name="notes">CY</field>
+            <field name="customer_id">أبو احمد تركيا</field>
+        </record>
+
+        <record id="color_3021" model="product.attribute.value">
+            <field name="name">اصفر بودرة 2502</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3021</field>
+            <field name="notes">قطن + مخلوط</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3022" model="product.attribute.value">
+            <field name="name">اصفر ليمونى 2125</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3022</field>
+            <field name="notes">قطن + مخلوط</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3023" model="product.attribute.value">
+            <field name="name">اصفر ذهبى 2324</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3023</field>
+            <field name="notes">قطن + مخلوط</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3024" model="product.attribute.value">
+            <field name="name">اورانج 2126</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3024</field>
+            <field name="notes">قطن + مخلوط</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3025" model="product.attribute.value">
+            <field name="name">اصفر كنارى عينة عميل</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3025</field>
+            <field name="notes">سمر ميلتون بوليستر</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3026" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3026</field>
+            <field name="notes">ملاية بوليستر</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3027" model="product.attribute.value">
+            <field name="name">اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3027</field>
+            <field name="notes">ملاية بوليستر</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3028" model="product.attribute.value">
+            <field name="name">اصفر فاتح</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3028</field>
+            <field name="notes">ملاية بوليستر</field>
+            <field name="customer_id">احمد عيد</field>
+        </record>
+
+        <record id="color_3029" model="product.attribute.value">
+            <field name="name">مسطردة</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3029</field>
+            <field name="notes">CY</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3030" model="product.attribute.value">
+            <field name="name">اصفر بودرة</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3030</field>
+            <field name="notes">CY</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3031" model="product.attribute.value">
+            <field name="name">برتقالى</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3031</field>
+            <field name="notes">فينيسيا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3032" model="product.attribute.value">
+            <field name="name">اصفر بودرة</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3032</field>
+            <field name="notes">ملاية 50/50</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3033" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3033</field>
+            <field name="notes">انترلوك ليكرا بدون كسترة</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3034" model="product.attribute.value">
+            <field name="name">اصفر فاتح رسمة 622</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3034</field>
+            <field name="notes">شعيرات 100</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3035" model="product.attribute.value">
+            <field name="name">اورانج رسمة 637</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3035</field>
+            <field name="notes">شعيرات 100</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3036" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3036</field>
+            <field name="notes">انترلوك شعيرات 100</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3037" model="product.attribute.value">
+            <field name="name">اصفر ماتش باعة</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3037</field>
+            <field name="notes">بوبلين 50/50</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3038" model="product.attribute.value">
+            <field name="name">اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3038</field>
+            <field name="notes">شعيرات 100</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3039" model="product.attribute.value">
+            <field name="name">اصفر ذهبى</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3039</field>
+            <field name="notes">شعيرات 100</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3040" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3040</field>
+            <field name="notes">اثينا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3041" model="product.attribute.value">
+            <field name="name">اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3041</field>
+            <field name="notes">بوليفار</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3042" model="product.attribute.value">
+            <field name="name">اورانج غامق</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3042</field>
+            <field name="notes">بوليفار</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3043" model="product.attribute.value">
+            <field name="name">اورانج ماتش مقلم</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3043</field>
+            <field name="notes">فينيسيا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3044" model="product.attribute.value">
+            <field name="name">اورانج منور ماتش كقلم</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3044</field>
+            <field name="notes">فينيسيا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3045" model="product.attribute.value">
+            <field name="name">اصفر ماتش مقلم</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3045</field>
+            <field name="notes">فينيسيا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3046" model="product.attribute.value">
+            <field name="name">سيمون ماتش مموه</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3046</field>
+            <field name="notes">فينيسيا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3047" model="product.attribute.value">
+            <field name="name">اصفر ماتش مموه</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3047</field>
+            <field name="notes">فينيسيا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3048" model="product.attribute.value">
+            <field name="name">مسطردة</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3048</field>
+            <field name="notes">فينيسيا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3049" model="product.attribute.value">
+            <field name="name">اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3049</field>
+            <field name="notes">فينيسيا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3050" model="product.attribute.value">
+            <field name="name">اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3050</field>
+            <field name="notes">cy</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3051" model="product.attribute.value">
+            <field name="name">سيمون ماتش مموه</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3051</field>
+            <field name="notes">براسولا قطن</field>
+            <field name="customer_id">400</field>
+        </record>
+
+        <record id="color_3052" model="product.attribute.value">
+            <field name="name">اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3052</field>
+            <field name="notes">براسولا قطن</field>
+            <field name="customer_id">المتوكل</field>
+        </record>
+
+        <record id="color_3053" model="product.attribute.value">
+            <field name="name">اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3053</field>
+            <field name="notes">براسولا قطن</field>
+            <field name="customer_id">19</field>
+        </record>
+
+        <record id="color_3054" model="product.attribute.value">
+            <field name="name">اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3054</field>
+            <field name="notes">cy</field>
+            <field name="customer_id">احمد عبد السلام</field>
+        </record>
+
+        <record id="color_3055" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3055</field>
+            <field name="notes">بلوش سوفت</field>
+            <field name="customer_id">محمد نور</field>
+        </record>
+
+        <record id="color_3056" model="product.attribute.value">
+            <field name="name">مسطردة</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3056</field>
+            <field name="notes">شعيرات 100</field>
+            <field name="customer_id">الحاج</field>
+        </record>
+
+        <record id="color_3057" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3057</field>
+            <field name="notes">شعيرات 100</field>
+            <field name="customer_id">الحاج</field>
+        </record>
+
+        <record id="color_3058" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3058</field>
+            <field name="notes">براسولا قطن</field>
+            <field name="customer_id">الحاج</field>
+        </record>
+
+        <record id="color_3059" model="product.attribute.value">
+            <field name="name">اصفر ليمونى</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3059</field>
+            <field name="notes">سنجل ماش</field>
+            <field name="customer_id">المليث</field>
+        </record>
+
+        <record id="color_3060" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3060</field>
+            <field name="notes">شعيرات 100 لايكك قطن</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3061" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3061</field>
+            <field name="notes">شعيرات ليكرا 100</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3062" model="product.attribute.value">
+            <field name="name">اصفر ليموني</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3062</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3063" model="product.attribute.value">
+            <field name="name">سيمون غامق</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3063</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3064" model="product.attribute.value">
+            <field name="name">اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3064</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3065" model="product.attribute.value">
+            <field name="name">اورانج غامق</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3065</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3066" model="product.attribute.value">
+            <field name="name">سيمون فاتح</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3066</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3067" model="product.attribute.value">
+            <field name="name">سيمون ليموني</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3067</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3068" model="product.attribute.value">
+            <field name="name">مسطردة غامق</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3068</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3069" model="product.attribute.value">
+            <field name="name">اورانج غامق جدا</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3069</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3070" model="product.attribute.value">
+            <field name="name">اصفر منور</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3070</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3071" model="product.attribute.value">
+            <field name="name">اصفر غامق</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3071</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3072" model="product.attribute.value">
+            <field name="name">اورانج محروق</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3072</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3073" model="product.attribute.value">
+            <field name="name">اصفر فاتح</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3073</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3074" model="product.attribute.value">
+            <field name="name">اصفر ليموني فاتح</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3074</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3075" model="product.attribute.value">
+            <field name="name">اصفر ذهبي</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3075</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3076" model="product.attribute.value">
+            <field name="name">سيمون ناعم</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3076</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3077" model="product.attribute.value">
+            <field name="name">اصفر فاقع</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3077</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3078" model="product.attribute.value">
+            <field name="name">اصفر ليموني ناعم</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3078</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3079" model="product.attribute.value">
+            <field name="name">اصفر زيتوني</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3079</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3080" model="product.attribute.value">
+            <field name="name">سيمون ناعم فاتح</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3080</field>
+            <field name="notes">شعيرات ليكرا</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3081" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3081</field>
+            <field name="notes">شعيرات صينى</field>
+            <field name="customer_id">الحاج محمود</field>
+        </record>
+
+        <record id="color_3082" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3082</field>
+            <field name="notes">روز ستار</field>
+            <field name="customer_id">عصام عزيز</field>
+        </record>
+
+        <record id="color_3083" model="product.attribute.value">
+            <field name="name">اصفر رسمة 1010</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3083</field>
+            <field name="notes">شعيرات صينى</field>
+            <field name="customer_id">الحاج محمود</field>
+        </record>
+
+        <record id="color_3084" model="product.attribute.value">
+            <field name="name">اصفر ذهبى</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3084</field>
+            <field name="notes">روز ستار</field>
+            <field name="customer_id">الحاج يوسف</field>
+        </record>
+
+        <record id="color_3085" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3085</field>
+            <field name="notes">روز ستار</field>
+            <field name="customer_id">الحاج يوسف</field>
+        </record>
+
+        <record id="color_3086" model="product.attribute.value">
+            <field name="name">اصفر بودرة</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3086</field>
+            <field name="notes">شعيرات 100</field>
+            <field name="customer_id">21</field>
+        </record>
+
+        <record id="color_3087" model="product.attribute.value">
+            <field name="name">اصفر ليمونى</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3087</field>
+            <field name="notes">شعيرات 100</field>
+            <field name="customer_id">21</field>
+        </record>
+
+        <record id="color_3088" model="product.attribute.value">
+            <field name="name">اورانج فاتح</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3088</field>
+            <field name="notes">شعيرات 100</field>
+            <field name="customer_id">21</field>
+        </record>
+
+        <record id="color_3089" model="product.attribute.value">
+            <field name="name">اصفر رسمة 1321</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3089</field>
+            <field name="notes">شعيرات صينى</field>
+            <field name="customer_id">الحاج محمود</field>
+        </record>
+
+        <record id="color_3090" model="product.attribute.value">
+            <field name="name">اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3090</field>
+            <field name="notes">سمر ميلتون مخلوط</field>
+            <field name="customer_id">داما تكس</field>
+        </record>
+
+        <record id="color_3091" model="product.attribute.value">
+            <field name="name">اصفر رسمى 1320</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3091</field>
+            <field name="notes">شعيرات صينى</field>
+            <field name="customer_id">الحاج محمود</field>
+        </record>
+
+        <record id="color_3092" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3092</field>
+            <field name="notes">براسولا مخلوط</field>
+            <field name="customer_id">جون تكس</field>
+        </record>
+
+        <record id="color_3093" model="product.attribute.value">
+            <field name="name">اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3093</field>
+            <field name="notes">شعيرات دفاية</field>
+            <field name="customer_id">21</field>
+        </record>
+
+        <record id="color_3094" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3094</field>
+            <field name="notes">شعيرات 100</field>
+            <field name="customer_id">درويش</field>
+        </record>
+
+        <record id="color_3095" model="product.attribute.value">
+            <field name="name">YELLOW</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3095</field>
+            <field name="notes">قطن بدون ليكرا 20/1</field>
+            <field name="customer_id">تاون تيم</field>
+        </record>
+
+        <record id="color_3096" model="product.attribute.value">
+            <field name="name">منجاوى</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3096</field>
+            <field name="notes">ملاية 65/35</field>
+            <field name="customer_id">فوربد</field>
+        </record>
+
+        <record id="color_3097" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3097</field>
+            <field name="notes">ملاية 65/35</field>
+            <field name="customer_id">فوربد</field>
+        </record>
+
+        <record id="color_3098" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3098</field>
+            <field name="notes">ميلتون وش مخلوط</field>
+            <field name="customer_id">شريف عفاص</field>
+        </record>
+
+        <record id="color_3099" model="product.attribute.value">
+            <field name="name">اصفر TCX 11-0616</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3099</field>
+            <field name="notes">فبران</field>
+            <field name="customer_id">HAVIN</field>
+        </record>
+
+        <record id="color_3100" model="product.attribute.value">
+            <field name="name">مسطردة</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3100</field>
+            <field name="notes">روز ستار</field>
+            <field name="customer_id">الحاج حسين</field>
+        </record>
+
+        <record id="color_3101" model="product.attribute.value">
+            <field name="name">L.T ORANGE 390</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3101</field>
+            <field name="notes">سمر ميلتون قطن ليكرا</field>
+            <field name="customer_id">تاون تيم</field>
+        </record>
+
+        <record id="color_3102" model="product.attribute.value">
+            <field name="name">اصفر ليمونى</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3102</field>
+            <field name="notes">سنجل قطن بدون ليكرا 20/1</field>
+            <field name="customer_id">تاون تيم</field>
+        </record>
+
+        <record id="color_3103" model="product.attribute.value">
+            <field name="name">اصفر فاتح</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3103</field>
+            <field name="notes">شعيرات 125</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3104" model="product.attribute.value">
+            <field name="name">اورانج فاتح</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3104</field>
+            <field name="notes">شعيرات 125</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3105" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3105</field>
+            <field name="notes">شعيرات 100</field>
+            <field name="customer_id">درويش</field>
+        </record>
+
+        <record id="color_3106" model="product.attribute.value">
+            <field name="name">مسطردة</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3106</field>
+            <field name="notes">باربى 26</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3107" model="product.attribute.value">
+            <field name="name">اورانج غامق</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3107</field>
+            <field name="notes">ميلتون مخلوط mo 015</field>
+            <field name="customer_id">نصار</field>
+        </record>
+
+        <record id="color_3108" model="product.attribute.value">
+            <field name="name">اورانج فاتح</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3108</field>
+            <field name="notes">ميلتون مخلوط mo 015</field>
+            <field name="customer_id">نصار</field>
+        </record>
+
+        <record id="color_3109" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3109</field>
+            <field name="notes">ميلتون مخلوط mo 015</field>
+            <field name="customer_id">نصار</field>
+        </record>
+
+        <record id="color_3110" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3110</field>
+            <field name="notes">شعيرات 125</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3111" model="product.attribute.value">
+            <field name="name">اورانج رسمة 1675</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3111</field>
+            <field name="notes">ريب مسحب 2*2</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3112" model="product.attribute.value">
+            <field name="name">مسطردة</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3112</field>
+            <field name="notes">مزراتى شعيرات 125</field>
+            <field name="customer_id">درويش</field>
+        </record>
+
+        <record id="color_3113" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3113</field>
+            <field name="notes">تك فليز</field>
+            <field name="customer_id">المصنع</field>
+        </record>
+
+        <record id="color_3114" model="product.attribute.value">
+            <field name="name">اصفر TCX14-0636</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3114</field>
+            <field name="notes">براسولا قطن ليكرا</field>
+            <field name="customer_id">LCW</field>
+        </record>
+
+        <record id="color_3115" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3115</field>
+            <field name="notes">مزراتى شعيرات 125</field>
+            <field name="customer_id">درويش</field>
+        </record>
+
+        <record id="color_3116" model="product.attribute.value">
+            <field name="name">اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3116</field>
+            <field name="notes">مازراتى</field>
+            <field name="customer_id">درويش</field>
+        </record>
+
+        <record id="color_3117" model="product.attribute.value">
+            <field name="name">اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3117</field>
+            <field name="notes">فبران</field>
+            <field name="customer_id">HAVIN</field>
+        </record>
+
+        <record id="color_3118" model="product.attribute.value">
+            <field name="name">اورانج فاتح</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3118</field>
+            <field name="notes">سمر ميلتون وش قطن ضهر بوليستر</field>
+            <field name="customer_id">محمد نور</field>
+        </record>
+
+        <record id="color_3119" model="product.attribute.value">
+            <field name="name">اصفر 11</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3119</field>
+            <field name="notes">ملاية مراسى مخلوط</field>
+            <field name="customer_id">الحاج محمود</field>
+        </record>
+
+        <record id="color_3120" model="product.attribute.value">
+            <field name="name">مسطردة 6</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3120</field>
+            <field name="notes">ملاية مراسى مخلوط</field>
+            <field name="customer_id">الحاج محمود</field>
+        </record>
+
+        <record id="color_3121" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3121</field>
+            <field name="notes">شعيرات</field>
+            <field name="customer_id">يوسف ميلاد</field>
+        </record>
+
+        <record id="color_3122" model="product.attribute.value">
+            <field name="name">اصفر tcx 11-0515</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3122</field>
+            <field name="notes">مودال</field>
+            <field name="customer_id">مصنع النسيج</field>
+        </record>
+
+        <record id="color_3123" model="product.attribute.value">
+            <field name="name">M orange اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3123</field>
+            <field name="notes">ميلتون mo 283</field>
+            <field name="customer_id">تاون تيم</field>
+        </record>
+
+        <record id="color_3124" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3124</field>
+            <field name="notes">نفرتيتى</field>
+            <field name="customer_id">الحاج محمود</field>
+        </record>
+
+        <record id="color_3125" model="product.attribute.value">
+            <field name="name">مسطردة</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3125</field>
+            <field name="notes">بوبلين 80/20</field>
+            <field name="customer_id">الحاج محمود</field>
+        </record>
+
+        <record id="color_3126" model="product.attribute.value">
+            <field name="name">اورانج</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3126</field>
+            <field name="notes">مزراتى شعيرات 125</field>
+            <field name="customer_id">ماتش طباعة</field>
+        </record>
+
+        <record id="color_3127" model="product.attribute.value">
+            <field name="name">اصفر</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3127</field>
+            <field name="notes">مراسى</field>
+            <field name="customer_id">عضم</field>
+        </record>
+
+        <record id="color_3128" model="product.attribute.value">
+            <field name="name">مسطردة</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3128</field>
+            <field name="notes">مراسى</field>
+            <field name="customer_id">عضم</field>
+        </record>
+
+        <record id="color_3129" model="product.attribute.value">
+            <field name="name">اورانج tcx14-2141</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3129</field>
+            <field name="notes">مودال</field>
+            <field name="customer_id">rosy john</field>
+        </record>
+
+        <record id="color_3130" model="product.attribute.value">
+            <field name="name">اصفر فاتح</field>
+            <field name="attribute_id" ref="product_attribute_color"/>
+            <field name="barcode_code">3130</field>
+            <field name="notes">ميلتون mo319</field>
+            <field name="customer_id">tie house</field>
+        </record>
+    </data>
+</odoo>
