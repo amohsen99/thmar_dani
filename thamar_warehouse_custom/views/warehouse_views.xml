@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="stock.view_warehouse"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='code']" position="after">
-                <field name="manager_id" options="{'no_create': True, 'no_open': True}"/>
-                <field name="keeper_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="manager_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                <field name="keeper_ids" widget="many2many_tags" options="{'no_create': True}"/>
             </xpath>
         </field>
     </record>
@@ -20,8 +20,8 @@
         <field name="inherit_id" ref="stock.view_warehouse_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="after">
-                <field name="manager_id" optional="show"/>
-                <field name="keeper_id" optional="show"/>
+                <field name="manager_ids" widget="many2many_tags" optional="show"/>
+                <field name="keeper_ids" widget="many2many_tags" optional="show"/>
             </xpath>
         </field>
     </record>
@@ -31,11 +31,8 @@
         <field name="name">My Warehouses</field>
         <field name="res_model">stock.warehouse</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">['|', ('keeper_id', '=', uid), ('manager_id', '=', uid)]</field>
+        <field name="domain">['|', ('keeper_ids', 'in', [uid]), ('manager_ids', 'in', [uid])]</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                No warehouses assigned to you
-            </p>
             <p>
                 Contact your administrator to be assigned as a keeper or manager of a warehouse.
             </p>

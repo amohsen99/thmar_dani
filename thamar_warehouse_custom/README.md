@@ -5,14 +5,15 @@ This module adds warehouse-specific user roles (Keeper and Manager) with restric
 
 ## Features
 
-### 1. **Two User Roles**
+### 1. **Three User Roles**
 - **Warehouse Keeper**: Can view and create stock operations for their assigned warehouse
-- **Warehouse Manager**: Can validate stock operations (inherits Keeper permissions)
+- **Warehouse Manager**: Can cancel validated transfers (inherits Keeper permissions)
+- **Transfer Validators**: Can validate any transfer in any warehouse (configured in settings)
 
 ### 2. **Warehouse Assignment**
 - Each warehouse can have:
-  - One or more **Keepers** (assigned via `keeper_id` field)
-  - One or more **Managers** (assigned via `manager_id` field)
+  - **Multiple Keepers** (assigned via `keeper_ids` field)
+  - **Multiple Managers** (assigned via `manager_ids` field)
 
 ### 3. **Access Control**
 Users with Keeper/Manager roles can only see:
@@ -20,14 +21,15 @@ Users with Keeper/Manager roles can only see:
 - Stock pickings/transfers in their warehouses
 - Stock moves in their warehouses
 - Stock quants (inventory) in their warehouse locations
-- Locations belonging to their warehouses
+- Locations belonging to their warehouses (including vendor/customer locations)
 - Picking types (operation types) for their warehouses
 - All products (needed to create operations)
 
 ### 4. **Validation Control**
-- **Keepers** can create and edit stock operations but **cannot validate** them
-- **Managers** can validate stock operations for their assigned warehouse
-- Only the assigned manager can validate pickings for a specific warehouse
+- **Keepers** can create and edit stock operations but **cannot validate or cancel validated transfers**
+- **Managers** can cancel validated transfers but **cannot validate transfers**
+- **Transfer Validators** can validate any transfer in any warehouse
+- Only Transfer Validators (configured in Inventory Settings) can validate pickings
 
 ## Installation
 
@@ -60,10 +62,17 @@ Users with Keeper/Manager roles can only see:
 1. Go to **Inventory → Configuration → Warehouses**
 2. Open a warehouse
 3. Set the fields:
-   - **Warehouse Manager**: Select the user who will manage this warehouse
-   - **Warehouse Keeper**: Select the user who will keep/operate this warehouse
+   - **Warehouse Managers**: Select multiple users who will manage this warehouse
+   - **Warehouse Keepers**: Select multiple users who will keep/operate this warehouse
 
-### Step 3: Test Access
+### Step 3: Configure Transfer Validators
+
+1. Go to **Inventory → Configuration → Settings**
+2. Scroll to **Warehouse Access Control** section
+3. In **Transfer Validators** field, select multiple users who can validate any transfer
+4. Click **Save**
+
+### Step 4: Test Access
 
 1. Login as a Keeper user
 2. Go to **Inventory → My Warehouses**
@@ -81,14 +90,20 @@ Users with Keeper/Manager roles can only see:
    - Goes to Inventory → Operations → Transfers
    - Creates a new receipt, delivery, or internal transfer
    - Fills in the products and quantities
-   - Clicks "Validate" → **Gets Error** (only manager can validate)
+   - Clicks "Validate" → **Gets Error** (only transfer validators can validate)
 
-2. **Manager Validates Transfer**:
-   - Manager logs in
+2. **Transfer Validator Validates Transfer**:
+   - Transfer Validator logs in
    - Goes to Inventory → Operations → Transfers
    - Opens the transfer created by keeper
    - Reviews the transfer
    - Clicks "Validate" → **Success**
+
+3. **Manager Cancels Validated Transfer**:
+   - Manager logs in
+   - Opens a validated transfer
+   - Clicks "Cancel" → **Success** (can unvalidate)
+   - Keeper trying to cancel validated transfer → **Gets Error**
 
 3. **Inventory Visibility**:
    - Both Keeper and Manager can view inventory (stock quants) for their warehouse

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add Transfer Validators to Inventory Settings -->
+    <record id="view_inventory_config_settings_inherit" model="ir.ui.view">
+        <field name="name">res.config.settings.form.inherit.thamar.warehouse</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='reception_report']" position="after">
+                <setting id="warehouse_access_control" string="Transfer Validators" help="Users who can validate any transfer in any warehouse">
+                    <div class="content-group">
+                        <field name="transfer_validator_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>
