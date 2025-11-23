@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit the payment receipt template -->
+        <template id="report_payment_receipt_document_inherit" inherit_id="account.report_payment_receipt_document" name="Payment Receipt Extended">
+            <!-- Add amount in words right after the payment amount row with no gap -->
+            <xpath expr="//div[@class='row'][.//div[contains(text(),'Payment Amount:')]]" position="after">
+                <!-- Add payment amount in letters -->
+                <div class="row" t-if="o.amount" style="margin-top: 5px;">
+                    <div class="col-12">
+                        <strong>Amount in Words:</strong>
+                        <span t-esc="o.currency_id.amount_to_text(o.amount)"/>
+                    </div>
+                </div>
+            </xpath>
+
+            <!-- Add signature section after the table with proper gap -->
+            <xpath expr="//table[@name='invoices']" position="after">
+                <!-- Add space before signature -->
+                <div class="oe_structure" style="height: 40px;"></div>
+
+                <!-- Add signature section -->
+                <div class="row">
+                    <div class="col-6">
+                        <div class="signature-field">
+                            <strong>Received By:</strong>
+                            <div class="signature-line mt-2" style="border-bottom: 1px solid #000; width: 80%; padding-top: 30px;"></div>
+                            <div class="signature-label mt-1" style="font-size: 12px; color: #666;">
+                                Signature &amp; Stamp
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>
