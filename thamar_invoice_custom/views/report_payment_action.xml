@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Custom Payment Receipt Report Action -->
+    <record id="action_custom_report_payment_receipt" model="ir.actions.report">
+        <field name="name">Custom Payment Receipt</field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">thamar_invoice_custom.custom_report_payment_receipt</field>
+        <field name="report_file">thamar_invoice_custom.custom_report_payment_receipt</field>
+        <field name="print_report_name">'Payment Receipt - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="account.model_account_payment"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
+
