@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Update Egyptian Pound with Arabic labels -->
+        <record id="base.EGP" model="res.currency">
+            <field name="currency_unit_label">جنيه</field>
+            <field name="currency_subunit_label">قرش</field>
+        </record>
+        
+        <!-- Update US Dollar with Arabic labels -->
+        <record id="base.USD" model="res.currency">
+            <field name="currency_unit_label">دولار</field>
+            <field name="currency_subunit_label">سنت</field>
+        </record>
+        
+        <!-- Update Saudi Riyal with Arabic labels -->
+        <record id="base.SAR" model="res.currency">
+            <field name="currency_unit_label">ريال</field>
+            <field name="currency_subunit_label">هللة</field>
+        </record>
+        
+        <!-- Update UAE Dirham with Arabic labels -->
+        <record id="base.AED" model="res.currency">
+            <field name="currency_unit_label">درهم</field>
+            <field name="currency_subunit_label">فلس</field>
+        </record>
+        
+        <!-- Update Kuwaiti Dinar with Arabic labels -->
+        <record id="base.KWD" model="res.currency">
+            <field name="currency_unit_label">دينار</field>
+            <field name="currency_subunit_label">فلس</field>
+        </record>
+    </data>
+</odoo>
+

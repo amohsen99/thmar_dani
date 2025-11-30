@@ -14,11 +14,15 @@
     'data': [
         'security/payment_security.xml',
         'security/ir.model.access.csv',
+        'data/res_currency_data.xml',
         'views/account_payment_view.xml',
         'views/report_payment_receipt.xml',
         'views/report_payment_action.xml',
         'views/report_custom.xml',
     ],
+    'external_dependencies': {
+        'python': ['num2words'],
+    },
     'installable': True,
     'application': False,
     'auto_install': False,

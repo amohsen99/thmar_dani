@@ -62,7 +62,7 @@
     </record>
 
     <!-- Product Variant List View - Add Barcode Column -->
-    <record id="productf_product_tree_view_inherit_barcode" model="ir.ui.view">
+    <!-- <record id="productf_product_tree_view_inherit_barcode" model="ir.ui.view">
         <field name="name">product.product.tree.inherit.barcode</field>
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_product_tree_view"/>
@@ -77,7 +77,7 @@
                         colspan="2"/>
 
             </xpath>
-        </field>
+        </field> -->
     </record>
     <record id="product_product_tfree_view_inherit_barcode" model="ir.ui.view">
     <field name="name">product.product.tree.inherit.barcode.header</field>

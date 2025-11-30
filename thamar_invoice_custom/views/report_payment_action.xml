@@ -2,7 +2,7 @@
 <odoo>
     <!-- Custom Payment Receipt Report Action -->
     <record id="action_custom_report_payment_receipt" model="ir.actions.report">
-        <field name="name">Custom Payment Receipt</field>
+        <field name="name">Generic Payment Receipt</field>
         <field name="model">account.payment</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">thamar_invoice_custom.custom_report_payment_receipt</field>
