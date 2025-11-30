@@ -10,6 +10,21 @@ except ImportError:
 class AccountPayment(models.Model):
     _inherit = 'account.payment'
 
+    # Cheque/Bank fields
+    bank_id = fields.Many2one(
+        'res.bank',
+        string='Bank',
+        help='Bank for cheque payment'
+    )
+    cheque_due_date = fields.Date(
+        string='Cheque Due Date',
+        help='Due date for cheque payment'
+    )
+    cheque_number = fields.Char(
+        string='Cheque Number',
+        help='Cheque number for payment'
+    )
+
     def amount_to_text_arabic(self):
         """
         Convert amount to Arabic text

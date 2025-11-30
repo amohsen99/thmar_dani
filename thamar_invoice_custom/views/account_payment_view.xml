@@ -14,6 +14,28 @@
             <xpath expr="//button[@name='action_validate']" position="attributes">
                 <attribute name="groups">thamar_invoice_custom.group_payment_validate</attribute>
             </xpath>
+
+            <!-- Add Bank, Cheque Due Date, and Cheque Number fields after payment_method_line_id -->
+            <xpath expr="//field[@name='payment_method_line_id']" position="after">
+                <field name="bank_id"/>
+                <field name="cheque_number"/>
+                <field name="cheque_due_date"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Tree View to add Bank, Cheque Number, and Cheque Due Date -->
+    <record id="view_account_payment_tree_inherit_cheque" model="ir.ui.view">
+        <field name="name">account.payment.tree.inherit.cheque</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_tree"/>
+        <field name="arch" type="xml">
+            <!-- Add fields in tree view after payment_method_line_id -->
+            <xpath expr="//field[@name='payment_method_line_id']" position="after">
+                <field name="bank_id" optional="show"/>
+                <field name="cheque_number" optional="show"/>
+                <field name="cheque_due_date" optional="show"/>
+            </xpath>
         </field>
     </record>
 </odoo>
