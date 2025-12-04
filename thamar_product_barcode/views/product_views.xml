@@ -78,7 +78,7 @@
 
             </xpath>
         </field> -->
-    </record>
+
     <record id="product_product_tfree_view_inherit_barcode" model="ir.ui.view">
     <field name="name">product.product.tree.inherit.barcode.header</field>
     <field name="model">product.product</field>

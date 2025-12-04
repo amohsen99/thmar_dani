@@ -1,4 +1,4 @@
-from odoo import models, api, fields
+from odoo import models
 from odoo.exceptions import UserError
 
 class StockPicking(models.Model):
@@ -6,8 +6,9 @@ class StockPicking(models.Model):
 
     def button_validate(self):
         """
-        Override validation to ensure only transfer validators can validate pickings.
-        Keepers and managers can create and edit, but only validators can validate.
+        Override validation to ensure only transfer validators can validate INTERNAL transfers.
+        For incoming (purchase receipts) and outgoing (deliveries), keepers and managers can validate.
+        For internal transfers, only validators can validate.
         """
         user = self.env.user
 
@@ -15,25 +16,27 @@ class StockPicking(models.Model):
         if user.has_group('stock.group_stock_manager') or user._is_admin():
             return super().button_validate()
 
-        # Check if user is a transfer validator (from settings)
-        params = self.env['ir.config_parameter'].sudo()
-        validator_ids_str = params.get_param('thamar_warehouse_custom.transfer_validator_ids', '[]')
-        try:
-            transfer_validator_ids = eval(validator_ids_str) if validator_ids_str else []
-        except:
-            transfer_validator_ids = []
+        # Check if this is an internal transfer
+        for picking in self:
+            if picking.picking_type_id.code == 'internal':
+                # For internal transfers, check if user is a transfer validator
+                params = self.env['ir.config_parameter'].sudo()
+                validator_ids_str = params.get_param('thamar_warehouse_custom.transfer_validator_ids', '[]')
+                try:
+                    transfer_validator_ids = eval(validator_ids_str) if validator_ids_str else []
+                except:
+                    transfer_validator_ids = []
 
-        if user.id in transfer_validator_ids:
-            return super().button_validate()
+                # If user is not a validator, deny validation for internal transfers
+                if user.id not in transfer_validator_ids:
+                    if user.has_group('thamar_warehouse_custom.group_warehouse_keeper'):
+                        raise UserError(
+                            "You are not authorized to validate internal transfers.\n"
+                            "Only Transfer Validators (configured in Inventory Settings) can validate internal transfers.\n"
+                            "Please contact your administrator."
+                        )
 
-        # If user is in warehouse keeper/manager groups but not a validator, deny validation
-        if user.has_group('thamar_warehouse_custom.group_warehouse_keeper'):
-            raise UserError(
-                "You are not authorized to validate transfers.\n"
-                "Only Transfer Validators (configured in Inventory Settings) can validate transfers.\n"
-                "Please contact your administrator."
-            )
-
+        # For incoming/outgoing operations, keepers and managers can validate
         return super().button_validate()
 
     def action_cancel(self):
