@@ -32,10 +32,14 @@
                     }
                 </style>
 
-                <h3>
+                <h3 style="margin-bottom: 20px; margin-top: 20px; padding-top: 20px;">
                     <strong>
                         <t t-if="is_arabic">
-                            <span t-field="o.payment_receipt_title"/>
+                            <t t-if="o.payment_type == 'inbound'">ايصال استلام</t>
+                            <t t-if="o.payment_type == 'outbound'">ايصال دفع</t>
+                            
+
+                            <!-- <span t-field="o.payment_receipt_title"/> -->
 :                            <span t-field="o.name"/>
                         </t>
                         <t t-else="">
@@ -131,6 +135,7 @@
                             <t t-if="lang and 'ar' in lang">
                                 <span t-esc="o.amount"/>
                                 <span>جنيه</span>
+                                <!-- <span>فقط لا غير</span> -->
                             </t>
                             <t t-else="">
                                 <span t-field="o.amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
@@ -157,6 +162,7 @@
                                 <t t-else="">Amount in Words:</t>
                             </strong>
                             <span t-esc="o.amount_to_text_with_lang()"/>
+                            <span>فقط لا غير</span>
                         </div>
                     </div>
                 </div>
