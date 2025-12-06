@@ -17,9 +17,10 @@
 
             <!-- Add Bank, Cheque Due Date, and Cheque Number fields after payment_method_line_id -->
             <xpath expr="//field[@name='payment_method_line_id']" position="after">
-                <field name="bank_id"/>
-                <field name="cheque_number"/>
-                <field name="cheque_due_date"/>
+                <field name="is_cheque_payment" invisible="1"/>
+                <field name="bank_id" invisible="not is_cheque_payment"/>
+                <field name="cheque_number" invisible="not is_cheque_payment"/>
+                <field name="cheque_due_date" invisible="not is_cheque_payment"/>
             </xpath>
         </field>
     </record>

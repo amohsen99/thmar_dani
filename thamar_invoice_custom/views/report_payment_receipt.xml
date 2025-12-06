@@ -46,49 +46,80 @@
                 </h3>
 
                 <div class="mb-4 mt-3">
-                    <!-- تاريخ الدفع / Payment Date -->
-                    <div name="date" class="row">
-                        <div class="col-6" t-if="o.date">
-                            <t t-if="is_arabic">
-                                تاريخ الدفع:                                <span t-field="o.date"/>
-                            </t>
-                            <t t-else="">
-                                Payment Date: <span t-field="o.date"/>
-                            </t>
-                        </div>
-                    </div>
-
-                    <div class="oe_structure"></div>
-
-                    <!-- العميل/المورد / Customer/Vendor -->
+                    <!-- الصف الأول: عمودين -->
                     <div class="row">
-                        <div class="col-6" t-if="o.partner_type">
-                            <t t-if="o.partner_type == 'customer'">
-                                <t t-if="is_arabic">عميل:</t>
-                                <t t-else="">Customer:</t>
-                            </t>
-                            <t t-else="">
-                                <t t-if="is_arabic">مورد:</t>
-                                <t t-else="">Vendor:</t>
-                            </t>
-                            <span t-field="o.partner_id"/>
+                        <!-- العمود الأول: التاريخ، العميل، طريقة الدفع -->
+                        <div class="col-6">
+                            <!-- تاريخ الدفع / Payment Date -->
+                            <div name="date" t-if="o.date" style="margin-bottom: 10px;">
+                                <t t-if="is_arabic">
+                                    تاريخ الدفع:                                    <span t-field="o.date"/>
+                                </t>
+                                <t t-else="">
+                                    Payment Date: <span t-field="o.date"/>
+                                </t>
+                            </div>
+
+                            <!-- العميل/المورد / Customer/Vendor -->
+                            <div t-if="o.partner_type" style="margin-bottom: 10px;">
+                                <t t-if="o.partner_type == 'customer'">
+                                    <t t-if="is_arabic">عميل:</t>
+                                    <t t-else="">Customer:</t>
+                                </t>
+                                <t t-else="">
+                                    <t t-if="is_arabic">مورد:</t>
+                                    <t t-else="">Vendor:</t>
+                                </t>
+                                <span t-field="o.partner_id"/>
+                            </div>
+
+                            <!-- طريقة الدفع / Payment Method -->
+                             <div t-if="values['display_payment_method'] and o.payment_method_id" style="margin-bottom: 10px;">
+                                <t t-if="is_arabic">
+                                    طريقة الدفع: 
+                                </t>
+                                <t t-else="">
+                                    Payment Method: 
+                                </t>
+                                <span t-field="o.payment_method_line_id.name"/>
+                            </div>
+
                         </div>
 
-                        <!-- طريقة الدفع / Payment Method -->
-                        <div name="payment_method" t-if="values['display_payment_method'] and o.payment_method_id" class="col-6">
-                            <t t-if="is_arabic">
-                                طريقة الدفع: 
+                        <!-- العمود الثاني: معلومات الشيك -->
+                        <div class="col-6">
+                           
+                            <t t-if="o.is_cheque_payment">
+                                <div>
+                                    <div t-if="o.bank_id" style="margin-bottom: 10px;">
+                                        <t t-if="is_arabic">البنك:</t>
+                                        <t t-else="">Bank:</t>
+                                        <span t-field="o.bank_id.name"/>
+                                        <br/>
+
+                                    </div>
+                                    <div t-if="o.cheque_number" style="margin-bottom: 10px;">
+                                        <t t-if="is_arabic">رقم الشيك:</t>
+                                        <t t-else="">Cheque Number:</t>
+                                        <span t-field="o.cheque_number"/>
+                                        <br/>
+
+                                    </div>
+                                    <div t-if="o.cheque_due_date" style="margin-bottom: 10px;">
+                                        <t t-if="is_arabic">تاريخ الاستحقاق:</t>
+                                        <t t-else="">Due Date:</t>
+                                        <span t-field="o.cheque_due_date"/>
+
+                                        <br/>
+                                    </div>
+                                </div>
                             </t>
-                            <t t-else="">
-                                Payment Method: 
-                            </t>
-                            <span t-field="o.payment_method_id.name"/>
                         </div>
                     </div>
 
-                    <div class="oe_structure"></div>
+                    <div class="oe_structure " style="height: 10px;"></div>
 
-                    <!-- مبلغ الدفع / Payment Amount -->
+                    <!-- المبلغ والمذكرة -->
                     <div class="row">
                         <div class="col-6" t-if="o.amount">
                             <t t-if="is_arabic">
@@ -100,7 +131,7 @@
                             <t t-if="lang and 'ar' in lang">
                                 <span t-esc="o.amount"/>
                                 <span>جنيه</span>
-                            </t>    
+                            </t>
                             <t t-else="">
                                 <span t-field="o.amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                             </t>

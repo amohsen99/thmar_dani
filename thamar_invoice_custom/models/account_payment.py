@@ -24,6 +24,25 @@ class AccountPayment(models.Model):
         string='Cheque Number',
         help='Cheque number for payment'
     )
+    is_cheque_payment = fields.Boolean(
+        string='Is Cheque Payment',
+        compute='_compute_is_cheque_payment',
+        store=True,
+        help='Technical field to check if payment method is Cheque'
+    )
+
+    @api.depends('payment_method_line_id', 'payment_method_line_id.name')
+    def _compute_is_cheque_payment(self):
+        """
+        Compute if the payment method is a cheque payment
+        Checks if payment method name contains 'Cheque' or 'Check'
+        """
+        for payment in self:
+            if payment.payment_method_line_id and payment.payment_method_line_id.name:
+                method_name = payment.payment_method_line_id.name.lower()
+                payment.is_cheque_payment = 'cheque' in method_name or 'check' in method_name or 'شيك' in method_name
+            else:
+                payment.is_cheque_payment = False
 
     def amount_to_text_arabic(self):
         """
