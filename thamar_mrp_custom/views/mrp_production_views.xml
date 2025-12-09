@@ -7,8 +7,21 @@
         <field name="arch" type="xml">
             <!-- Add partner and sale order fields in the right group after user_id -->
             <xpath expr="//field[@name='user_id']" position="after">
-                <field name="partner_id" readonly="state in ['cancel', 'done']"/>
-                <field name="sale_order_id" readonly="state in ['cancel', 'done']"/>
+                <field name="partner_id" />
+                <field name="sale_order_id" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="mrp_production_list_view_inherit_thamar" model="ir.ui.view">
+        <field name="name">mrp.production.list.inherit.thamar</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+            <!-- Add partner and sale order fields in the right group after user_id -->
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="partner_id" optional="hide" />
+                <field name="sale_order_id" optional="hide" />
             </xpath>
         </field>
     </record>
