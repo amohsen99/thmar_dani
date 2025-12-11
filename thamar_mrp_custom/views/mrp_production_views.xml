@@ -10,6 +10,31 @@
                 <field name="partner_id" />
                 <field name="sale_order_id" />
             </xpath>
+
+            <!-- Add Features tab before the closing notebook tag -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Features" name="features">
+                    <group>
+                        <group string="Product Specifications">
+                            <field name="finishing_type"/>
+                            <field name="color_id"/>
+                            <field name="design_id"/>
+
+                        </group>
+                        <group string="Calculations">
+                            <field name="width"/>
+                            <field name="weight"/>
+                            <field name="density"/>
+                            <field name="average" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Display design image when design is selected -->
+                    <group string="Design Preview" invisible="not design_id">
+                        <field name="design_image" widget="image" options="{'size': [400, 400]}" nolabel="1" readonly="1"/>
+                    </group>
+                </page>
+            </xpath>
         </field>
     </record>
 
