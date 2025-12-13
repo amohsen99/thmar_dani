@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Workcenter Tree View to add Running and Pending Quantities -->
+    <record id="mrp_workcenter_tree_view_inherit_thamar" model="ir.ui.view">
+        <field name="name">mrp.workcenter.list.inherit.thamar</field>
+        <field name="model">mrp.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_workcenter_tree_view"/>
+        <field name="arch" type="xml">
+            <!-- Add running and pending quantities after productive_time -->
+            <xpath expr="//field[@name='productive_time']" position="after">
+                <field name="qty_running" optional="show" decoration-success="qty_running &gt; 0"/>
+                <field name="qty_pending" optional="show" decoration-warning="qty_pending &gt; 0"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Workcenter Kanban View to add Running and Pending Quantities to Cards -->
+    <record id="mrp_workcenter_kanban_inherit_thamar" model="ir.ui.view">
+        <field name="name">mrp.workcenter.kanban.inherit.thamar</field>
+        <field name="model">mrp.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_workcenter_kanban"/>
+        <field name="arch" type="xml">
+            <!-- Add fields to kanban for access in template -->
+            <xpath expr="//kanban/field[@name='workorder_count']" position="after">
+                <field name="qty_running"/>
+                <field name="qty_pending"/>
+            </xpath>
+
+            <!-- Add running quantity row after "In Progress" -->
+            <xpath expr="//div[@class='row'][field[@name='workorder_progress_count']]" position="after">
+                <!-- Running Quantity -->
+                <div class="row">
+                    <span class="col-8 text-success">
+                        <i class="fa fa-play-circle me-1"/>Running Qty
+                    </span>
+                    <field name="qty_running" class="col-4 text-end text-success fw-bold"/>
+                    </div>
+                    <!-- Pending Quantity -->
+                <div class="row">
+                    <span class="col-8 text-warning">
+                        <i class="fa fa-clock-o me-1"/>Pending Qty
+                    </span>
+                    <field name="qty_pending" class="col-4 text-end text-warning fw-bold"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
