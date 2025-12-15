@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Employee Form View - Add Payroll Tab -->
+        <record id="hr_employee_payroll_form" model="ir.ui.view">
+            <field name="name">hr.employee.payroll.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <!-- Add Payroll tab after existing tabs -->
+                <xpath expr="//notebook" position="inside">
+                    <page string="Salary &amp; Tax" name="Salary &amp; Tax">
+                        <group>
+                            <group string="Payroll Information">
+                                <field name="previous_wage"/>
+                                <field name="promotion_amount"/>
+                                <field name="increase_rate"/>
+                                <field name="fixed_allowances"/>
+                            </group>
+                            <group string="Tax Information">
+                                <field name="tax_personal_exemption"/>
+                                <field name="tax_family_exemption"/>
+                            </group>
+                        </group>
+
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+
