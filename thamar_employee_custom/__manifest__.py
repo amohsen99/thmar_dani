@@ -20,7 +20,7 @@
     'depends': ['hr_payroll'],
     'data': [
         'security/ir.model.access.csv',
-        # 'views/hr_employee_views.xml',
+        'views/hr_employee_views.xml',
     ],
     'installable': True,
     'application': False,
