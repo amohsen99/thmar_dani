@@ -42,6 +42,13 @@ jobs:
             # Stop and remove existing containers
             echo "Stopping existing containers..."
             docker compose -f "$COMPOSE_FILE" down
+
+            echo "Updating Odoo modules to sync database schema..."
+            # تشغيل حاوية مؤقتة لعمل Upgrade للموديول الذي أضفت فيه الحقل
+            # استبدل 'your_module_name' باسم الموديول الخاص بك
+            docker compose -f "$COMPOSE_FILE" run --rm odoo odoo -u thamar_employee_custom -d OmarGroup_Prelive_V2 --stop-after-init
+
+            echo "Restarting services..."
             
             # Start new containers
             echo "Starting new containers..."
