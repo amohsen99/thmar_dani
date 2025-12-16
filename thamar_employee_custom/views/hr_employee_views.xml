@@ -12,14 +12,14 @@
                     <page string="Salary &amp; Tax" name="Salary &amp; Tax">
                         <group>
                             <group string="Payroll Information">
-                                <field name="x_previous_wage"/>
-                                <field name="x_promotion_amount"/>
-                                <field name="x_increase_rate"/>
-                                <field name="x_fixed_allowances"/>
+                                <!-- <field name="x_previous_wage"/> -->
+                                <!-- <field name="x_promotion_amount"/> -->
+                                <!-- <field name="x_increase_rate"/> -->
+                                <!-- <field name="x_fixed_allowances"/> -->
                             </group>
                             <group string="Tax Information">
-                                <field name="x_tax_personal_exemption"/>
-                                <field name="x_tax_family_exemption"/>
+                                <!-- <field name="x_tax_personal_exemption"/> -->
+                                <!-- <field name="x_tax_family_exemption"/> -->
                             </group>
                         </group>
 
