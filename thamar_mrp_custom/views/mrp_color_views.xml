@@ -8,6 +8,7 @@
             <list string="Colors">
                 <field name="name"/>
                 <field name="code"/>
+                <field name="category_id"/>
                 <field name="customer"/>
                 <field name="notes"/>
             </list>
@@ -25,6 +26,7 @@
                         <group>
                             <field name="name"/>
                             <field name="code"/>
+                            <field name="category_id"/>
                         </group>
                         <group>
                             <field name="customer"/>

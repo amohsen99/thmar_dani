@@ -17,7 +17,13 @@ class MrpColor(models.Model):
         string='Color Code',
         help='Code for the color (e.g., hex code or reference code)'
     )
-    
+
+    category_id = fields.Many2one(
+        'mrp.color.category',
+        string='Category',
+        help='Category of the color'
+    )
+
     customer = fields.Char(
         string='Customer',
         help='Customer associated with this color'
