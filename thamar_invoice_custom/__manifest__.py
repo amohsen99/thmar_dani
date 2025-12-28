@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Thamar Invoice Customization',
-    'version': '19.0.1.0.0',
+    'version': '19.0.2.0.0',
     'category': 'Accounting/Accounting',
-    'summary': 'Custom invoice and payment workflow with signatures and amount in words',
+    'summary': 'Custom invoice and payment workflow with approval, signatures and amount in words',
     'description': """
         Invoice and Payment Customization Module
         ========================================
+        - Payment approval workflow
+        - Cheque payment fields (bank, number, due date)
+        - Arabic amount in words
+        - Custom payment receipts
     """,
     'author': 'Thamar Dani',
     'website': 'https://www.thamardani.com',
