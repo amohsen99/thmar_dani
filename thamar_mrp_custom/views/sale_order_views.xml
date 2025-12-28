@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sale Order Form View - Add Features Tab -->
+    <record id="sale_order_form_view_inherit_thamar" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.thamar</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add Manufacturing Orders smart button -->
+            <!-- <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_mrp_production"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-cogs"
+                        invisible="mrp_production_count == 0">
+                    <field name="mrp_production_count" widget="statinfo" string="Manufacturing"/>
+                </button>
+            </xpath> -->
+
+            <!-- Add Features tab before the closing notebook tag -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Features" name="features">
+                    <group>
+                        <group string="Product Specifications">
+                            <field name="finishing_type"/>
+                            <field name="packing_type"/>
+                            <field name="stripe"/>
+                            <field name="color_id"/>
+                            <field name="design_id"/>
+                        </group>
+                        <group string="Calculations">
+                            <field name="width"/>
+                            <field name="weight"/>
+                            <field name="density"/>
+                            <field name="average" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Display design image when design is selected -->
+                    <group string="Design Preview" invisible="not design_id">
+                        <field name="design_image" widget="image" options="{'size': [400, 400]}" nolabel="1" readonly="1"/>
+                    </group>
+
+                    <!-- Info message about syncing to MRP -->
+                    <div class="alert alert-info" role="alert" invisible="state != 'draft'">
+                        <strong>ℹ Info:</strong> These specifications will be automatically copied to manufacturing orders when this sale order is confirmed.
+                    </div>
+
+                    <div class="alert alert-success" role="alert" invisible="state == 'draft' or mrp_production_count == 0">
+                        <strong>✓ Synced:</strong> These specifications have been copied to <field name="mrp_production_count" class="oe_inline"/> manufacturing order(s).
+                        Click the Manufacturing smart button above to view them.
+                    </div>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- Sale Order Tree View - Add Features columns -->
+    <record id="sale_order_tree_view_inherit_thamar" model="ir.ui.view">
+        <field name="name">sale.order.tree.inherit.thamar</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount_total']" position="after">
+                <field name="finishing_type" optional="hide"/>
+                <field name="packing_type" optional="hide"/>
+                <field name="stripe" optional="show"/>
+                <field name="color_id" optional="hide"/>
+                <field name="design_id" optional="hide"/>
+                <field name="width" optional="hide"/>
+                <field name="weight" optional="hide"/>
+                <field name="density" optional="hide"/>
+                <field name="average" optional="hide"/>
+                <field name="mrp_production_count" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+
