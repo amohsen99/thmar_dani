@@ -1,18 +1,21 @@
 {
     'name': 'Thamar MRP Custom',
-    'version': '19.0.2.0.0',
+    'version': '19.0.4.0.0',
     'category': 'Manufacturing',
-    'summary': 'Custom Manufacturing Order and Sale Order fields with Features tab',
+    'summary': 'Product Features Per Order Line with Auto-sync to Manufacturing Orders',
     'description': """
         Manufacturing Order Customization Module
         =========================================
         - Add Partner field to Manufacturing Orders
         - Add Sale Order field to Manufacturing Orders
         - Enhanced shop floor timer to show days, hours, minutes, seconds
-        - Add Features tab with Color, Design, Width, Weight, Density, and Average fields
+        - Add Features to Products with "Has Features" checkbox
+        - Add Features to Sale Order Lines (per product)
+        - Each order line can have different features based on its product
         - Color and Design configuration menus
-        - Add Features tab to Sale Orders
-        - Auto-sync features from Sale Order to Manufacturing Orders
+        - Add Features to Manufacturing Orders
+        - Auto-sync features: Product → Sale Order Line → Manufacturing Order
+        - Each MO gets features from its corresponding sale order line
         - Smart button to view related Manufacturing Orders from Sale Order
     """,
     'author': 'Thamar Dani',
@@ -23,6 +26,7 @@
         'views/mrp_color_category_views.xml',
         'views/mrp_color_views.xml',
         'views/mrp_design_views.xml',
+        'views/product_template_views.xml',
         'views/mrp_production_views.xml',
         'views/sale_order_views.xml',
     ],

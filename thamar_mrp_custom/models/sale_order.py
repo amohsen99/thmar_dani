@@ -5,79 +5,12 @@ from odoo import models, fields, api
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    # Features Tab Fields (same as MRP Production)
-    finishing_type = fields.Selection([
-        ('womens', 'Womens'),
-        ('mens', 'Mens'),
-        ('kids', 'Kids'),
-        ('custom', 'custom'),
-    ], string='Finishing Type', required=True, tracking=True, help='Type of finishing for this order')
-
-    packing_type = fields.Selection([
-        ('manual', 'Manual'),
-        ('automatic', 'Automatic')
-    ], string='Packing Type', required=True, tracking=True, help='Type of packing for this order')
-
-    stripe = fields.Selection([
-        ('white', 'White'),
-        ('alomar', 'Al-Omar'),
-        ('althamar', 'Al-Thamar'),
-        ('client', 'Client')
-    ], string='Stripe', required=True, tracking=True, help='Stripe type for this order')
-
-    color_id = fields.Many2one(
-        'mrp.color',
-        string='Color',
-        required=True,
-        tracking=True,
-        help='Color for this order'
-    )
-
-    width = fields.Float(
-        string='Width',
-        digits=(16, 2),
-        required=True,
-        tracking=True,
-        help='Width of the product'
-    )
-
-    weight = fields.Float(
-        string='Weight',
-        digits=(16, 2),
-        required=True,
-        tracking=True,
-        help='Weight of the product'
-    )
-
-    density = fields.Float(
-        string='Density',
-        digits=(16, 2),
-        required=True,
-        tracking=True,
-        help='Density of the product'
-    )
-
-    design_id = fields.Many2one(
-        'mrp.design',
-        string='Design',
-        required=True,
-        tracking=True,
-        help='Design for this order'
-    )
-
-    design_image = fields.Image(
-        string='Design Image',
-        related='design_id.image',
-        readonly=True,
-        help='Image from the selected design'
-    )
-
-    average = fields.Float(
-        string='Average',
-        compute='_compute_average',
+    # Check if any product in order lines has features
+    has_featured_products = fields.Boolean(
+        string='Has Featured Products',
+        compute='_compute_has_featured_products',
         store=True,
-        digits=(16, 2),
-        help='Computed as: (1000/(width/weight))*100'
+        help='True if any product in order lines has features enabled'
     )
 
     # Manufacturing Order relation
@@ -95,14 +28,12 @@ class SaleOrder(models.Model):
         help='Number of manufacturing orders'
     )
 
-    @api.depends('width', 'weight')
-    def _compute_average(self):
+    @api.depends('order_line', 'order_line.product_id', 'order_line.product_id.has_features')
+    def _compute_has_featured_products(self):
         for record in self:
-            if record.width and record.weight and record.width != 0:
-                # Formula: (1000/(width/weight))*100
-                record.average = (1000 / (record.width / record.weight)) * 100
-            else:
-                record.average = 0.0
+            record.has_featured_products = any(
+                line.product_id.has_features for line in record.order_line
+            )
 
     @api.depends('mrp_production_ids')
     def _compute_mrp_production_count(self):
@@ -128,34 +59,40 @@ class SaleOrder(models.Model):
 
     def _action_confirm(self):
         """
-        Override to copy features to manufacturing orders when SO is confirmed
+        Override to copy features from order lines to manufacturing orders when SO is confirmed
         """
         res = super(SaleOrder, self)._action_confirm()
-        
-        # Copy features to related manufacturing orders
+
+        # Copy features from order lines to related manufacturing orders
         for order in self:
             if order.mrp_production_ids:
-                order._sync_features_to_mrp()
-        
+                order._sync_features_to_mrp_from_lines()
+
         return res
 
-    def _sync_features_to_mrp(self):
+    def _sync_features_to_mrp_from_lines(self):
         """
-        Sync features from sale order to manufacturing orders
+        Sync features from sale order lines to manufacturing orders
+        Each MO gets features from its corresponding sale order line
         """
         self.ensure_one()
 
-        feature_values = {
-            'finishing_type': self.finishing_type,
-            'packing_type': self.packing_type,
-            'stripe': self.stripe,
-            'color_id': self.color_id.id,
-            'width': self.width,
-            'weight': self.weight,
-            'density': self.density,
-            'design_id': self.design_id.id,
-        }
+        for mo in self.mrp_production_ids:
+            # Find the sale order line for this product
+            # Simple approach: match by product_id
+            sale_line = self.order_line.filtered(
+                lambda l: l.product_id == mo.product_id and l.product_id.has_features
+            )[:1]
 
-        # Update all related manufacturing orders
-        self.mrp_production_ids.write(feature_values)
+            if sale_line and sale_line.product_has_features:
+                mo.write({
+                    'finishing_type': sale_line.finishing_type,
+                    'packing_type': sale_line.packing_type,
+                    'stripe': sale_line.stripe,
+                    'color_id': sale_line.color_id.id,
+                    'width': sale_line.width,
+                    'weight': sale_line.weight,
+                    'density': sale_line.density,
+                    'design_id': sale_line.design_id.id,
+                })
 
