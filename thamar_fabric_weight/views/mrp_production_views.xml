@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- MRP Production Form View - Add Fabric Weight -->
+    <record id="mrp_production_form_view_fabric" model="ir.ui.view">
+        <field name="name">mrp.production.form.fabric.weight</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Add Fabric Weight fields in group_extra_info -->
+            <xpath expr="//group[@name='group_extra_info']" position="inside">
+                <field name="is_fabric" invisible="1"/>
+                <label for="product_qty" string="الوزن المتوقع (كجم)" invisible="not is_fabric"/>
+                <div class="o_row" invisible="not is_fabric">
+                    <field name="product_qty"/>
+                    <span>كجم</span>
+                </div>
+                <field name="fabric_expected_meters" invisible="not is_fabric" string="إجمالي الأمتار المتوقع"/>
+                <label for="qty_producing" string="الوزن المُنتَج (كجم)" invisible="not is_fabric"/>
+                <div class="o_row" invisible="not is_fabric">
+                    <field name="qty_producing"/>
+                    <span>كجم</span>
+                </div>
+                <field name="fabric_produced_meters" invisible="not is_fabric" string="إجمالي الأمتار المُنتَج"/>
+                <field name="fabric_avg_weight" invisible="not is_fabric" string="متوسط الوزن/توب"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- MRP Production Tree View - Add Fabric Columns -->
+    <record id="mrp_production_tree_view_fabric" model="ir.ui.view">
+        <field name="name">mrp.production.tree.fabric.weight</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_uom_id']" position="after">
+                <field name="is_fabric" optional="hide"/>
+                <field name="product_qty" optional="hide" string="الوزن المتوقع"/>
+                <field name="qty_producing" optional="hide" string="الوزن المُنتَج"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

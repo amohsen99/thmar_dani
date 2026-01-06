@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Stock Picking Form View - Add Fabric Weight Summary -->
+    <record id="stock_picking_form_view_fabric" model="ir.ui.view">
+        <field name="name">stock.picking.form.fabric.weight</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <!-- Add Fabric Summary before notebook -->
+            <xpath expr="//notebook" position="before">
+                <group invisible="not has_fabric" class="alert alert-info">
+                    <group string="ملخص الأقمشة / Fabric Summary">
+                        <field name="has_fabric" invisible="1"/>
+                        <field name="fabric_total_weight" string="إجمالي الوزن (كجم)"/>
+                        <field name="fabric_total_qty" string="إجمالي الأتواب"/>
+                        <field name="fabric_total_meters" string="إجمالي الأمتار"/>
+                    </group>
+                </group>
+            </xpath>
+
+            <!-- Add weight columns to move lines -->
+            <xpath expr="//field[@name='move_ids']/list/field[@name='product_uom_qty']" position="after">
+                <field name="is_fabric" column_invisible="1"/>
+                <field name="fabric_pieces" optional="show" string="عدد الأتواب"/>
+                <field name="fabric_total_meters" optional="show" string="إجمالي الأمتار"/>
+                <field name="fabric_avg_weight" optional="hide" string="متوسط وزن التوب"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Stock Picking Tree View - Add Fabric Columns -->
+    <record id="stock_picking_tree_view_fabric" model="ir.ui.view">
+        <field name="name">stock.picking.tree.fabric.weight</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="has_fabric" optional="hide"/>
+                <field name="fabric_total_weight" optional="hide" string="إجمالي الوزن"/>
+                <field name="fabric_total_qty" optional="hide" string="عدد الأتواب"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Stock Move Form View - Add Fabric Weight -->
+    <record id="stock_move_form_view_fabric" model="ir.ui.view">
+        <field name="name">stock.move.form.fabric.weight</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_form"/>
+        <field name="arch" type="xml">
+            <!-- Add fabric weight fields after the main group -->
+            <xpath expr="//group[@name='main_grp_col2']" position="inside">
+                <field name="is_fabric" invisible="1"/>
+                <field name="fabric_pieces" invisible="not is_fabric" string="عدد الأتواب"/>
+                <field name="fabric_avg_weight" invisible="not is_fabric" string="متوسط وزن التوب"/>
+            </xpath>
+        </field>
+    </record>
+    <!-- Stock Move Line Operation Tree View - Add Fabric Fields -->
+    <record id="stock_move_line_operation_tree_fabric" model="ir.ui.view">
+        <field name="name">stock.move.line.operations.tree.fabric</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_stock_move_line_operation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='quantity']" position="after">
+                <field name="is_fabric" column_invisible="1"/>
+                <field name="fabric_pieces" invisible="not is_fabric" string="عدد الأتواب"/>
+                <field name="fabric_total_meters" invisible="not is_fabric" string="إجمالي الأمتار"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

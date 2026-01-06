@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Product Template Form View - Add Fabric Settings -->
+    <record id="product_template_form_view_fabric" model="ir.ui.view">
+        <field name="name">product.template.form.fabric.weight</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Add Fabric section in General Information -->
+            <xpath expr="//group[@name='group_general']" position="after">
+                <group string="إعدادات القماش / Fabric Settings" name="fabric_settings">
+                    <field name="is_fabric" widget="boolean_toggle"/>
+                    <field name="fabric_approx_weight" invisible="not is_fabric"
+                           string="الوزن التقريبي للتوب (كجم)"/>
+                    <field name="fabric_approx_meters" invisible="not is_fabric"
+                           string="الأمتار التقريبية للتوب"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Product Template Tree View - Add Fabric Column -->
+    <record id="product_template_tree_view_fabric" model="ir.ui.view">
+        <field name="name">product.template.tree.fabric.weight</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="is_fabric" optional="hide" widget="boolean_toggle"/>
+                <field name="fabric_approx_weight" optional="hide" string="وزن التوب"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

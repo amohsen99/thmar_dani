@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sale Order Form View - Add Fabric Weight Summary -->
+    <record id="sale_order_form_view_fabric" model="ir.ui.view">
+        <field name="name">sale.order.form.fabric.weight</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Add Fabric Summary before order lines -->
+            <xpath expr="//field[@name='order_line']" position="before">
+                <group invisible="not has_fabric" class="alert alert-info">
+                    <group string="ملخص الأقمشة / Fabric Summary">
+                        <field name="has_fabric" invisible="1"/>
+                        <field name="fabric_total_weight" string="إجمالي الوزن (كجم)"/>
+                        <field name="fabric_total_qty" string="إجمالي الأتواب"/>
+                        <field name="fabric_total_meters" string="إجمالي الأمتار"/>
+                    </group>
+                </group>
+            </xpath>
+
+            <!-- Add weight columns to order lines -->
+            <xpath expr="//field[@name='order_line']/list/field[@name='product_uom_qty']" position="after">
+                <field name="is_fabric" column_invisible="1"/>
+                <field name="fabric_pieces" optional="show" string="عدد الأتواب"/>
+                <field name="fabric_total_meters" optional="show" string="إجمالي الأمتار"/>
+                <field name="fabric_avg_weight" optional="hide" string="متوسط وزن التوب"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Sale Order Tree View - Add Fabric Columns -->
+    <record id="sale_order_tree_view_fabric" model="ir.ui.view">
+        <field name="name">sale.order.tree.fabric.weight</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount_total']" position="after">
+                <field name="has_fabric" optional="hide"/>
+                <field name="fabric_total_weight" optional="hide" string="إجمالي الوزن"/>
+                <field name="fabric_total_qty" optional="hide" string="عدد الأتواب"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Stock Quant Tree View Simple - Add Fabric Weight Column -->
+    <record id="stock_quant_tree_simple_view_fabric" model="ir.ui.view">
+        <field name="name">stock.quant.tree.simple.fabric.weight</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree_simple"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='available_quantity']" position="after">
+                <field name="is_fabric" column_invisible="1"/>
+                <field name="fabric_pieces" optional="show" string="عدد الأتواب" sum="Total Pieces"/>
+                <field name="fabric_meters" optional="show" string="إجمالي الأمتار" sum="Total Meters"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Stock Quant Tree Editable - Add Fabric Weight Column -->
+    <record id="stock_quant_tree_editable_view_fabric" model="ir.ui.view">
+        <field name="name">stock.quant.tree.editable.fabric.weight</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='available_quantity']" position="after">
+                <field name="is_fabric" column_invisible="1"/>
+                <field name="fabric_pieces" optional="show" string="عدد الأتواب" sum="Total Pieces"/>
+                <field name="fabric_meters" optional="show" string="إجمالي الأمتار" sum="Total Meters"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Stock Quant Form View - Add Fabric Weight -->
+    <record id="stock_quant_form_view_fabric" model="ir.ui.view">
+        <field name="name">stock.quant.form.fabric.weight</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_form_editable"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='reserved_quantity']/.." position="after">
+                <field name="is_fabric" invisible="1"/>
+                <label for="quantity" string="الوزن (كجم)" invisible="not is_fabric"/>
+                <div class="o_row" invisible="not is_fabric">
+                    <field name="quantity" readonly="1"/>
+                    <span>كجم</span>
+                    <span class="mx-2">|</span>
+                    <field name="fabric_pieces"/>
+                    <span>توب</span>
+                    <span class="mx-2">|</span>
+                    <field name="fabric_meters"/>
+                    <span>متر</span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Stock Quant Pivot View - For Fabric Reports -->
+    <record id="stock_quant_pivot_view_fabric" model="ir.ui.view">
+        <field name="name">stock.quant.pivot.fabric.weight</field>
+        <field name="model">stock.quant</field>
+        <field name="arch" type="xml">
+            <pivot string="تقرير الأقمشة / Fabric Report" sample="1">
+                <field name="product_id" type="row"/>
+                <field name="location_id" type="col"/>
+                <field name="quantity" type="measure" string="الوزن (كجم)"/>
+                <field name="fabric_pieces" type="measure"/>
+                <field name="fabric_meters" type="measure"/>
+                <field name="inventory_quantity" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Stock Quant Search View - Add Fabric Filters -->
+    <record id="stock_quant_search_view_fabric" model="ir.ui.view">
+        <field name="name">stock.quant.search.fabric.weight</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.quant_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='internal_loc']" position="after">
+                <separator/>
+                <filter string="أقمشة فقط / Fabrics Only" name="is_fabric" domain="[('is_fabric', '=', True)]"/>
+            </xpath>
+            <xpath expr="//group" position="inside">
+                <filter string="نوع المنتج (قماش)" name="group_by_is_fabric" context="{'group_by': 'is_fabric'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Product Form View - Add Weight on Hand -->
+    <record id="product_product_form_view_fabric" model="ir.ui.view">
+        <field name="name">product.product.form.fabric.weight</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" type="object" name="action_view_fabric_stock"
+                    icon="fa-balance-scale"
+                    invisible="not is_fabric">
+                    <div class="o_stat_info">
+                        <field name="fabric_weight_on_hand" class="o_stat_value"/>
+                        <span class="o_stat_text">كجم | <field name="fabric_pieces_on_hand"/> توب | <field name="fabric_meters_on_hand"/> متر</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
