@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_mrp_production_form_inherit_location" model="ir.ui.view">
+        <field name="name">mrp.production.form.inherit.location</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='move_raw_ids']/list/field[@name='location_id']" position="attributes">
+                <attribute name="readonly">0</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
