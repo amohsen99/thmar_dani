@@ -58,6 +58,13 @@ jobs:
             echo "Waiting for services to be ready..."
             sleep 30
             
+            # FIX: Repair corrupted assets for OmarGroup_Prelive_V2
+            echo "Running asset cleanup for OmarGroup_Prelive_V2..."
+            docker compose -f "$COMPOSE_FILE" exec -T pg-db psql -U odoo19 -d OmarGroup_Prelive_V2 -c "DELETE FROM ir_attachment WHERE url LIKE '/web/assets/%';"
+            
+            echo "Restarting Odoo to regenerate assets..."
+            docker compose -f "$COMPOSE_FILE" restart odoo
+            
             # Check if Odoo container is running
             if docker compose -f "$COMPOSE_FILE" ps | grep -q "Up"; then
               echo "Deployment completed successfully!"
