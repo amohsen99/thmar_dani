@@ -20,52 +20,47 @@ class SaleOrderLine(models.Model):
         ('mens', 'Mens'),
         ('kids', 'Kids'),
         ('custom', 'custom'),
-    ], string='Finishing Type', tracking=True, help='Type of finishing for this line')
+    ], string='Finishing Type', help='Type of finishing for this line')
 
     packing_type = fields.Selection([
         ('manual', 'Manual'),
         ('automatic', 'Automatic')
-    ], string='Packing Type', tracking=True, help='Type of packing for this line')
+    ], string='Packing Type', help='Type of packing for this line')
 
     stripe = fields.Selection([
         ('white', 'White'),
         ('alomar', 'Al-Omar'),
         ('althamar', 'Al-Thamar'),
         ('client', 'Client')
-    ], string='Stripe', tracking=True, help='Stripe type for this line')
+    ], string='Stripe', help='Stripe type for this line')
 
     color_id = fields.Many2one(
         'mrp.color',
         string='Color',
-        tracking=True,
         help='Color for this line'
     )
 
     width = fields.Float(
         string='Width',
         digits=(16, 2),
-        tracking=True,
         help='Width of the product'
     )
 
     weight = fields.Float(
         string='Weight',
         digits=(16, 2),
-        tracking=True,
         help='Weight of the product'
     )
 
     density = fields.Float(
         string='Density',
         digits=(16, 2),
-        tracking=True,
         help='Density of the product'
     )
 
     design_id = fields.Many2one(
         'mrp.design',
         string='Design',
-        tracking=True,
         help='Design for this line'
     )
 

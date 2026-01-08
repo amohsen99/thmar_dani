@@ -9,7 +9,6 @@ class ProductTemplate(models.Model):
     has_features = fields.Boolean(
         string='Has Product Features',
         default=False,
-        tracking=True,
         help='Enable this to add product specifications (finishing type, color, design, etc.)'
     )
 
@@ -19,52 +18,47 @@ class ProductTemplate(models.Model):
         ('mens', 'Mens'),
         ('kids', 'Kids'),
         ('custom', 'custom'),
-    ], string='Finishing Type', tracking=True, help='Type of finishing for this product')
+    ], string='Finishing Type', help='Type of finishing for this product')
 
     packing_type = fields.Selection([
         ('manual', 'Manual'),
         ('automatic', 'Automatic')
-    ], string='Packing Type', tracking=True, help='Type of packing for this product')
+    ], string='Packing Type', help='Type of packing for this product')
 
     stripe = fields.Selection([
         ('white', 'White'),
         ('alomar', 'Al-Omar'),
         ('althamar', 'Al-Thamar'),
         ('client', 'Client')
-    ], string='Stripe', tracking=True, help='Stripe type for this product')
+    ], string='Stripe', help='Stripe type for this product')
 
     color_id = fields.Many2one(
         'mrp.color',
         string='Color',
-        tracking=True,
         help='Color for this product'
     )
 
     width = fields.Float(
         string='Width',
         digits=(16, 2),
-        tracking=True,
         help='Width of the product'
     )
 
     weight = fields.Float(
         string='Weight',
         digits=(16, 2),
-        tracking=True,
         help='Weight of the product'
     )
 
     density = fields.Float(
         string='Density',
         digits=(16, 2),
-        tracking=True,
         help='Density of the product'
     )
 
     design_id = fields.Many2one(
         'mrp.design',
         string='Design',
-        tracking=True,
         help='Design for this product'
     )
 
