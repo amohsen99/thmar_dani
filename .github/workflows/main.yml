@@ -21,27 +21,36 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             set -e  # Exit on any error
-            
+
             # Variables
-            PROJECT_DIR="/root/odoo19/thmar_dani"
             COMPOSE_FILE="docker/server/odoo.yaml"
-            
+
             # Navigate to project directory
-            cd "$PROJECT_DIR" || { echo "Project directory not found"; exit 1; }
-            
+            if [ -d "/root/odoo19/thamar_dani" ]; then
+                PROJECT_DIR="/root/odoo19/thamar_dani"
+            elif [ -d "/root/odoo19/thmar_dani" ]; then
+                PROJECT_DIR="/root/odoo19/thmar_dani"
+            else
+                echo "Project directory not found at expected locations"
+                exit 1
+            fi
+
+            cd "$PROJECT_DIR"
+
             # Verify docker-compose file exists
             if [ ! -f "$COMPOSE_FILE" ]; then
               echo "Docker compose file not found: $COMPOSE_FILE"
               exit 1
             fi
-            
+
             # Pull latest changes
-            echo "Pulling latest changes from Git..."
-            git pull origin master
-            
-            # Stop and remove existing containers
+            echo "Syncing with latest changes..."
+            git fetch origin master
+            git reset --hard origin/master
+
+            # Stop and remove existing containers (including orphans like nginx)
             echo "Stopping existing containers..."
-            docker compose -f "$COMPOSE_FILE" down
+            docker compose -f "$COMPOSE_FILE" down --remove-orphans
 
             echo "Updating Odoo modules to sync database schema..."
             # تشغيل حاوية مؤقتة لعمل Upgrade للموديول الذي أضفت فيه الحقل
@@ -49,22 +58,22 @@ jobs:
             # docker compose -f "$COMPOSE_FILE" run --rm odoo odoo -u thamar_employee_custom -d OmarGroup_Prelive_V2 --stop-after-init
 
             echo "Restarting services..."
-            
+
             # Start new containers
             echo "Starting new containers..."
             docker compose -f "$COMPOSE_FILE" up -d
-            
+
             # Wait for services to be healthy
             echo "Waiting for services to be ready..."
             sleep 30
-            
+
             # FIX: Repair corrupted assets for OmarGroup_Prelive_V2
             echo "Running asset cleanup for OmarGroup_Prelive_V2..."
             # docker compose -f "$COMPOSE_FILE" exec -T pg-db psql -U odoo19 -d OmarGroup_Prelive_V2 -c "DELETE FROM ir_attachment WHERE url LIKE '/web/assets/%';"
-            
+
             echo "Restarting Odoo to regenerate assets..."
             docker compose -f "$COMPOSE_FILE" restart odoo
-            
+
             # Check if Odoo container is running
             if docker compose -f "$COMPOSE_FILE" ps | grep -q "Up"; then
               echo "Deployment completed successfully!"
