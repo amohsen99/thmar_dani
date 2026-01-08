@@ -52,7 +52,7 @@ jobs:
             
             # Start new containers
             echo "Starting new containers..."
-            docker compose -f "$COMPOSE_FILE" up -d
+            docker compose -f "$COMPOSE_FILE" up -d --remove-orphans
             
             # Wait for services to be healthy
             echo "Waiting for services to be ready..."
