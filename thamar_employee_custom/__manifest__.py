@@ -11,6 +11,7 @@
         - Promotion Amount (Float)
         - Increase Rate (Float)
         - Fixed Allowances (Float)
+        -fdsaf
         - Tax Personal Exemption (الإعفاء الشخصي السنوي)
         - Tax Family Exemption (الإعفاءات العائلية السنوية)
         - All fields grouped in Payroll tab
