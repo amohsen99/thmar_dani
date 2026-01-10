@@ -1,4 +1,4 @@
-# version: "3.8"
+version: "3.8"
 
 networks:
   thmar-apps:
@@ -47,11 +47,13 @@ services:
       - "80:8069"
       - "8072:8072"
     environment:
-      HOST: pg-db
+      - HOST=pg-db
+      - USER=odoo19
+      - PASSWORD=odoo19
+    # التعديل الأول: إضافة الأوامر لتفعيل الـ Workers والـ Proxy
+    command: ["odoo", "--workers=3", "--proxy-mode"]
     volumes:
-      # Mirror Odoo config
       - ./odoo_e/etc/:/etc/odoo/
-      # Optional: Mount addons if needed
       - ../../../enterprise-19.0:/mnt/enterprise_addons
       - ../../../thmar_dani:/mnt/thamar_addons
       - odoo-web-data:/var/lib/odoo
