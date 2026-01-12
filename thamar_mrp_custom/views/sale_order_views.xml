@@ -23,7 +23,7 @@
                 <field name="product_has_features" optional="hide" widget="boolean_toggle"/>
                 <field name="finishing_type" optional="hide"/>
                 <field name="packing_type" optional="hide"/>
-                <field name="stripe" optional="show"/>
+                <field name="stripe" optional="hide"/>
                 <field name="color_id" optional="hide"/>
                 <field name="design_id" optional="hide"/>
             </xpath>
