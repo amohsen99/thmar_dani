@@ -21,6 +21,7 @@
             <!-- Add features to order lines tree -->
             <xpath expr="//field[@name='order_line']/list/field[@name='product_id']" position="after">
                 <field name="product_has_features" optional="hide" widget="boolean_toggle"/>
+                <field name="operation" optional="hide"/>
                 <field name="finishing_type" optional="hide"/>
                 <field name="packing_type" optional="hide"/>
                 <field name="stripe" optional="hide"/>
@@ -36,6 +37,7 @@
                 <group string="Product Features" invisible="not product_has_features" colspan="4">
                     <group>
                         <field name="finishing_type" required="product_has_features"/>
+                        <field name="operation" required="product_has_features"/>
                         <field name="packing_type" required="product_has_features"/>
                         <field name="stripe" required="product_has_features"/>
                         <field name="color_id" required="product_has_features"/>
@@ -43,7 +45,7 @@
                     </group>
                     <group>
                         <field name="width" required="product_has_features"/>
-                        <field name="weight" required="product_has_features"/>
+                        <field name="product_weight" required="product_has_features"/>
                         <field name="density" required="product_has_features"/>
                         <field name="average" readonly="1"/>
                     </group>
@@ -66,6 +68,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='amount_total']" position="after">
                 <field name="has_featured_products" optional="hide" widget="boolean_toggle"/>
+                <field name="operation" optional="hide"/>
                 <field name="mrp_production_count" optional="hide"/>
             </xpath>
         </field>

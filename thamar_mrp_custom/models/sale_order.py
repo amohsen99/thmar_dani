@@ -13,6 +13,12 @@ class SaleOrder(models.Model):
         help='True if any product in order lines has features enabled'
     )
 
+    operation = fields.Selection([
+        ('printing', 'Printing'),
+        ('dyeing', 'Dyeing'),
+        ('printing_dyeing', 'Printing & Dyeing')
+    ], string='Operation', help='Processing stage')
+
     # Manufacturing Order relation
     mrp_production_ids = fields.One2many(
         'mrp.production',
@@ -87,12 +93,11 @@ class SaleOrder(models.Model):
             if sale_line and sale_line.product_has_features:
                 mo.write({
                     'finishing_type': sale_line.finishing_type,
+                    'operation': sale_line.operation,
                     'packing_type': sale_line.packing_type,
                     'stripe': sale_line.stripe,
                     'color_id': sale_line.color_id.id,
                     'width': sale_line.width,
-                    'weight': sale_line.weight,
-                    'density': sale_line.density,
+                    'product_weight': sale_line.product_weight,
                     'design_id': sale_line.design_id.id,
                 })
-

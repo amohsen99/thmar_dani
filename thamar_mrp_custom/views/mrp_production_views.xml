@@ -17,6 +17,7 @@
                     <group>
                         <group string="Product Specifications">
                             <field name="finishing_type"/>
+                            <field name="operation"/>
                             <field name="packing_type"/>
                             <field name="stripe"/>
                             <field name="color_id"/>
@@ -24,8 +25,8 @@
                         </group>
                         <group string="Calculations">
                             <field name="width"/>
-                            <field name="weight"/>
-                            <field name="density"/>
+                            <field name="product_weight"/>
+                            <!-- <field name="density"/> -->
                             <field name="average" readonly="1"/>
                         </group>
                     </group>
@@ -44,17 +45,23 @@
         <field name="model">mrp.production</field>
         <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
         <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="decoration-info">operation == 'printing'</attribute>
+                <attribute name="decoration-warning">operation == 'dyeing'</attribute>
+                <attribute name="decoration-success">operation == 'printing_dyeing'</attribute>
+            </xpath>
             <!-- Add partner and sale order fields in the right group after user_id -->
             <xpath expr="//field[@name='product_id']" position="after">
                 <field name="partner_id" optional="hide" />
                 <field name="sale_order_id" optional="hide" />
                 <field name="finishing_type" optional="hide" />
+                <field name="operation" optional="show" />
                 <field name="packing_type" optional="hide" />
                 <field name="stripe" optional="hide" />
                 <field name="color_id" optional="hide" />
                 <field name="design_id" optional="hide" />
                 <field name="width" optional="hide" />
-                <field name="weight" optional="hide" />
+                <field name="product_weight" optional="hide" />
                 <field name="density" optional="hide" />
                 <field name="average" optional="hide" />
             </xpath>

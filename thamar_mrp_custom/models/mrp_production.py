@@ -26,6 +26,12 @@ class MrpProduction(models.Model):
         ('custom', 'custom'),
     ], string='Finishing Type', tracking=True, help='Type of finishing for this manufacturing order')
 
+    operation = fields.Selection([
+        ('printing', 'Printing'),
+        ('dyeing', 'Dyeing'),
+        ('printing_dyeing', 'Printing & Dyeing')
+    ], string='Operation', tracking=True, help='Processing stage for this manufacturing order')
+
     packing_type = fields.Selection([
         ('manual', 'Manual'),
         ('automatic', 'Automatic')
@@ -52,8 +58,8 @@ class MrpProduction(models.Model):
         help='Width of the product'
     )
 
-    weight = fields.Float(
-        string='Weight',
+    product_weight = fields.Float(
+        string='Product Weight',
         digits=(16, 2),
         tracking=True,
         help='Weight of the product'
@@ -88,12 +94,12 @@ class MrpProduction(models.Model):
         help='Computed as: (1000/(width/weight))*100'
     )
 
-    @api.depends('width', 'weight')
+    @api.depends('width', 'product_weight')
     def _compute_average(self):
         for record in self:
-            if record.width and record.weight and record.width != 0:
-                # Formula: (1000/(width/weight))*100
-                record.average = (1000 / (record.width / record.weight)) * 100
+            if record.width and record.product_weight and record.width != 0:
+                # Formula: (1000/(width/product_weight))*100
+                record.average = (1000 / (record.width / record.product_weight)) * 100
             else:
                 record.average = 0.0
 
@@ -121,11 +127,12 @@ class MrpProduction(models.Model):
         """
         if self.product_id and self.product_id.has_features:
             self.finishing_type = self.product_id.finishing_type
+            self.operation = self.product_id.operation
             self.packing_type = self.product_id.packing_type
             self.stripe = self.product_id.stripe
             self.color_id = self.product_id.color_id
             self.width = self.product_id.width
-            self.weight = self.product_id.weight
+            self.product_weight = self.product_id.product_weight
             self.density = self.product_id.density
             self.design_id = self.product_id.design_id
 
@@ -144,11 +151,12 @@ class MrpProduction(models.Model):
             if sale_line and sale_line.product_has_features:
                 self.write({
                     'finishing_type': sale_line.finishing_type,
+                    'operation': sale_line.operation,
                     'packing_type': sale_line.packing_type,
                     'stripe': sale_line.stripe,
                     'color_id': sale_line.color_id.id,
                     'width': sale_line.width,
-                    'weight': sale_line.weight,
+                    'product_weight': sale_line.product_weight,
                     'density': sale_line.density,
                     'design_id': sale_line.design_id.id,
                 })
@@ -162,12 +170,12 @@ class MrpProduction(models.Model):
         if self.product_id and self.product_id.has_features:
             self.write({
                 'finishing_type': self.product_id.finishing_type,
+                'operation': self.product_id.operation,
                 'packing_type': self.product_id.packing_type,
                 'stripe': self.product_id.stripe,
                 'color_id': self.product_id.color_id.id,
                 'width': self.product_id.width,
-                'weight': self.product_id.weight,
-                'density': self.product_id.density,
+                'product_weight': self.product_id.product_weight,
                 'design_id': self.product_id.design_id.id,
             })
 

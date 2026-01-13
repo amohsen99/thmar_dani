@@ -21,6 +21,7 @@
                     
                     <group invisible="not has_features">
                         <group string="Product Specifications">
+                            <field name="operation" required="has_features"/>
                             <field name="finishing_type" required="has_features"/>
                             <field name="packing_type" required="has_features"/>
                             <field name="stripe" required="has_features"/>
@@ -29,8 +30,8 @@
                         </group>
                         <group string="Calculations">
                             <field name="width" required="has_features"/>
-                            <field name="weight" required="has_features"/>
-                            <field name="density" required="has_features"/>
+                            <field name="product_weight" required="has_features"/>
+                            <!-- <field name="density"/> -->
                             <field name="average" readonly="1"/>
                         </group>
                     </group>
@@ -62,6 +63,12 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="after">
                 <field name="has_features" optional="hide" widget="boolean_toggle"/>
+                <field name="operation" optional="show"/>
+            </xpath>
+            <xpath expr="//list" position="attributes">
+                <attribute name="decoration-info">operation == 'printing'</attribute>
+                <attribute name="decoration-warning">operation == 'dyeing'</attribute>
+                <attribute name="decoration-success">operation == 'printing_dyeing'</attribute>
             </xpath>
         </field>
     </record>

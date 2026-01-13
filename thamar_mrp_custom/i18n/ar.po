@@ -1,0 +1,220 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* thamar_mrp_custom
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-13 07:34+0000\n"
+"PO-Revision-Date: 2026-01-13 07:34+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__operation
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__operation
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order__operation
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__operation
+msgid "Operation"
+msgstr "العملية"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__operation__printing
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order_line__operation__printing
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order__operation__printing
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__mrp_production__operation__printing
+msgid "Printing"
+msgstr "طباعة"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__operation__dyeing
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order_line__operation__dyeing
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order__operation__dyeing
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__mrp_production__operation__dyeing
+msgid "Dyeing"
+msgstr "صباغة"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__operation__printing_dyeing
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order_line__operation__printing_dyeing
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order__operation__printing_dyeing
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__mrp_production__operation__printing_dyeing
+msgid "Printing & Dyeing"
+msgstr "طباعة وصباغة"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__finishing_type
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__finishing_type
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__finishing_type
+msgid "Finishing Type"
+msgstr "نوع التشطيب"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__finishing_type__womens
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order_line__finishing_type__womens
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__mrp_production__finishing_type__womens
+msgid "Womens"
+msgstr "نسائي"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__finishing_type__mens
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order_line__finishing_type__mens
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__mrp_production__finishing_type__mens
+msgid "Mens"
+msgstr "رجالي"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__finishing_type__kids
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order_line__finishing_type__kids
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__mrp_production__finishing_type__kids
+msgid "Kids"
+msgstr "أطفال"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__finishing_type__custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order_line__finishing_type__custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__mrp_production__finishing_type__custom
+msgid "custom"
+msgstr "مخصص"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__packing_type
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__packing_type
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__packing_type
+msgid "Packing Type"
+msgstr "نوع التعبئة"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__packing_type__manual
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order_line__packing_type__manual
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__mrp_production__packing_type__manual
+msgid "Manual"
+msgstr "يدوي"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__packing_type__automatic
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order_line__packing_type__automatic
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__mrp_production__packing_type__automatic
+msgid "Automatic"
+msgstr "آلي"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__stripe
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__stripe
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__stripe
+msgid "Stripe"
+msgstr "الخط / الشعار"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__stripe__white
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order_line__stripe__white
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__mrp_production__stripe__white
+msgid "White"
+msgstr "أبيض"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__stripe__alomar
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order_line__stripe__alomar
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__mrp_production__stripe__alomar
+msgid "Al-Omar"
+msgstr "العمر"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__stripe__althamar
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order_line__stripe__althamar
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__mrp_production__stripe__althamar
+msgid "Al-Thamar"
+msgstr "الثمر"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__stripe__client
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__sale_order_line__stripe__client
+#: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__mrp_production__stripe__client
+msgid "Client"
+msgstr "العميل"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__color_id
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__color_id
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__color_id
+msgid "Color"
+msgstr "اللون"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__width
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__width
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__width
+msgid "Width"
+msgstr "العرض"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__product_weight
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__product_weight
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__product_weight
+msgid "Product Weight"
+msgstr "الوزن"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__density
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__density
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__density
+msgid "Density"
+msgstr "الكثافة"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__design_id
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__design_id
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__design_id
+msgid "Design"
+msgstr "التصميم"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__design_image
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__design_image
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__design_image
+msgid "Design Image"
+msgstr "صورة التصميم"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__average
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__average
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__average
+msgid "Average"
+msgstr "المتوسط"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__has_features
+msgid "Has Product Features"
+msgstr "لديه مميزات منتج"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__product_has_features
+msgid "Product Has Features"
+msgstr "المنتج لديه مميزات"
+
+#. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order__has_featured_products
+msgid "Has Featured Products"
+msgstr "لديه منتجات مميزة"
+
+#. module: thamar_mrp_custom
+msgid "Product Specifications"
+msgstr "مواصفات المنتج"
+
+#. module: thamar_mrp_custom
+msgid "Calculations"
+msgstr "الحسابات"
+
+#. module: thamar_mrp_custom
+msgid "Design Preview"
+msgstr "معاينة التصميم"
+
+#. module: thamar_mrp_custom
+msgid "Features"
+msgstr "المميزات"

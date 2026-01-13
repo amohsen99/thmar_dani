@@ -22,6 +22,12 @@ class SaleOrderLine(models.Model):
         ('custom', 'custom'),
     ], string='Finishing Type', help='Type of finishing for this line')
 
+    operation = fields.Selection([
+        ('printing', 'Printing'),
+        ('dyeing', 'Dyeing'),
+        ('printing_dyeing', 'Printing & Dyeing')
+    ], string='Operation', help='Processing stage for this line')
+
     packing_type = fields.Selection([
         ('manual', 'Manual'),
         ('automatic', 'Automatic')
@@ -46,8 +52,8 @@ class SaleOrderLine(models.Model):
         help='Width of the product'
     )
 
-    weight = fields.Float(
-        string='Weight',
+    product_weight = fields.Float(
+        string='Product Weight',
         digits=(16, 2),
         help='Weight of the product'
     )
@@ -79,12 +85,12 @@ class SaleOrderLine(models.Model):
         help='Computed as: (1000/(width/weight))*100'
     )
 
-    @api.depends('width', 'weight')
+    @api.depends('width', 'product_weight')
     def _compute_average(self):
         for record in self:
-            if record.width and record.weight and record.width != 0:
-                # Formula: (1000/(width/weight))*100
-                record.average = (1000 / (record.width / record.weight)) * 100
+            if record.width and record.product_weight and record.width != 0:
+                # Formula: (1000/(width/product_weight))*100
+                record.average = (1000 / (record.width / record.product_weight)) * 100
             else:
                 record.average = 0.0
 
@@ -95,16 +101,17 @@ class SaleOrderLine(models.Model):
         """
         if self.product_id and self.product_id.has_features:
             self.finishing_type = self.product_id.finishing_type
+            self.operation = self.product_id.operation
             self.packing_type = self.product_id.packing_type
             self.stripe = self.product_id.stripe
             self.color_id = self.product_id.color_id
             self.width = self.product_id.width
-            self.weight = self.product_id.weight
+            self.product_weight = self.product_id.product_weight
             self.density = self.product_id.density
             self.design_id = self.product_id.design_id
 
     @api.constrains('product_id', 'finishing_type', 'packing_type', 'stripe', 'color_id',
-                    'design_id', 'width', 'weight', 'density')
+                    'design_id', 'width', 'product_weight', 'density')
     def _check_features_required(self):
         """
         Validate that features are filled when product has features enabled
@@ -113,6 +120,8 @@ class SaleOrderLine(models.Model):
             if line.product_id and line.product_id.has_features:
                 if not line.finishing_type:
                     raise ValidationError(f'Finishing Type is required for product "{line.product_id.name}"')
+                if not line.operation:
+                    raise ValidationError(f'Operation is required for product "{line.product_id.name}"')
                 if not line.packing_type:
                     raise ValidationError(f'Packing Type is required for product "{line.product_id.name}"')
                 if not line.stripe:
@@ -123,7 +132,7 @@ class SaleOrderLine(models.Model):
                     raise ValidationError(f'Design is required for product "{line.product_id.name}"')
                 if not line.width:
                     raise ValidationError(f'Width is required for product "{line.product_id.name}"')
-                if not line.weight:
+                if not line.product_weight:
                     raise ValidationError(f'Weight is required for product "{line.product_id.name}"')
                 if not line.density:
                     raise ValidationError(f'Density is required for product "{line.product_id.name}"')

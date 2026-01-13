@@ -20,6 +20,12 @@ class ProductTemplate(models.Model):
         ('custom', 'custom'),
     ], string='Finishing Type', help='Type of finishing for this product')
 
+    operation = fields.Selection([
+        ('printing', 'Printing'),
+        ('dyeing', 'Dyeing'),
+        ('printing_dyeing', 'Printing & Dyeing')
+    ], string='Operation', required=True, help='Processing stage for this product')
+
     packing_type = fields.Selection([
         ('manual', 'Manual'),
         ('automatic', 'Automatic')
@@ -44,8 +50,8 @@ class ProductTemplate(models.Model):
         help='Width of the product'
     )
 
-    weight = fields.Float(
-        string='Weight',
+    product_weight = fields.Float(
+        string='Product Weight',
         digits=(16, 2),
         help='Weight of the product'
     )
@@ -77,12 +83,12 @@ class ProductTemplate(models.Model):
         help='Computed as: (1000/(width/weight))*100'
     )
 
-    @api.depends('width', 'weight')
+    @api.depends('width', 'product_weight')
     def _compute_average(self):
         for record in self:
-            if record.width and record.weight and record.width != 0:
-                # Formula: (1000/(width/weight))*100
-                record.average = (1000 / (record.width / record.weight)) * 100
+            if record.width and record.product_weight and record.width != 0:
+                # Formula: (1000/(width/product_weight))*100
+                record.average = (1000 / (record.width / record.product_weight)) * 100
             else:
                 record.average = 0.0
 
@@ -93,11 +99,12 @@ class ProductTemplate(models.Model):
         """
         if not self.has_features:
             self.finishing_type = False
+            self.operation = False
             self.packing_type = False
             self.stripe = False
             self.color_id = False
             self.width = 0.0
-            self.weight = 0.0
+            self.product_weight = 0.0
             self.density = 0.0
             self.design_id = False
 
