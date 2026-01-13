@@ -16,6 +16,7 @@
                 <page string="Product Specifications" name="features">
                     <group>
                         <group string="Product Specifications">
+                            <field name="fabric_type_id"/>
                             <field name="finishing_type"/>
                             <field name="operation"/>
                             <field name="packing_type"/>

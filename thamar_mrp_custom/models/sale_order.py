@@ -93,6 +93,7 @@ class SaleOrder(models.Model):
             if sale_line and sale_line.product_has_features:
                 mo.write({
                     'finishing_type': sale_line.finishing_type,
+                    'fabric_type_id': sale_line.fabric_type_id.id,
                     'operation': sale_line.operation,
                     'packing_type': sale_line.packing_type,
                     'stripe': sale_line.stripe,

@@ -26,6 +26,13 @@ class MrpProduction(models.Model):
         ('custom', 'custom'),
     ], string='Finishing Type', tracking=True, help='Type of finishing for this manufacturing order')
 
+    fabric_type_id = fields.Many2one(
+        'mrp.fabric.type',
+        string='Fabric Type',
+        tracking=True,
+        help='Construction or material name of the fabric'
+    )
+
     operation = fields.Selection([
         ('printing', 'Printing'),
         ('dyeing', 'Dyeing'),
@@ -127,6 +134,7 @@ class MrpProduction(models.Model):
         """
         if self.product_id and self.product_id.has_features:
             self.finishing_type = self.product_id.finishing_type
+            self.fabric_type_id = self.product_id.fabric_type_id
             self.operation = self.product_id.operation
             self.packing_type = self.product_id.packing_type
             self.stripe = self.product_id.stripe
@@ -151,6 +159,7 @@ class MrpProduction(models.Model):
             if sale_line and sale_line.product_has_features:
                 self.write({
                     'finishing_type': sale_line.finishing_type,
+                    'fabric_type_id': sale_line.fabric_type_id.id,
                     'operation': sale_line.operation,
                     'packing_type': sale_line.packing_type,
                     'stripe': sale_line.stripe,
@@ -170,6 +179,7 @@ class MrpProduction(models.Model):
         if self.product_id and self.product_id.has_features:
             self.write({
                 'finishing_type': self.product_id.finishing_type,
+                'fabric_type_id': self.product_id.fabric_type_id.id,
                 'operation': self.product_id.operation,
                 'packing_type': self.product_id.packing_type,
                 'stripe': self.product_id.stripe,

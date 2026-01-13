@@ -20,6 +20,12 @@ class ProductTemplate(models.Model):
         ('custom', 'custom'),
     ], string='Finishing Type', help='Type of finishing for this product')
 
+    fabric_type_id = fields.Many2one(
+        'mrp.fabric.type',
+        string='Fabric Type',
+        help='Construction or material name of the fabric'
+    )
+
     operation = fields.Selection([
         ('printing', 'Printing'),
         ('dyeing', 'Dyeing'),
@@ -99,6 +105,7 @@ class ProductTemplate(models.Model):
         """
         if not self.has_features:
             self.finishing_type = False
+            self.fabric_type_id = False
             self.operation = False
             self.packing_type = False
             self.stripe = False
@@ -107,4 +114,34 @@ class ProductTemplate(models.Model):
             self.product_weight = 0.0
             self.density = 0.0
             self.design_id = False
+
+    @api.onchange('categ_id', 'fabric_type_id', 'operation', 'color_id', 'design_id', 'has_features')
+    def _onchange_features_generate_name(self):
+        """
+        Generate product name based on features: FabricType-Operation-Color-Design
+        Fallbacks to Category if FabricType is missing.
+        """
+        if self.has_features:
+            parts = []
+            
+            if self.fabric_type_id:
+                parts.append(self.fabric_type_id.name)
+            elif self.categ_id:
+                parts.append(self.categ_id.name)
+            
+            if self.operation:
+                # Get the display label of the selection
+                selection_values = self.fields_get(['operation'])['operation']['selection']
+                operation_label = dict(selection_values).get(self.operation)
+                if operation_label:
+                    parts.append(operation_label)
+            
+            if self.color_id:
+                parts.append(self.color_id.name)
+                
+            if self.design_id:
+                parts.append(self.design_id.name)
+                
+            if parts:
+                self.name = "-".join(parts)
 

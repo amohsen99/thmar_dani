@@ -140,6 +140,13 @@ msgid "Client"
 msgstr "العميل"
 
 #. module: thamar_mrp_custom
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__fabric_type_id
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__fabric_type_id
+#: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__fabric_type_id
+msgid "Fabric Type"
+msgstr "نوع القماش"
+
+#. module: thamar_mrp_custom
 #: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__color_id
 #: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__color_id
 #: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__color_id

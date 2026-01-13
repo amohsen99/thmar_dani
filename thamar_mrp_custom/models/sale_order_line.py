@@ -22,6 +22,12 @@ class SaleOrderLine(models.Model):
         ('custom', 'custom'),
     ], string='Finishing Type', help='Type of finishing for this line')
 
+    fabric_type_id = fields.Many2one(
+        'mrp.fabric.type',
+        string='Fabric Type',
+        help='Construction or material name of the fabric'
+    )
+
     operation = fields.Selection([
         ('printing', 'Printing'),
         ('dyeing', 'Dyeing'),
@@ -101,6 +107,7 @@ class SaleOrderLine(models.Model):
         """
         if self.product_id and self.product_id.has_features:
             self.finishing_type = self.product_id.finishing_type
+            self.fabric_type_id = self.product_id.fabric_type_id
             self.operation = self.product_id.operation
             self.packing_type = self.product_id.packing_type
             self.stripe = self.product_id.stripe
@@ -110,7 +117,7 @@ class SaleOrderLine(models.Model):
             self.density = self.product_id.density
             self.design_id = self.product_id.design_id
 
-    @api.constrains('product_id', 'finishing_type', 'packing_type', 'stripe', 'color_id',
+    @api.constrains('product_id', 'finishing_type', 'fabric_type_id', 'packing_type', 'stripe', 'color_id',
                     'design_id', 'width', 'product_weight', 'density')
     def _check_features_required(self):
         """
@@ -120,6 +127,8 @@ class SaleOrderLine(models.Model):
             if line.product_id and line.product_id.has_features:
                 if not line.finishing_type:
                     raise ValidationError(f'Finishing Type is required for product "{line.product_id.name}"')
+                if not line.fabric_type_id:
+                    raise ValidationError(f'Fabric Type is required for product "{line.product_id.name}"')
                 if not line.operation:
                     raise ValidationError(f'Operation is required for product "{line.product_id.name}"')
                 if not line.packing_type:

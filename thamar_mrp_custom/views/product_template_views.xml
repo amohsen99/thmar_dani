@@ -21,6 +21,7 @@
                     
                     <group invisible="not has_features">
                         <group string="Product Specifications">
+                            <field name="fabric_type_id" required="has_features"/>
                             <field name="operation" required="has_features"/>
                             <field name="finishing_type" required="has_features"/>
                             <field name="packing_type" required="has_features"/>

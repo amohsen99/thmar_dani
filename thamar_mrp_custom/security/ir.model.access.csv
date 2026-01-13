@@ -1,8 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_mrp_color_user,mrp.color.user,model_mrp_color,mrp.group_mrp_user,1,1,1,0
-access_mrp_color_manager,mrp.color.manager,model_mrp_color,mrp.group_mrp_manager,1,1,1,1
-access_mrp_color_category_user,mrp.color.category.user,model_mrp_color_category,mrp.group_mrp_user,1,1,1,0
-access_mrp_color_category_manager,mrp.color.category.manager,model_mrp_color_category,mrp.group_mrp_manager,1,1,1,1
-access_mrp_design_user,mrp.design.user,model_mrp_design,mrp.group_mrp_user,1,1,1,0
-access_mrp_design_manager,mrp.design.manager,model_mrp_design,mrp.group_mrp_manager,1,1,1,1
-
+access_mrp_color,mrp.color,model_mrp_color,,1,1,1,1
+access_mrp_color_category,mrp.color.category,model_mrp_color_category,,1,1,1,1
+access_mrp_design,mrp.design,model_mrp_design,,1,1,1,1
+access_mrp_fabric_type,mrp.fabric.type,model_mrp_fabric_type,,1,1,1,1
