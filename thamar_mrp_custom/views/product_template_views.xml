@@ -9,7 +9,7 @@
 
             <!-- Add Features tab before the closing notebook tag -->
             <xpath expr="//notebook" position="inside">
-                <page string="Features" name="features">
+                <page string="Product Specifications" name="features">
                     <!-- Checkbox to enable features -->
                     <group>
                         <group>

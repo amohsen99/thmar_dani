@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-13 07:34+0000\n"
-"PO-Revision-Date: 2026-01-13 07:34+0000\n"
+"POT-Creation-Date: 2026-01-13 08:33+0000\n"
+"PO-Revision-Date: 2026-01-13 08:33+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ar\n"
@@ -191,21 +191,25 @@ msgstr "المتوسط"
 #. module: thamar_mrp_custom
 #: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__has_features
 msgid "Has Product Features"
-msgstr "لديه مميزات منتج"
+msgstr "لديه مواصفات منتج"
 
 #. module: thamar_mrp_custom
 #: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__product_has_features
 msgid "Product Has Features"
-msgstr "المنتج لديه مميزات"
+msgstr "منتج بمواصفات"
 
 #. module: thamar_mrp_custom
 #: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order__has_featured_products
 msgid "Has Featured Products"
-msgstr "لديه منتجات مميزة"
+msgstr "يحتوي منتجات بمواصفات"
 
 #. module: thamar_mrp_custom
+#: model_terms:ir.ui.view,arch_db:thamar_mrp_custom.product_template_form_view_inherit_thamar
+#: model_terms:ir.ui.view,arch_db:thamar_mrp_custom.sale_order_form_view_inherit_thamar
+#: model_terms:ir.ui.view,arch_db:thamar_mrp_custom.mrp_production_form_view_inherit_thamar
+#: model_terms:ir.ui.view,arch_db:thamar_mrp_custom.sale_order_line_form_view_inherit_thamar
 msgid "Product Specifications"
-msgstr "مواصفات المنتج"
+msgstr "المواصفات"
 
 #. module: thamar_mrp_custom
 msgid "Calculations"
@@ -216,5 +220,9 @@ msgid "Design Preview"
 msgstr "معاينة التصميم"
 
 #. module: thamar_mrp_custom
+msgid "Product Features"
+msgstr "مواصفات المنتج"
+
+#. module: thamar_mrp_custom
 msgid "Features"
-msgstr "المميزات"
+msgstr "المواصفات"

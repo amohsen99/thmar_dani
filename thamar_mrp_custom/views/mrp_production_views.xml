@@ -13,7 +13,7 @@
 
             <!-- Add Features tab before the closing notebook tag -->
             <xpath expr="//notebook" position="inside">
-                <page string="Features" name="features">
+                <page string="Product Specifications" name="features">
                     <group>
                         <group string="Product Specifications">
                             <field name="finishing_type"/>

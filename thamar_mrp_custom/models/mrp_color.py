@@ -6,6 +6,7 @@ class MrpColor(models.Model):
     _name = 'mrp.color'
     _description = 'Manufacturing Color'
     _order = 'name'
+    _rec_names_search = ['name', 'code']
 
     name = fields.Char(
         string='Color Name',

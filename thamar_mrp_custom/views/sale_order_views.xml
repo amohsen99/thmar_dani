@@ -34,7 +34,7 @@
                 <field name="product_has_features" invisible="1"/>
 
                 <!-- Features Section - Only visible if product has features -->
-                <group string="Product Features" invisible="not product_has_features" colspan="4">
+                <group string="Product Specifications" invisible="not product_has_features" colspan="4">
                     <group>
                         <field name="finishing_type" required="product_has_features"/>
                         <field name="operation" required="product_has_features"/>
