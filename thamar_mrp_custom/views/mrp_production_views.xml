@@ -27,7 +27,7 @@
                         <group string="Calculations">
                             <field name="width"/>
                             <field name="product_weight"/>
-                            <!-- <field name="density"/> -->
+                            <field name="density"/>
                             <field name="average" readonly="1"/>
                         </group>
                     </group>

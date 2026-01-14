@@ -143,6 +143,4 @@ class SaleOrderLine(models.Model):
                     raise ValidationError(f'Width is required for product "{line.product_id.name}"')
                 if not line.product_weight:
                     raise ValidationError(f'Weight is required for product "{line.product_id.name}"')
-                if not line.density:
-                    raise ValidationError(f'Density is required for product "{line.product_id.name}"')
 

@@ -45,9 +45,9 @@
                         <field name="design_id" required="product_has_features"/>
                     </group>
                     <group>
-                        <field name="width" required="product_has_features"/>
-                        <field name="product_weight" required="product_has_features"/>
-                        <field name="density" required="product_has_features"/>
+                        <field name="width"/>
+                        <field name="product_weight"/>
+                        <field name="density"/>
                         <field name="average" readonly="1"/>
                     </group>
                 </group>

@@ -32,7 +32,7 @@
                         <group string="Calculations">
                             <field name="width" required="has_features"/>
                             <field name="product_weight" required="has_features"/>
-                            <!-- <field name="density"/> -->
+                            <field name="density"/>
                             <field name="average" readonly="1"/>
                         </group>
                     </group>
