@@ -17,6 +17,9 @@ class ProductAttribute(models.Model):
 
 class ProductAttributeValue(models.Model):
     _inherit = 'product.attribute.value'
+    _rec_names_search = ['name', 'barcode_code']
+
+
 
     barcode_code = fields.Char(
         string='Barcode Code',
@@ -79,11 +82,5 @@ class ProductAttributeValue(models.Model):
                         f'in attribute "{value.attribute_id.name}".'
                     )
 
-    @api.model
-    def _name_search(self, name='', domain=None, operator='ilike', limit=None, order=None):
-        """Allow searching by barcode code"""
-        domain = domain or []
-        if name:
-            domain = ['|', ('name', operator, name), ('barcode_code', operator, name)] + domain
-        return super()._name_search(name='', domain=domain, operator=operator, limit=limit, order=order)
+
 
