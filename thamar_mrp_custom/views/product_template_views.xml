@@ -21,17 +21,17 @@
                     
                     <group invisible="not has_features">
                         <group string="Product Specifications">
-                            <field name="fabric_type_id" required="has_features"/>
-                            <field name="operation" required="has_features"/>
-                            <field name="finishing_type" required="has_features"/>
-                            <field name="packing_type" required="has_features"/>
-                            <field name="stripe" required="has_features"/>
-                            <field name="color_id" required="has_features"/>
-                            <field name="design_id" required="has_features"/>
+                            <field name="fabric_type_id"/>
+                            <field name="operation"/>
+                            <field name="finishing_type"/>
+                            <field name="packing_type"/>
+                            <field name="stripe"/>
+                            <field name="color_id"/>
+                            <field name="design_id"/>
                         </group>
                         <group string="Calculations">
-                            <field name="width" required="has_features"/>
-                            <field name="product_weight" required="has_features"/>
+                            <field name="width"/>
+                            <field name="product_weight"/>
                             <field name="density"/>
                             <field name="average" readonly="1"/>
                         </group>

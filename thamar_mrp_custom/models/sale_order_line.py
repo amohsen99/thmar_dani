@@ -117,30 +117,30 @@ class SaleOrderLine(models.Model):
             self.density = self.product_id.density
             self.design_id = self.product_id.design_id
 
-    @api.constrains('product_id', 'finishing_type', 'fabric_type_id', 'packing_type', 'stripe', 'color_id',
-                    'design_id', 'width', 'product_weight', 'density')
-    def _check_features_required(self):
-        """
-        Validate that features are filled when product has features enabled
-        """
-        for line in self:
-            if line.product_id and line.product_id.has_features:
-                if not line.finishing_type:
-                    raise ValidationError(f'Finishing Type is required for product "{line.product_id.name}"')
-                if not line.fabric_type_id:
-                    raise ValidationError(f'Fabric Type is required for product "{line.product_id.name}"')
-                if not line.operation:
-                    raise ValidationError(f'Operation is required for product "{line.product_id.name}"')
-                if not line.packing_type:
-                    raise ValidationError(f'Packing Type is required for product "{line.product_id.name}"')
-                if not line.stripe:
-                    raise ValidationError(f'Stripe is required for product "{line.product_id.name}"')
-                if not line.color_id:
-                    raise ValidationError(f'Color is required for product "{line.product_id.name}"')
-                if not line.design_id:
-                    raise ValidationError(f'Design is required for product "{line.product_id.name}"')
-                if not line.width:
-                    raise ValidationError(f'Width is required for product "{line.product_id.name}"')
-                if not line.product_weight:
-                    raise ValidationError(f'Weight is required for product "{line.product_id.name}"')
+    # @api.constrains('product_id', 'finishing_type', 'fabric_type_id', 'packing_type', 'stripe', 'color_id',
+    #                 'design_id', 'width', 'product_weight', 'density')
+    # def _check_features_required(self):
+    #     """
+    #     Validate that features are filled when product has features enabled
+    #     """
+    #     for line in self:
+    #         if line.product_id and line.product_id.has_features:
+    #             if not line.finishing_type:
+    #                 raise ValidationError(f'Finishing Type is required for product "{line.product_id.name}"')
+    #             if not line.fabric_type_id:
+    #                 raise ValidationError(f'Fabric Type is required for product "{line.product_id.name}"')
+    #             if not line.operation:
+    #                 raise ValidationError(f'Operation is required for product "{line.product_id.name}"')
+    #             if not line.packing_type:
+    #                 raise ValidationError(f'Packing Type is required for product "{line.product_id.name}"')
+    #             if not line.stripe:
+    #                 raise ValidationError(f'Stripe is required for product "{line.product_id.name}"')
+    #             if not line.color_id:
+    #                 raise ValidationError(f'Color is required for product "{line.product_id.name}"')
+    #             if not line.design_id:
+    #                 raise ValidationError(f'Design is required for product "{line.product_id.name}"')
+    #             if not line.width:
+    #                 raise ValidationError(f'Width is required for product "{line.product_id.name}"')
+    #             if not line.product_weight:
+    #                 raise ValidationError(f'Weight is required for product "{line.product_id.name}"')
 
