@@ -36,13 +36,13 @@
                 <!-- Features Section - Only visible if product has features -->
                 <group string="Product Specifications" invisible="not product_has_features" colspan="4">
                     <group>
-                        <field name="fabric_type_id" required="product_has_features"/>
-                        <field name="finishing_type" required="product_has_features"/>
-                        <field name="operation" required="product_has_features"/>
-                        <field name="packing_type" required="product_has_features"/>
-                        <field name="stripe" required="product_has_features"/>
-                        <field name="color_id" required="product_has_features"/>
-                        <field name="design_id" required="product_has_features"/>
+                        <field name="fabric_type_id"/>
+                        <field name="finishing_type"/>
+                        <field name="operation"/>
+                        <field name="packing_type"/>
+                        <field name="stripe"/>
+                        <field name="color_id"/>
+                        <field name="design_id"/>
                     </group>
                     <group>
                         <field name="width"/>
