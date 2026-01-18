@@ -30,7 +30,7 @@ class ProductTemplate(models.Model):
         ('printing', 'Printing'),
         ('dyeing', 'Dyeing'),
         ('printing_dyeing', 'Printing & Dyeing')
-    ], string='Operation', required=True, help='Processing stage for this product')
+    ], string='Operation', help='Processing stage for this product')
 
     packing_type = fields.Selection([
         ('manual', 'Manual'),
