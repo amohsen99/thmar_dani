@@ -5,11 +5,7 @@
         <field name="model">mrp.production</field>
         <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
         <field name="arch" type="xml">
-            <!-- Add partner and sale order fields in the right group after user_id -->
-            <xpath expr="//field[@name='user_id']" position="after">
-                <field name="partner_id" />
-                <field name="sale_order_id" />
-            </xpath>
+
 
             <!-- Add Features tab before the closing notebook tag -->
             <xpath expr="//notebook" position="inside">
@@ -46,15 +42,12 @@
         <field name="model">mrp.production</field>
         <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//list" position="attributes">
+            <xpath expr="//list | //tree" position="attributes">
                 <attribute name="decoration-info">operation == 'printing'</attribute>
                 <attribute name="decoration-warning">operation == 'dyeing'</attribute>
                 <attribute name="decoration-success">operation == 'printing_dyeing'</attribute>
             </xpath>
-            <!-- Add partner and sale order fields in the right group after user_id -->
             <xpath expr="//field[@name='product_id']" position="after">
-                <field name="partner_id" optional="hide" />
-                <field name="sale_order_id" optional="hide" />
                 <field name="finishing_type" optional="hide" />
                 <field name="operation" optional="show" />
                 <field name="packing_type" optional="hide" />
@@ -68,5 +61,22 @@
             </xpath>
         </field>
     </record>
+    <record id="mrp_production_action_thamar" model="ir.actions.act_window">
+        <field name="name">Manufacturing Orders (Thamar)</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.production</field>
+        <field name="view_mode">list,form,calendar,pivot,graph</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create a new manufacturing order
+          </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_mrp_production_thamar"
+              name="Manufacturing Orders (Thamar)"
+              parent="mrp.menu_mrp_manufacturing"
+              action="mrp_production_action_thamar"
+              sequence="1"/>
 </odoo>
 

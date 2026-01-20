@@ -20,7 +20,7 @@
     """,
     'author': 'Thamar Dani',
     'website': 'https://www.thamardani.com',
-    'depends': ['mrp', 'sale'],
+    'depends': ['product','mrp', 'sale'],
     'data': [
         'security/ir.model.access.csv',
         'views/mrp_color_category_views.xml',
@@ -29,7 +29,6 @@
         'views/mrp_design_views.xml',
         'views/product_template_views.xml',
         'views/mrp_production_views.xml',
-        'views/sale_order_views.xml',
     ],
     'assets': {
         'web.assets_backend': [

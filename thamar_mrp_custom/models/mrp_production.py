@@ -5,17 +5,7 @@ from odoo import models, fields, api
 class MrpProduction(models.Model):
     _inherit = 'mrp.production'
 
-    partner_id = fields.Many2one(
-        'res.partner',
-        string='Customer',
-        help='Customer for this manufacturing order'
-    )
 
-    sale_order_id = fields.Many2one(
-        'sale.order',
-        string='Sale Order',
-        help='Related sale order for this manufacturing order'
-    )
 
     # Features Tab Fields
 
@@ -113,62 +103,16 @@ class MrpProduction(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """
-        Override create to sync features from sale order or product
+        Override create to sync features from product
         """
-        productions = super(MrpProduction, self).create(vals_list)
+        productions = super().create(vals_list)
 
         for production in productions:
-            # Priority 1: Sync from sale order if available
-            if production.sale_order_id:
-                production._sync_features_from_sale_order()
-            # Priority 2: Sync from product if it has features
-            elif production.product_id and production.product_id.has_features:
+            # Sync from product if it has features
+            if production.product_id and production.product_id.has_features:
                 production._sync_features_from_product()
 
         return productions
-
-    @api.onchange('product_id')
-    def _onchange_product_id_copy_features(self):
-        """
-        Auto-fill features from product when product is selected
-        """
-        if self.product_id and self.product_id.has_features:
-            self.finishing_type = self.product_id.finishing_type
-            self.fabric_type_id = self.product_id.fabric_type_id
-            self.operation = self.product_id.operation
-            self.packing_type = self.product_id.packing_type
-            self.stripe = self.product_id.stripe
-            self.color_id = self.product_id.color_id
-            self.width = self.product_id.width
-            self.product_weight = self.product_id.product_weight
-            self.density = self.product_id.density
-            self.design_id = self.product_id.design_id
-
-    def _sync_features_from_sale_order(self):
-        """
-        Sync features from related sale order LINE to this manufacturing order
-        """
-        self.ensure_one()
-
-        if self.sale_order_id:
-            # Find the sale order line for this product
-            sale_line = self.sale_order_id.order_line.filtered(
-                lambda l: l.product_id == self.product_id and l.product_id.has_features
-            )[:1]
-
-            if sale_line and sale_line.product_has_features:
-                self.write({
-                    'finishing_type': sale_line.finishing_type,
-                    'fabric_type_id': sale_line.fabric_type_id.id,
-                    'operation': sale_line.operation,
-                    'packing_type': sale_line.packing_type,
-                    'stripe': sale_line.stripe,
-                    'color_id': sale_line.color_id.id,
-                    'width': sale_line.width,
-                    'product_weight': sale_line.product_weight,
-                    'density': sale_line.density,
-                    'design_id': sale_line.design_id.id,
-                })
 
     def _sync_features_from_product(self):
         """
@@ -188,4 +132,4 @@ class MrpProduction(models.Model):
                 'product_weight': self.product_id.product_weight,
                 'design_id': self.product_id.design_id.id,
             })
-
+    #
