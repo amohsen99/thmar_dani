@@ -9,10 +9,18 @@ volumes:
   db-data:
   odoo-web-data:
 
+# إعداد عام للـ Logging لتقليل التكرار (Optional)
+x-logging: &default-logging
+  options:
+    max-size: "50m"
+    max-file: "3"
+  driver: json-file
+
 services:
   pg-db:
     image: postgres:15
     container_name: pg-db
+    logging: *default-logging
     environment:
       - POSTGRES_USER=odoo19
       - POSTGRES_PASSWORD=odoo19
@@ -27,6 +35,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4:8.4
     container_name: pgadmin
+    logging: *default-logging
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
@@ -41,6 +50,7 @@ services:
   odoo:
     image: odoo:19.0
     container_name: odoo
+    logging: *default-logging
     depends_on:
       - pg-db
     ports:
@@ -50,7 +60,6 @@ services:
       - HOST=pg-db
       - USER=odoo19
       - PASSWORD=odoo19
-    # التعديل الأول: إضافة الأوامر لتفعيل الـ Workers والـ Proxy
     command: ["odoo", "--workers=3", "--proxy-mode"]
     volumes:
       - ./odoo_e/etc/:/etc/odoo/
