@@ -10,40 +10,32 @@
             <!-- Add Features tab before the closing notebook tag -->
             <xpath expr="//notebook" position="inside">
                 <page string="Product Specifications" name="features">
-                    <!-- Checkbox to enable features -->
                     <group>
-                        <group>
-                            <field name="has_features" widget="boolean_toggle"/>
-                        </group>
-                    </group>
-
-                    <separator string="Product Specifications" invisible="not has_features"/>
-                    
-                    <group invisible="not has_features">
-                        <group string="Product Specifications">
+                        <group string="Basic Specifications">
                             <field name="fabric_type_id"/>
                             <field name="operation"/>
                             <field name="finishing_type"/>
-                            <field name="packing_type"/>
-                            <field name="stripe"/>
-                            <field name="color_id"/>
-                            <field name="design_id"/>
+                            <field name="custom_finishing" invisible="finishing_type != 'custom'" required="finishing_type == 'custom'"/>
+                            <field name="custom_finishing_image" widget="image" invisible="finishing_type != 'custom'"/>
+                            <field name="packing_type"/>    
+                            <field name="stripe_id"/>
+                            <field name="color_id" invisible="operation == 'dyeing'"/>
+                            <field name="design_id" invisible="operation == 'dyeing'"/>
                         </group>
                         <group string="Calculations">
                             <field name="width"/>
                             <field name="product_weight"/>
-                            <field name="density"/>
                             <field name="average" readonly="1"/>
                         </group>
                     </group>
 
                     <!-- Display design image when design is selected -->
-                    <group string="Design Preview" invisible="not design_id or not has_features">
+                    <group string="Design Preview" invisible="not design_id or operation == 'dyeing'">
                         <field name="design_image" widget="image" options="{'size': [400, 400]}" nolabel="1" readonly="1"/>
                     </group>
 
                     <!-- Info message -->
-                    <div class="alert alert-info" role="alert" invisible="not has_features">
+                    <div class="alert alert-info" role="alert">
                         <strong>ℹ Info:</strong> These specifications will be automatically copied to:
                         <ul>
                             <li>Sale Orders when this product is selected</li>
@@ -56,14 +48,13 @@
         </field>
     </record>
 
-    <!-- Product Template Tree View - Add has_features column -->
+    <!-- Product Template Tree View - Add operation column -->
     <record id="product_template_tree_view_inherit_thamar" model="ir.ui.view">
         <field name="name">product.template.tree.inherit.thamar</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_tree_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="after">
-                <field name="has_features" optional="hide" widget="boolean_toggle"/>
                 <field name="operation" optional="show"/>
             </xpath>
             <xpath expr="//list" position="attributes">

@@ -3,3 +3,4 @@ access_mrp_color,mrp.color,model_mrp_color,,1,1,1,1
 access_mrp_color_category,mrp.color.category,model_mrp_color_category,,1,1,1,1
 access_mrp_design,mrp.design,model_mrp_design,,1,1,1,1
 access_mrp_fabric_type,mrp.fabric.type,model_mrp_fabric_type,,1,1,1,1
+access_mrp_stripe,mrp.stripe,model_mrp_stripe,,1,1,1,1

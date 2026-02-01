@@ -16,6 +16,15 @@ class MrpProduction(models.Model):
         ('custom', 'custom'),
     ], string='Finishing Type', tracking=True, help='Type of finishing for this manufacturing order')
 
+    custom_finishing = fields.Char(
+        string='Custom Finishing',
+        help='Describe custom finishing details'
+    )
+
+    custom_finishing_image = fields.Image(
+        string='Custom Finishing Image'
+    )
+
     fabric_type_id = fields.Many2one(
         'mrp.fabric.type',
         string='Fabric Type',
@@ -34,12 +43,12 @@ class MrpProduction(models.Model):
         ('automatic', 'Automatic')
     ], string='Packing Type', tracking=True, help='Type of packing for this manufacturing order')
 
-    stripe = fields.Selection([
-        ('white', 'White'),
-        ('alomar', 'Al-Omar'),
-        ('althamar', 'Al-Thamar'),
-        ('client', 'Client')
-    ], string='Stripe', tracking=True, help='Stripe type for this manufacturing order')
+    stripe_id = fields.Many2one(
+        'mrp.stripe',
+        string='Stripe',
+        tracking=True,
+        help='Stripe type for this manufacturing order'
+    )
 
     color_id = fields.Many2one(
         'mrp.color',
@@ -62,12 +71,6 @@ class MrpProduction(models.Model):
         help='Weight of the product'
     )
 
-    density = fields.Float(
-        string='Density',
-        digits=(16, 2),
-        tracking=True,
-        help='Density of the product'
-    )
 
     design_id = fields.Many2one(
         'mrp.design',
@@ -108,8 +111,8 @@ class MrpProduction(models.Model):
         productions = super().create(vals_list)
 
         for production in productions:
-            # Sync from product if it has features
-            if production.product_id and production.product_id.has_features:
+            # Sync from product
+            if production.product_id:
                 production._sync_features_from_product()
 
         return productions
@@ -120,13 +123,15 @@ class MrpProduction(models.Model):
         """
         self.ensure_one()
 
-        if self.product_id and self.product_id.has_features:
+        if self.product_id:
             self.write({
                 'finishing_type': self.product_id.finishing_type,
+                'custom_finishing': self.product_id.custom_finishing,
+                'custom_finishing_image': self.product_id.custom_finishing_image,
                 'fabric_type_id': self.product_id.fabric_type_id.id,
                 'operation': self.product_id.operation,
                 'packing_type': self.product_id.packing_type,
-                'stripe': self.product_id.stripe,
+                'stripe_id': self.product_id.stripe_id.id,
                 'color_id': self.product_id.color_id.id,
                 'width': self.product_id.width,
                 'product_weight': self.product_id.product_weight,

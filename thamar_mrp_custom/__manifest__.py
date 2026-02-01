@@ -27,8 +27,10 @@
         'views/mrp_color_views.xml',
         'views/mrp_fabric_type_views.xml',
         'views/mrp_design_views.xml',
+        # 'views/mrp_packing_type_views.xml',
         'views/product_template_views.xml',
         'views/mrp_production_views.xml',
+        'views/mrp_stripe_views.xml'
     ],
     'assets': {
         'web.assets_backend': [

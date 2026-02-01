@@ -5,13 +5,6 @@ from odoo import models, fields, api
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    # Checkbox to enable features
-    has_features = fields.Boolean(
-        string='Has Product Features',
-        default=False,
-        help='Enable this to add product specifications (finishing type, color, design, etc.)'
-    )
-
     # Features Tab Fields
     finishing_type = fields.Selection([
         ('womens', 'Womens'),
@@ -19,6 +12,15 @@ class ProductTemplate(models.Model):
         ('kids', 'Kids'),
         ('custom', 'custom'),
     ], string='Finishing Type', help='Type of finishing for this product')
+
+    custom_finishing = fields.Char(
+        string='Custom Finishing',
+        help='Describe custom finishing details'
+    )
+
+    custom_finishing_image = fields.Image(
+        string='Custom Finishing Image'
+    )
 
     fabric_type_id = fields.Many2one(
         'mrp.fabric.type',
@@ -31,18 +33,18 @@ class ProductTemplate(models.Model):
         ('dyeing', 'Dyeing'),
         ('printing_dyeing', 'Printing & Dyeing')
     ], string='Operation', help='Processing stage for this product')
+    
 
     packing_type = fields.Selection([
         ('manual', 'Manual'),
         ('automatic', 'Automatic')
     ], string='Packing Type', help='Type of packing for this product')
 
-    stripe = fields.Selection([
-        ('white', 'White'),
-        ('alomar', 'Al-Omar'),
-        ('althamar', 'Al-Thamar'),
-        ('client', 'Client')
-    ], string='Stripe', help='Stripe type for this product')
+    stripe_id = fields.Many2one(
+        'mrp.stripe',
+        string='Stripe',
+        help='Stripe type for this product'
+    )
 
     color_id = fields.Many2one(
         'mrp.color',
@@ -62,11 +64,6 @@ class ProductTemplate(models.Model):
         help='Weight of the product'
     )
 
-    density = fields.Float(
-        string='Density',
-        digits=(16, 2),
-        help='Density of the product'
-    )
 
     design_id = fields.Many2one(
         'mrp.design',
@@ -98,50 +95,32 @@ class ProductTemplate(models.Model):
             else:
                 record.average = 0.0
 
-    @api.onchange('has_features')
-    def _onchange_has_features(self):
-        """
-        Clear feature fields when has_features is unchecked
-        """
-        if not self.has_features:
-            self.finishing_type = False
-            self.fabric_type_id = False
-            self.operation = False
-            self.packing_type = False
-            self.stripe = False
-            self.color_id = False
-            self.width = 0.0
-            self.product_weight = 0.0
-            self.density = 0.0
-            self.design_id = False
-
-    @api.onchange('categ_id', 'fabric_type_id', 'operation', 'color_id', 'design_id', 'has_features')
+    @api.onchange('categ_id', 'fabric_type_id', 'operation', 'color_id', 'design_id')
     def _onchange_features_generate_name(self):
         """
         Generate product name based on features: FabricType-Operation-Color-Design
         Fallbacks to Category if FabricType is missing.
         """
-        if self.has_features:
-            parts = []
+        parts = []
+        
+        if self.fabric_type_id:
+            parts.append(self.fabric_type_id.name)
+        elif self.categ_id:
+            parts.append(self.categ_id.name)
+        
+        if self.operation:
+            # Get the display label of the selection
+            selection_values = self.fields_get(['operation'])['operation']['selection']
+            operation_label = dict(selection_values).get(self.operation)
+            if operation_label:
+                parts.append(operation_label)
+        
+        if self.color_id:
+            parts.append(self.color_id.name)
             
-            if self.fabric_type_id:
-                parts.append(self.fabric_type_id.name)
-            elif self.categ_id:
-                parts.append(self.categ_id.name)
+        if self.design_id:
+            parts.append(self.design_id.name)
             
-            if self.operation:
-                # Get the display label of the selection
-                selection_values = self.fields_get(['operation'])['operation']['selection']
-                operation_label = dict(selection_values).get(self.operation)
-                if operation_label:
-                    parts.append(operation_label)
-            
-            if self.color_id:
-                parts.append(self.color_id.name)
-                
-            if self.design_id:
-                parts.append(self.design_id.name)
-                
-            if parts:
-                self.name = "-".join(parts)
+        if parts:
+            self.name = "-".join(parts)
 
