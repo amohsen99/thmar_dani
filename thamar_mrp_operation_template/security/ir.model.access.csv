@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mrp_operation_template_user,mrp.operation.template.user,model_mrp_operation_template,,1,1,1,1
+access_mrp_operation_template_manager,mrp.operation.template.manager,model_mrp_operation_template,,1,1,1,1

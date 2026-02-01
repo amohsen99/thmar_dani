@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="quality_check_view_search_inherit_thamar" model="ir.ui.view">
+        <field name="name">quality.check.view.search.inherit.thamar</field>
+        <field name="model">quality.check</field>
+        <field name="inherit_id" ref="quality_control.quality_check_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='groupby_team_id']" position="after">
+                <filter string="Manufacturing Order" name="group_by_production_id" context="{'group_by': 'production_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="quality_check_view_tree_inherit_thamar" model="ir.ui.view">
+        <field name="name">quality.check.view.list.inherit.thamar</field>
+        <field name="model">quality.check</field>
+        <field name="inherit_id" ref="quality_control.quality_check_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='picking_id']" position="after">
+                <field name="production_id" optional="show"/>
+                <field name="workorder_id" optional="show"/>
+            </xpath>
+        </field>
+    </record></odoo>

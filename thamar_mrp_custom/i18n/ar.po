@@ -88,7 +88,7 @@ msgstr "مخصص"
 #: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__packing_type
 #: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__packing_type
 msgid "Packing Type"
-msgstr "نوع التعبئة"
+msgstr "نوع التغليف"
 
 #. module: thamar_mrp_custom
 #: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__packing_type__manual
@@ -109,7 +109,7 @@ msgstr "آلي"
 #: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__stripe
 #: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__stripe
 msgid "Stripe"
-msgstr "الخط / الشعار"
+msgstr "الشريط"
 
 #. module: thamar_mrp_custom
 #: model:ir.model.fields.selection,name:thamar_mrp_custom.selection__product_template__stripe__white
@@ -179,7 +179,7 @@ msgstr "الكثافة"
 #: model:ir.model.fields,field_description:thamar_mrp_custom.field_sale_order_line__design_id
 #: model:ir.model.fields,field_description:thamar_mrp_custom.field_mrp_production__design_id
 msgid "Design"
-msgstr "التصميم"
+msgstr "الرسمة"
 
 #. module: thamar_mrp_custom
 #: model:ir.model.fields,field_description:thamar_mrp_custom.field_product_template__design_image

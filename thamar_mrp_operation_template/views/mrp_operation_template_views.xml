@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_operation_template_view_tree" model="ir.ui.view">
+        <field name="name">mrp.operation.template.view.list</field>
+        <field name="model">mrp.operation.template</field>
+        <field name="arch" type="xml">
+            <list string="Operation Templates" editable="bottom">
+                <field name="name"/>
+                <field name="workcenter_id"/>
+                <field name="time_mode"/>
+                <field name="time_cycle_manual" widget="float_time"/>
+                <field name="quality_point_ids" widget="many2many_tags"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="mrp_operation_template_view_form" model="ir.ui.view">
+        <field name="name">mrp.operation.template.view.form</field>
+        <field name="model">mrp.operation.template</field>
+        <field name="arch" type="xml">
+            <form string="Operation Template">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Polishing"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="workcenter_id"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="time_mode"/>
+                            <field name="time_cycle_manual" widget="float_time"
+                                   invisible="time_mode == 'auto'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Instructions" name="instructions">
+                            <field name="description" placeholder="Technical instructions for this operation..."/>
+                        </page>
+                        <page string="Quality Points" name="quality_points">
+                            <field name="quality_point_ids" widget="many2many">
+                                <list string="Quality Control Points">
+                                    <field name="name"/>
+                                    <field name="title"/>
+                                    <field name="team_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="mrp_operation_template_action" model="ir.actions.act_window">
+        <field name="name">Operation Templates</field>
+        <field name="res_model">mrp.operation.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new operation template
+            </p><p>
+                Define standard operations that can be added to Manufacturing Orders easily.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_mrp_operation_template"
+              name="Operation Templates"
+              action="mrp_operation_template_action"
+              parent="mrp.menu_mrp_configuration"
+              sequence="40"/>
+</odoo>
