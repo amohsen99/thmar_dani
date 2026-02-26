@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_mrp_internal_transfer_wizard_form" model="ir.ui.view">
+        <field name="name">mrp.internal.transfer.wizard.form</field>
+        <field name="model">mrp.internal.transfer.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Add Components with Transfer">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="production_id" invisible="1"/>
+                            <field name="source_location_id"/>
+                        </group>
+                        <group>
+                            <field name="dest_location_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Components" name="components">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id" groups="uom.group_uom"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

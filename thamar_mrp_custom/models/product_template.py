@@ -29,15 +29,15 @@ class ProductTemplate(models.Model):
     )
 
     operation = fields.Selection([
-        ('printing', 'Printing'),
-        ('dyeing', 'Dyeing'),
-        ('printing_dyeing', 'Printing & Dyeing')
+        ('printing', 'طباعة'),
+        ('dyeing', 'صباغة'),
+        ('printing_dyeing', 'طباعة وصباغة')
     ], string='Operation', help='Processing stage for this product')
     
 
     packing_type = fields.Selection([
-        ('manual', 'Manual'),
-        ('automatic', 'Automatic')
+        ('manual', 'يدوي'),
+        ('automatic', 'تلقائي')
     ], string='Packing Type', help='Type of packing for this product')
 
     stripe_id = fields.Many2one(
@@ -104,10 +104,7 @@ class ProductTemplate(models.Model):
         parts = []
         
         if self.fabric_type_id:
-            parts.append(self.fabric_type_id.name)
-        elif self.categ_id:
-            parts.append(self.categ_id.name)
-        
+            parts.append(self.fabric_type_id.name)        
         if self.operation:
             # Get the display label of the selection
             selection_values = self.fields_get(['operation'])['operation']['selection']

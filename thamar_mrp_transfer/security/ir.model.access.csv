@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mrp_internal_transfer_wizard,mrp.internal.transfer.wizard,model_mrp_internal_transfer_wizard,mrp.group_mrp_user,1,1,1,1
+access_mrp_internal_transfer_wizard_line,mrp.internal.transfer.wizard.line,model_mrp_internal_transfer_wizard_line,mrp.group_mrp_user,1,1,1,1
