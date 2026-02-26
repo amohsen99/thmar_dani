@@ -8,6 +8,8 @@ volumes:
   pgadmin:
   db-data:
   odoo-web-data:
+  npm-data:
+  npm-letsencrypt:
 
 # إعداد عام للـ Logging لتقليل التكرار (Optional)
 x-logging: &default-logging
@@ -47,6 +49,20 @@ services:
     volumes:
       - pgadmin:/var/lib/pgadmin
 
+  npm-app:
+    image: "jc21/nginx-proxy-manager:latest"
+    container_name: npm-app
+    restart: always
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    volumes:
+      - npm-data:/data
+      - npm-letsencrypt:/etc/letsencrypt
+    networks:
+      - thmar-apps
+
   odoo:
     image: odoo:19.0
     container_name: odoo
@@ -54,7 +70,6 @@ services:
     depends_on:
       - pg-db
     ports:
-      - "80:8069"
       - "8072:8072"
     environment:
       - HOST=pg-db

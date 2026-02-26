@@ -56,24 +56,18 @@ class MrpProduction(models.Model):
             }
             wo = self.env['mrp.workorder'].create(wo_vals)
             
-            # Now handle Quality Points
+            # Now handle Quality Points and Checks with chaining for Shop Floor support
+            previous_check = self.env['quality.check']
             for qp_template in template.quality_point_ids:
                 # We create a specific Quality Point for this MO/WO to ensure it triggers
                 new_qp = qp_template.copy({
                     'product_ids': [(6, 0, self.product_id.ids)],
                     'picking_type_ids': [(6, 0, self.picking_type_id.ids)],
                     'company_id': self.company_id.id,
-                    'operation_id': False, # mrp.routing.workcenter link
+                    'operation_id': False, # mrp.routing.workcenter link (not used in BOM-less)
                 })
-                # Note: Linking quality.point to mrp.workorder directly is not standard.
-                # Quality points usually link to mrp.routing.workcenter (operation_id).
-                # But quality.check records have a workorder_id field.
                 
-                # If we create the Quality Point with the MO's picking type and product,
-                # Odoo might generate the check.
-                # Better: Create the quality.check manually linked to the WO.
-                
-                self.env['quality.check'].create({
+                check = self.env['quality.check'].create({
                     'point_id': new_qp.id,
                     'production_id': self.id,
                     'workorder_id': wo.id,
@@ -81,7 +75,17 @@ class MrpProduction(models.Model):
                     'company_id': self.company_id.id,
                     'team_id': new_qp.team_id.id,
                     'test_type_id': new_qp.test_type_id.id,
+                    'previous_check_id': previous_check.id,
+                    'finished_product_sequence': wo.qty_produced,
+                    'worksheet_document': new_qp.worksheet_document if hasattr(new_qp, 'worksheet_document') else False,
                 })
+                if previous_check:
+                    previous_check.next_check_id = check
+                previous_check = check
+
+            # Set the first check as current for the tablet view
+            if wo.check_ids:
+                wo._change_quality_check(position='first')
         
         return {
             'type': 'ir.actions.client',
