@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Bank Statement Payment Receipt – Document Template -->
+    <template id="report_bank_statement_receipt_document">
+        <t t-call="web.external_layout">
+            <t t-set="o" t-value="o.with_context(lang=lang)"/>
+            <t t-set="is_arabic" t-value="lang and 'ar' in lang"/>
+            <!-- Treat amount as always positive for display -->
+            <t t-set="abs_amount" t-value="abs(o.amount)"/>
+            <!-- True = inbound (positive) / False = outbound (negative) -->
+            <t t-set="is_inbound" t-value="o.amount >= 0"/>
+
+            <div t-attf-class="page {{ 'arabic-layout' if is_arabic else '' }}"
+                 t-attf-dir="{{ 'rtl' if is_arabic else 'ltr' }}">
+                <style>
+                    .arabic-layout {
+                        font-family: 'DejaVu Sans', 'Arial', sans-serif;
+                        text-align: right;
+                    }
+                    .arabic-layout .row {
+                        direction: rtl;
+                    }
+                    .arabic-layout .col-6 {
+                        text-align: right;
+                    }
+                    .arabic-layout .text-start {
+                        text-align: right !important;
+                    }
+                    .arabic-layout .text-end {
+                        text-align: left !important;
+                    }
+                    .signature-line {
+                        border-bottom: 1px solid #000;
+                        width: 80%;
+                        padding-top: 30px;
+                    }
+                </style>
+
+                <!-- Title: always show Arabic receipt type based on amount direction -->
+                <h3 style="margin-bottom: 20px; margin-top: 20px; padding-top: 20px;">
+                    <strong>
+                        <t t-if="is_inbound">ايصال استلام</t>
+                        <t t-else="">ايصال دفع</t>
+:                        <span t-esc="o.name or ''"/>
+                    </strong>
+                </h3>
+
+                <div class="mb-4 mt-3">
+                    <!-- Row 1: Date & Partner -->
+                    <div class="row">
+                        <div class="col-6">
+                            <!-- Transaction Date -->
+                            <div t-if="o.date" style="margin-bottom: 10px;">
+                                <t t-if="is_arabic">
+                                    تاريخ العملية: <span t-field="o.date"/>
+                                </t>
+                                <t t-else="">
+                                    Transaction Date: <span t-field="o.date"/>
+                                </t>
+                            </div>
+
+                            <!-- Partner -->
+                            <div t-if="o.partner_id" style="margin-bottom: 10px;">
+                                <t t-if="is_arabic">الطرف:</t>
+                                <t t-else="">Partner:</t>
+                                <span t-field="o.partner_id"/>
+                            </div>
+                            <div t-elif="o.partner_name" style="margin-bottom: 10px;">
+                                <t t-if="is_arabic">الطرف:</t>
+                                <t t-else="">Partner:</t>
+                                <span t-esc="o.partner_name"/>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <!-- Description (from Label / payment_ref) -->
+                            <div t-if="o.payment_ref" style="margin-bottom: 10px;">
+                                <t t-if="is_arabic">البيان:</t>
+                                <t t-else="">Description:</t>
+                                <span t-esc="o.payment_ref"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="oe_structure" style="height: 10px;"></div>
+
+                    <!-- Amount row (always positive) -->
+                    <div class="row">
+                        <div class="col-6" t-if="abs_amount">
+                            <t t-if="is_arabic">
+                                مبلغ العملية:
+                            </t>
+                            <t t-else="">
+                                Amount:
+                            </t>
+                            <t t-if="lang and 'ar' in lang">
+                                <span t-esc="abs_amount"/>
+                                <span>جنيه</span>
+                            </t>
+                            <t t-else="">
+                                <span t-esc="o.currency_id.symbol"/>
+                                <span t-esc="'%.2f' % abs_amount"/>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Amount in Words -->
+                    <div class="row" t-if="abs_amount" style="margin-top: 5px;">
+                        <div class="col-12">
+                            <strong>
+                                <t t-if="is_arabic">المبلغ كتابة:</t>
+                                <t t-else="">Amount in Words:</t>
+                            </strong>
+                            <span t-esc="o.amount_to_text_with_lang()"/>
+                            <t t-if="is_arabic">
+                                <span>فقط لا غير</span>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Signature Section -->
+                <div class="oe_structure" style="height: 40px;"></div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="signature-field">
+                            <strong>
+                                <t t-if="is_arabic">استلم بواسطة:</t>
+                                <t t-else="">Received By:</t>
+                            </strong>
+                            <div class="signature-line mt-2"></div>
+                            <div class="signature-label mt-1" style="font-size: 12px; color: #666;">
+                                <t t-if="is_arabic">التوقيع والختم</t>
+                                <t t-else="">Signature &amp; Stamp</t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="oe_structure"></div>
+        </t>
+    </template>
+
+    <!-- Main wrapper – one receipt page per selected line -->
+    <template id="report_bank_statement_receipt">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="lang"
+                   t-value="o.env.context.get('lang') or o.env.user.lang or (o.partner_id.lang if o.partner_id else False) or o.company_id.partner_id.lang or 'en_US'"/>
+                <t t-call="thamar_bank_statement_receipt.report_bank_statement_receipt_document"
+                   t-lang="lang"/>
+            </t>
+        </t>
+    </template>
+</odoo>

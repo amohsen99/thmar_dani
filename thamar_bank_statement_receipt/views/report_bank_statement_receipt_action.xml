@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Report action – binds "Transaction Receipt" to account.bank.statement.line -->
+    <record id="action_report_bank_statement_receipt" model="ir.actions.report">
+        <field name="name">Transaction Receipt</field>
+        <field name="model">account.bank.statement.line</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">thamar_bank_statement_receipt.report_bank_statement_receipt</field>
+        <field name="report_file">thamar_bank_statement_receipt.report_bank_statement_receipt</field>
+        <field name="print_report_name">'Transaction Receipt - %s' % (object.payment_ref or object.name or '')</field>
+        <field name="binding_model_id" ref="account.model_account_bank_statement_line"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
