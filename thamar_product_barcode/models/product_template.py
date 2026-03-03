@@ -17,11 +17,7 @@ class ProductTemplate(models.Model):
         help='Preview of how the barcode will be generated'
     )
 
-    barcode_generation_strategy = fields.Selection([
-        ('category_sequence', 'Category + Sequence'),
-        ('variant_attributes', 'Variant Attributes')
-    ], string='Barcode Generation Strategy', default='category_sequence',
-       help="Choose how barcodes should be generated")
+    # Removed barcode_generation_strategy - always use category_sequence format: [PREFIX]-[5 DIGITS]
 
     # Removed onchange warning - category changes will auto-regenerate barcodes
 
@@ -43,39 +39,19 @@ class ProductTemplate(models.Model):
                     new_categ_id = template.categ_id.id if template.categ_id else False
 
                     if old_categ_id != new_categ_id:
-                        # Regenerate barcodes for all variants with existing barcodes
+                        # Regenerate barcodes for all variants with existing barcodes using sequence format
                         for variant in template.product_variant_ids.filtered(lambda v: v.barcode):
-                            if template.barcode_generation_strategy == 'category_sequence':
-                                variant._regenerate_barcode_on_category_change()
-                            elif template.barcode_generation_strategy == 'variant_attributes':
-                                variant._generate_barcode()
+                            variant._regenerate_barcode_on_category_change()
 
         return result
 
-    @api.depends('categ_id', 'categ_id.barcode_code', 'categ_id.parent_id', 'barcode_generation_strategy')
+    @api.depends('categ_id', 'categ_id.barcode_code', 'categ_id.parent_id')
     def _compute_barcode_preview(self):
-        """Show preview of barcode structure based on selected strategy"""
+        """Show preview of barcode structure using sequence format"""
         for template in self:
-            strategy = template.barcode_generation_strategy
-
-            if strategy == 'category_sequence':
-                # Get hierarchical category code
-                category_code = template._get_hierarchical_category_code()
-                if category_code:
-                    # Calculate sequence length
-                    prefix_length = len(category_code)
-                    sequence_length = 13 - prefix_length
-                    sequence_preview = '0' * sequence_length
-                    preview = f"{category_code}{sequence_preview} (13 chars: {prefix_length} prefix + {sequence_length} sequence)"
-                    template.barcode_preview = preview
-                else:
-                    template.barcode_preview = 'Set category with barcode code first'
-            else:  # variant_attributes
-                if template.categ_id and template.categ_id.barcode_code:
-                    preview = f"{template.categ_id.barcode_code}[COLOR][DESIGN][GRADE][TYPE]"
-                    template.barcode_preview = preview
-                else:
-                    template.barcode_preview = 'Set category with barcode code first'
+            category_code = template._get_hierarchical_category_code()
+            preview = f"{category_code}-00001 (Standard format)"
+            template.barcode_preview = preview
 
     def _get_hierarchical_category_code(self):
         """
@@ -97,19 +73,15 @@ class ProductTemplate(models.Model):
             current_category = current_category.parent_id
 
         if not codes:
-            return None
+            return '00'
 
         # Combine all codes
         return ''.join(codes)
 
     def _get_barcode_structure_info(self):
-        """Get information about required attributes for barcode"""
+        """Get information about barcode prefix"""
         self.ensure_one()
         return {
-            'category_code': self.categ_id.barcode_code if self.categ_id else None,
-            'needs_color': True,
-            'needs_design': True,
-            'needs_grade': True,
-            'needs_type': True,
+            'category_code': self.categ_id.barcode_code if self.categ_id else '00',
         }
 
