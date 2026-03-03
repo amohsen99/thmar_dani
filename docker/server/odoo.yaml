@@ -75,7 +75,7 @@ services:
       - HOST=pg-db
       - USER=odoo19
       - PASSWORD=odoo19
-    command: ["odoo", "--workers=9", "--proxy-mode"]
+    # command: ["odoo"  , "--workers=9", "--proxy-mode"]
     volumes:
       - ./odoo_e/etc/:/etc/odoo/
       - ../../../enterprise-19.0:/mnt/enterprise_addons
