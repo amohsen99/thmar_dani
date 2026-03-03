@@ -15,6 +15,7 @@
     'website': 'https://www.thamardani.com',
     'depends': ['account', 'account_accountant'],
     'data': [
+        'data/ir_sequence_data.xml',
         'views/report_bank_statement_receipt.xml',
         'views/report_bank_statement_receipt_action.xml',
     ],

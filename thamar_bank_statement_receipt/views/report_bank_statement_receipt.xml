@@ -37,11 +37,12 @@
                 </style>
 
                 <!-- Title: always show Arabic receipt type based on amount direction -->
+                <t t-set="unused" t-value="o.ensure_receipt_number()"/>
                 <h3 style="margin-bottom: 20px; margin-top: 20px; padding-top: 20px;">
                     <strong>
                         <t t-if="is_inbound">ايصال استلام</t>
                         <t t-else="">ايصال دفع</t>
-:                        <span t-esc="o.name or ''"/>
+:                        <span t-esc="o.receipt_number or o.name or ''"/>
                     </strong>
                 </h3>
 

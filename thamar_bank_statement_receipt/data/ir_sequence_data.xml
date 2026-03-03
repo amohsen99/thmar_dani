@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Inbound Receipts (ايصال استلام) -->
+        <record id="sequence_statement_line_receipt" model="ir.sequence">
+            <field name="name">Bank Statement Inbound Receipt</field>
+            <field name="code">account.bank.statement.line.receipt</field>
+            <field name="prefix">REC/%(range_year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Outbound Payments (ايصال دفع) -->
+        <record id="sequence_statement_line_payment" model="ir.sequence">
+            <field name="name">Bank Statement Outbound Payment</field>
+            <field name="code">account.bank.statement.line.payment</field>
+            <field name="prefix">PAY/%(range_year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>
