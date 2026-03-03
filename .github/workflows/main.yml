@@ -36,6 +36,7 @@ jobs:
             fi
 
             cd "$PROJECT_DIR"
+            echo "$PROJECT_DIR"
 
             # Verify docker-compose file exists
             if [ ! -f "$COMPOSE_FILE" ]; then
