@@ -60,18 +60,20 @@ jobs:
             echo "Starting new containers..."
             docker compose -f "$COMPOSE_FILE" up -d
 
-            # Wait for services to be healthy
-            echo "Waiting for services to be ready..."
-            sleep 30
+            # Wait for services to be healthy (specifically odoo)
+            echo "Waiting for Odoo to be ready..."
+            for i in {1..12}; do
+              if docker compose -f "$COMPOSE_FILE" ps odoo | grep -q "running"; then
+                echo "Odoo is up and running!"
+                break
+              fi
+              echo "Waiting... ($i/12)"
+              sleep 10
+              if [ $i -eq 12 ]; then
+                echo "Error: Odoo failed to start within 2 minutes."
+                docker compose -f "$COMPOSE_FILE" logs --tail=50 odoo
+                exit 1
+              fi
+            done
 
-            # echo "Restarting Odoo to regenerate assets..."
-            # docker compose -f "$COMPOSE_FILE" restart odoo
-
-            # Check if Odoo container is running
-            if docker compose -f "$COMPOSE_FILE" ps | grep -q "Up"; then
-              echo "Deployment completed successfully!"
-            else
-              echo "Warning: Some containers may not be running properly"
-              docker compose -f "$COMPOSE_FILE" ps
-              exit 1
-            fi
+            echo "Deployment completed successfully!"
