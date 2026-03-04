@@ -60,20 +60,10 @@ jobs:
             echo "Starting new containers..."
             docker compose -f "$COMPOSE_FILE" up -d
 
-            # Wait for services to be healthy (specifically odoo)
-            echo "Waiting for Odoo to be ready..."
-            for i in {1..12}; do
-              if docker compose -f "$COMPOSE_FILE" ps odoo | grep -q "running"; then
-                echo "Odoo is up and running!"
-                break
-              fi
-              echo "Waiting... ($i/12)"
-              sleep 10
-              if [ $i -eq 12 ]; then
-                echo "Error: Odoo failed to start within 2 minutes."
-                docker compose -f "$COMPOSE_FILE" logs --tail=50 odoo
-                exit 1
-              fi
-            done
+            echo "Waiting for Odoo to be ready (Port 8069)..."
+            until curl -s http://localhost:8069 > /dev/null; do 
+              echo "Odoo is still loading its Registry... (Waiting 5s)"
+              sleep 5
+            done 
 
             echo "Deployment completed successfully!"
