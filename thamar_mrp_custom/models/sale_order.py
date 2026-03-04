@@ -10,3 +10,5 @@ class SaleOrder(models.Model):
         ('dyeing', 'Dyeing'),
         ('printing_dyeing', 'Printing & Dyeing')
     ], string='Operation', help='Processing stage')
+
+    has_fabric = fields.Boolean('Has Fabric', default=False)
