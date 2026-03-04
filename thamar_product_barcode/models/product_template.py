@@ -16,6 +16,11 @@ class ProductTemplate(models.Model):
         compute='_compute_barcode_preview',
         help='Preview of how the barcode will be generated'
     )
+    barcode_generation_strategy = fields.Selection([
+        ('category_sequence', 'Category + Sequence'),
+        ('variant_attributes', 'Variant Attributes')
+    ], string='Barcode Generation Strategy', default='category_sequence',
+       help="Choose how barcodes should be generated")
 
     # Removed barcode_generation_strategy - always use category_sequence format: [PREFIX]-[5 DIGITS]
 
