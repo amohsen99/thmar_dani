@@ -26,10 +26,10 @@ jobs:
             COMPOSE_FILE="docker/server/odoo.yaml"
 
             # Navigate to project directory
-            if [ -d "/root/odoo19/thamar_dani" ]; then
-                PROJECT_DIR="/root/odoo19/thamar_dani"
-            elif [ -d "/root/odoo19/thmar_dani" ]; then
+            if [ -d "/root/odoo19/thmar_dani" ]; then
                 PROJECT_DIR="/root/odoo19/thmar_dani"
+            elif [ -d "/root/odoo19/thamar_dani" ]; then
+                PROJECT_DIR="/root/odoo19/thamar_dani"
             else
                 echo "Project directory not found at expected locations"
                 exit 1
