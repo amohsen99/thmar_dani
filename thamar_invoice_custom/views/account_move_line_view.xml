@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Journal Items Tree View - Add Cheque Fields -->
+    <record id="view_move_line_tree_inherit_cheque" model="ir.ui.view">
+        <field name="name">account.move.line.tree.inherit.cheque</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <field name="date" position="after">
+                <field name="bank_id" optional="show"/>
+                <field name="cheque_number" optional="show"/>
+                <field name="cheque_due_date" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Journal Items Search View - Add Cheque Number -->
+    <record id="view_account_move_line_filter_inherit_cheque" model="ir.ui.view">
+        <field name="name">account.move.line.search.inherit.cheque</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="cheque_number" string="Cheque Number"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Bank Reconciliation Widget - Add Cheque Number -->
+    <record id="view_account_move_line_list_bank_rec_widget_inherit_cheque" model="ir.ui.view">
+        <field name="name">account.move.line.list.bank_rec_widget.inherit.cheque</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account_accountant.view_account_move_line_list_bank_rec_widget"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="cheque_number" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Bank Reconciliation Widget Search View - Add Cheque Number search -->
+    <record id="view_account_move_line_search_bank_rec_widget_inherit_cheque" model="ir.ui.view">
+        <field name="name">account.move.line.search.bank_rec_widget.inherit.cheque</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account_accountant.view_account_move_line_search_bank_rec_widget"/>
+        <field name="arch" type="xml">
+            <field name="name" position="attributes">
+                <attribute name="filter_domain">['|', '|', '|', '|', '|', '|', ('name', 'ilike', self), ('ref', 'ilike', self), ('partner_id', 'ilike', self), ('amount_residual', 'ilike', self), ('amount_residual_currency', 'ilike', self), ('discount_amount_currency', 'ilike', self), ('cheque_number', 'ilike', self)]</attribute>
+            </field>
+            <field name="name" position="after">
+                <field name="cheque_number" string="Cheque Number"/>
+            </field>
+        </field>
+    </record>
+</odoo>

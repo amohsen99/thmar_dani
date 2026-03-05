@@ -193,5 +193,18 @@ class AccountPayment(models.Model):
                 'approved_date': False,
             })
 
+    def _prepare_move_line_default_vals(self, write_off_line_vals=None, force_balance=None):
+        """
+        Extend _prepare_move_line_default_vals to include cheque fields
+        """
+        res = super()._prepare_move_line_default_vals(write_off_line_vals=write_off_line_vals, force_balance=force_balance)
+        
+        for line in res:
+            line.update({
+                'bank_id': self.bank_id.id,
+                'cheque_due_date': self.cheque_due_date,
+                'cheque_number': self.cheque_number,
+            })
         return res
+
 

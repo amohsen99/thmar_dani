@@ -193,10 +193,119 @@
     <!-- Custom Payment Receipt Main Template -->
     <template id="custom_report_payment_receipt">
         <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="o">
-                <!-- تحديد اللغة بشكل أفضل -->
-                <t t-set="lang" t-value="o.env.context.get('lang') or o.env.user.lang or o.partner_id.lang or o.company_id.partner_id.lang or 'en_US'"/>
-                <t t-call="thamar_invoice_custom.custom_report_payment_receipt_document" t-lang="lang"/>
+            <t t-set="is_arabic" t-value="docs.env.context.get('lang') and 'ar' in docs.env.context.get('lang')"/>
+            
+            <!-- If there is only one payment, or user selected exactly one payment -->
+            <t t-if="len(docs) == 1">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="lang" t-value="o.env.context.get('lang') or o.env.user.lang or o.partner_id.lang or o.company_id.partner_id.lang or 'en_US'"/>
+                    <t t-call="thamar_invoice_custom.custom_report_payment_receipt_document" t-lang="lang"/>
+                </t>
+            </t>
+            
+            <!-- If multiple payments are selected, show them in a summary table -->
+            <t t-else="">
+                <t t-call="web.external_layout">
+                    <div t-attf-class="page {{ 'arabic-layout' if is_arabic else '' }}" t-attf-dir="{{ 'rtl' if is_arabic else 'ltr' }}">
+                        <style>
+                            .arabic-layout {
+                                font-family: 'DejaVu Sans', 'Arial', sans-serif;
+                                text-align: right;
+                            }
+                            .arabic-layout .row {
+                                direction: rtl;
+                            }
+                            .arabic-layout th, .arabic-layout td {
+                                text-align: right;
+                            }
+                        </style>
+
+                        <h3 style="margin-bottom: 20px; margin-top: 20px; padding-top: 20px;">
+                            <strong>
+                                <t t-if="is_arabic">ملخص مدفوعات</t>
+                                <t t-else="">Payments Summary</t>
+                            </strong>
+                        </h3>
+
+                        <table class="table table-sm table-bordered mt-4">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <t t-if="is_arabic">الرقم</t>
+                                        <t t-else="">Number</t>
+                                    </th>
+                                    <th>
+                                        <t t-if="is_arabic">التاريخ</t>
+                                        <t t-else="">Date</t>
+                                    </th>
+                                    <th>
+                                        <t t-if="is_arabic">العميل/المورد</t>
+                                        <t t-else="">Vendor/Customer</t>
+                                    </th>
+                                    <th>
+                                        <t t-if="is_arabic">المبلغ</t>
+                                        <t t-else="">Amount</t>
+                                    </th>
+                                    <th>
+                                        <t t-if="is_arabic">رقم الشيك</t>
+                                        <t t-else="">Cheque Number</t>
+                                    </th>
+                                    <th>
+                                        <t t-if="is_arabic">مذكرة</t>
+                                        <t t-else="">Memo</t>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="total_amount" t-value="0.0"/>
+                                <t t-set="currency" t-value="docs[0].currency_id if docs else False"/>
+                                <t t-foreach="docs" t-as="o">
+                                    <t t-set="total_amount" t-value="total_amount + o.amount"/>
+                                    <tr>
+                                        <td><span t-field="o.name"/></td>
+                                        <td><span t-field="o.date"/></td>
+                                        <td><span t-field="o.partner_id.name"/></td>
+                                        <td>
+                                            <span t-field="o.amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                        </td>
+                                        <td>
+                                            <span t-if="o.cheque_number" t-field="o.cheque_number"/>
+                                        </td>
+                                        <td>
+                                            <span t-if="o.memo" t-field="o.memo"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td colspan="3" class="text-end">
+                                        <strong><t t-if="is_arabic">الإجمالي</t><t t-else="">Total</t></strong>
+                                    </td>
+                                    <td>
+                                        <strong><span t-esc="total_amount" t-options="{'widget': 'monetary', 'display_currency': currency}"/></strong>
+                                    </td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="oe_structure" style="height: 40px;"></div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="signature-field">
+                            <strong>
+                                <t t-if="is_arabic">استلم بواسطة:</t>
+                                <t t-else="">Received By:</t>
+                            </strong>
+                            <div class="signature-line mt-2"></div>
+                            <div class="signature-label mt-1" style="font-size: 12px; color: #666;">
+                                <t t-if="is_arabic">التوقيع والختم</t>
+                                <t t-else="">Signature &amp; Stamp</t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    </div>
+                </t>
             </t>
         </t>
     </template>
