@@ -20,23 +20,22 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            set -e  # Exit on any error
+            set -e  # الخروج فوراً في حال حدوث أي خطأ
 
             # Variables
             COMPOSE_FILE="docker/server/odoo.yaml"
+            PROJECT_DIR="/root/odoo19/thamar_dani"
 
             # Navigate to project directory
-            if [ -d "/root/odoo19/thamar_dani" ]; then
-                PROJECT_DIR="/root/odoo19/thamar_dani"
-            elif [ -d "/root/odoo19/thamar_dani" ]; then
-                PROJECT_DIR="/root/odoo19/thamar_dani"
+            if [ -d "$PROJECT_DIR" ]; then
+                echo "المجلد موجود، جاري الدخول..."
             else
-                echo "Project directory not found at expected locations"
+                echo "Project directory not found at expected location: $PROJECT_DIR"
                 exit 1
             fi
 
             cd "$PROJECT_DIR"
-            echo "$PROJECT_DIR"
+            echo "المسار الحالي: $PROJECT_DIR"
 
             # Verify docker-compose file exists
             if [ ! -f "$COMPOSE_FILE" ]; then
@@ -49,21 +48,23 @@ jobs:
             git fetch origin master
             git reset --hard origin/master
 
-            # Stop and remove existing containers (including orphans like nginx)
-            echo "Stopping existing containers..."
-            docker compose -f "$COMPOSE_FILE" down --remove-orphans
+            # تحديث وبناء الحاويات دون مسح الـ Volumes الثابتة
+            echo "Updating containers..."
+            docker compose -f "$COMPOSE_FILE" up -d --build
 
+            # ✨ التعديل السحري: تشغيل حاوية موازية مؤقتة ومستقلة لتنظيف الـ Assets دون تعارض المنافذ
+            echo "Regenerating assets and icons for Live database (Port Isolated Mode)..."
+            docker compose -f "$COMPOSE_FILE" run --rm --no-deps odoo odoo -d Live -u web --stop-after-init
 
-            echo "Restarting services..."
+            # إعادة تشغيل خفيفة لحاوية أودو الرئيسية لتقرأ الملفات المصنفة الجديدة
+            echo "Soft restarting Odoo service to apply clean assets..."
+            docker compose -f "$COMPOSE_FILE" restart odoo
 
-            # Start new containers
-            echo "Starting new containers..."
-            docker compose -f "$COMPOSE_FILE" up -d
-
+            # الانتظار حتى يتأكد النظام أن المنفذ يعمل
             echo "Waiting for Odoo to be ready (Port 8069)..."
             until curl -s http://localhost:8069 > /dev/null; do 
               echo "Odoo is still loading its Registry... (Waiting 5s)"
               sleep 5
             done 
 
-            echo "Deployment completed successfully!"
+            echo "Deployment completed successfully with asset auto-repair!"`````````````````````````
