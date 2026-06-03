@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 try:
     from num2words import num2words
@@ -9,7 +9,8 @@ except ImportError:
 
 
 class AccountPayment(models.Model):
-    _inherit = 'account.payment'
+    _name = 'account.payment'
+    _inherit = ['account.payment', 'analytic.mixin']
 
     # Cheque/Bank fields
     bank_id = fields.Many2one(
@@ -30,6 +31,18 @@ class AccountPayment(models.Model):
         compute='_compute_is_cheque_payment',
         store=True,
         help='Technical field to check if payment method is Cheque'
+    )
+
+    recipient_name = fields.Char(
+        string='Recipient Name',
+    )
+
+    # Payment Sequence Number
+    payment_sequence_number = fields.Char(
+        string='Payment Sequence Number',
+        readonly=True,
+        copy=False,
+        help='Auto-generated sequence number: separate sequences for inbound (receive) and outbound (send) payments.'
     )
 
     # Approval fields
@@ -166,6 +179,7 @@ class AccountPayment(models.Model):
         Override action_post to check approval before posting.
         Only outbound payments (sending money) require approval.
         Inbound payments (receiving money) can be confirmed directly.
+        Also assigns a sequence number based on payment type.
         """
         for payment in self:
             # Only check approval for outbound payments
@@ -176,7 +190,18 @@ class AccountPayment(models.Model):
                         'Please click the "Approve" button first.'
                     ))
 
-        return super(AccountPayment, self).action_post()
+        res = super(AccountPayment, self).action_post()
+
+        # Assign sequence number after successful posting
+        for payment in self:
+            if not payment.payment_sequence_number:
+                if payment.payment_type == 'inbound':
+                    seq_code = 'account.payment.inbound'
+                else:
+                    seq_code = 'account.payment.outbound'
+                payment.payment_sequence_number = self.env['ir.sequence'].next_by_code(seq_code) or '/'
+
+        return res
 
     def action_draft(self):
         """
@@ -207,4 +232,97 @@ class AccountPayment(models.Model):
             })
         return res
 
+    # ========== Unified Cashier/Treasury Screen Customizations ==========
 
+    destination_account_id = fields.Many2one(
+        comodel_name='account.account',
+        domain="[('account_type', 'in', ('asset_receivable', 'liability_payable', 'expense', 'expense_other', 'expense_depreciation', 'expense_direct_cost'))]"
+    )
+
+    is_direct_expense = fields.Boolean(
+        string="Is Direct Expense",
+        compute="_compute_is_direct_expense",
+        store=True,
+    )
+
+    @api.depends('destination_account_id')
+    def _compute_is_direct_expense(self):
+        for pay in self:
+            pay.is_direct_expense = pay.destination_account_id and pay.destination_account_id.internal_group == 'expense'
+
+    @api.depends('journal_id', 'partner_id', 'partner_type')
+    def _compute_destination_account_id(self):
+        # Store previously set manual expense accounts to prevent them being overwritten
+        prev_accounts = {}
+        for pay in self:
+            if pay.destination_account_id and pay.destination_account_id.internal_group == 'expense':
+                prev_accounts[pay] = pay.destination_account_id
+        
+        super()._compute_destination_account_id()
+        
+        for pay in self:
+            if pay in prev_accounts:
+                pay.destination_account_id = prev_accounts[pay]
+
+    @api.depends('destination_account_id', 'partner_id', 'company_id')
+    def _compute_analytic_distribution(self):
+        for payment in self:
+            distribution = self.env['account.analytic.distribution.model']._get_distribution({
+                'partner_id': payment.partner_id.id,
+                'partner_category_id': payment.partner_id.category_id.ids,
+                'account_prefix': payment.destination_account_id.code,
+                'company_id': payment.company_id.id,
+            })
+            payment.analytic_distribution = distribution or payment.analytic_distribution or False
+
+    @api.model
+    def _get_trigger_fields_to_synchronize(self):
+        res = super()._get_trigger_fields_to_synchronize()
+        return res + ('analytic_distribution',)
+
+    def _prepare_move_counterpart_lines(self, default_values):
+        res = super()._prepare_move_counterpart_lines(default_values)
+        for line in res:
+            if self.analytic_distribution:
+                line['analytic_distribution'] = self.analytic_distribution
+        return res
+
+    @api.model
+    def _get_valid_payment_account_types(self):
+        res = super()._get_valid_payment_account_types()
+        return res + ['expense', 'expense_other', 'expense_depreciation', 'expense_direct_cost']
+
+    @api.constrains('destination_account_id', 'analytic_distribution')
+    def _check_analytic_distribution_required(self):
+        for payment in self:
+            if payment.destination_account_id and payment.destination_account_id.internal_group == 'expense':
+                if not payment.analytic_distribution:
+                    raise ValidationError(_("Analytic distribution is required for direct expense payments."))
+
+    @api.constrains('partner_id', 'destination_account_id')
+    def _check_partner_required(self):
+        for payment in self:
+            if not payment.destination_account_id or payment.destination_account_id.internal_group != 'expense':
+                if not payment.partner_id:
+                    raise ValidationError(_("Partner is required for standard payments."))
+
+    # ========== Combined Receipt ==========
+
+    def action_print_combined_receipt(self):
+        """
+        Print a single combined PDF receipt for multiple selected payments.
+        Validates that all selected payments belong to the same partner.
+        """
+        if not self:
+            raise UserError(_("Please select at least one payment."))
+
+        partners = self.mapped('partner_id')
+        if len(partners) > 1:
+            raise UserError(_(
+                "عذراً يا هندسة! لا يمكن طباعة إيصال مجمع لعملاء مختلفين. "
+                "يرجى تحديد مدفوعات لعميل واحد فقط."
+            ))
+
+        return self.env.ref(
+            'thamar_invoice_custom.action_report_combined_payment_receipt'
+        ).report_action(self)

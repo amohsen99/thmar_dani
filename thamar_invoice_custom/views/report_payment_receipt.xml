@@ -47,6 +47,14 @@
 :                            <span t-field="o.name"/>
                         </t>
                     </strong>
+                    <t t-if="o.payment_sequence_number">
+                        <br/>
+                        <small style="font-size: 14px; color: #555;">
+                            <t t-if="is_arabic">رقم التسلسل: </t>
+                            <t t-else="">Seq #: </t>
+                            <span t-field="o.payment_sequence_number"/>
+                        </small>
+                    </t>
                 </h3>
 
                 <div class="mb-4 mt-3">
@@ -235,6 +243,10 @@
                                         <t t-else="">Number</t>
                                     </th>
                                     <th>
+                                        <t t-if="is_arabic">رقم التسلسل</t>
+                                        <t t-else="">Seq #</t>
+                                    </th>
+                                    <th>
                                         <t t-if="is_arabic">التاريخ</t>
                                         <t t-else="">Date</t>
                                     </th>
@@ -263,6 +275,7 @@
                                     <t t-set="total_amount" t-value="total_amount + o.amount"/>
                                     <tr>
                                         <td><span t-field="o.name"/></td>
+                                        <td><span t-field="o.payment_sequence_number"/></td>
                                         <td><span t-field="o.date"/></td>
                                         <td><span t-field="o.partner_id.name"/></td>
                                         <td>

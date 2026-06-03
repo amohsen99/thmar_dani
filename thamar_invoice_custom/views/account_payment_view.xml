@@ -59,12 +59,33 @@
                 </div>
             </xpath>
 
+            <!-- Add Payment Sequence Number field after the name field -->
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="payment_sequence_number" readonly="1" invisible="not payment_sequence_number"/>
+            </xpath>
+
+            <!-- <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="recipient_name"/>
+            </xpath> -->
+
             <!-- Add Bank, Cheque Due Date, and Cheque Number fields after payment_method_line_id -->
             <xpath expr="//field[@name='payment_method_line_id']" position="after">
                 <field name="is_cheque_payment" invisible="1"/>
                 <field name="bank_id" invisible="not is_cheque_payment"/>
                 <field name="cheque_number" invisible="not is_cheque_payment"/>
                 <field name="cheque_due_date" invisible="not is_cheque_payment"/>
+            </xpath>
+
+            <!-- Add Destination Account and Analytic Distribution fields after partner_id -->
+            <xpath expr="//field[@name='partner_id'][2]" position="after">
+                <field name="destination_account_id"
+                       options="{'no_create': True}"
+                       readonly="state != 'draft'"/>
+                <field name="is_direct_expense" invisible="1"/>
+                <field name="analytic_distribution"
+                       widget="analytic_distribution"
+                       invisible="payment_type != 'outbound' and not is_direct_expense"
+                       readonly="state != 'draft'"/>
             </xpath>
 
         </field>
@@ -77,8 +98,8 @@
         <field name="inherit_id" ref="account.view_account_payment_tree"/>
         <field name="arch" type="xml">
 
-            <!-- Add Approved column before state -->
             <field name="state" position="before">
+                <field name="payment_sequence_number" optional="show" string="Seq #"/>
                 <field name="is_approved" widget="boolean_toggle" optional="show"/>
             </field>
 

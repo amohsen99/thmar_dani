@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Combined Payment Receipt Report Action -->
+    <record id="action_report_combined_payment_receipt" model="ir.actions.report">
+        <field name="name">Combined Payment Receipt</field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">thamar_invoice_custom.report_combined_payment_receipt</field>
+        <field name="report_file">thamar_invoice_custom.report_combined_payment_receipt</field>
+        <field name="print_report_name">'Combined Receipt - %s' % (object.mapped('partner_id').name or 'Payment')</field>
+        <field name="binding_model_id" ref="account.model_account_payment"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Combined Payment Receipt QWeb Template -->
+    <template id="report_combined_payment_receipt">
+        <t t-call="web.html_container">
+            <t t-set="is_arabic" t-value="docs.env.context.get('lang') and 'ar' in docs.env.context.get('lang', '')"/>
+            <t t-set="lang" t-value="docs.env.context.get('lang') or docs.env.user.lang or 'en_US'"/>
+
+            <t t-call="web.external_layout">
+                <div t-attf-class="page {{ 'arabic-layout' if is_arabic else '' }}"
+                     t-attf-dir="{{ 'rtl' if is_arabic else 'ltr' }}">
+
+                    <style>
+                        .arabic-layout {
+                            font-family: 'DejaVu Sans', 'Arial', sans-serif;
+                            text-align: right;
+                        }
+                        .arabic-layout .row {
+                            direction: rtl;
+                        }
+                        .arabic-layout th, .arabic-layout td {
+                            text-align: right;
+                        }
+                        .combined-title {
+                            text-align: center;
+                            margin: 25px 0;
+                            padding: 12px;
+                            border-bottom: 2px solid #333;
+                            border-top: 2px solid #333;
+                        }
+                        .partner-box {
+                            background-color: #f8f9fa;
+                            border: 1px solid #dee2e6;
+                            border-radius: 5px;
+                            padding: 12px 18px;
+                            margin-bottom: 20px;
+                        }
+                        .payment-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 15px;
+                        }
+                        .payment-table thead th {
+                            background-color: #343a40;
+                            color: #fff;
+                            padding: 10px 12px;
+                            font-weight: bold;
+                            border: 1px solid #454d55;
+                        }
+                        .payment-table tbody td {
+                            padding: 8px 12px;
+                            border: 1px solid #dee2e6;
+                        }
+                        .payment-table tbody tr:nth-child(even) {
+                            background-color: #f8f9fa;
+                        }
+                        .total-row td {
+                            font-weight: bold;
+                            background-color: #e9ecef !important;
+                            border-top: 2px solid #333;
+                            padding: 10px 12px;
+                        }
+                        .signature-section {
+                            margin-top: 60px;
+                            page-break-inside: avoid;
+                        }
+                        .signature-box {
+                            text-align: center;
+                        }
+                        .signature-line {
+                            border-bottom: 1px solid #333;
+                            width: 80%;
+                            margin: 40px auto 8px auto;
+                        }
+                        .signature-label {
+                            font-size: 11px;
+                            color: #666;
+                        }
+                    </style>
+
+                    <!-- Title -->
+                    <div class="combined-title">
+                        <h3 style="margin: 0;">
+                            <strong>
+                                <t t-if="is_arabic">سند قبض مجمع</t>
+                                <t t-else="">Combined Payment Receipt</t>
+                            </strong>
+                             <p>
+                                <span t-field="o.payment_type"/>
+                            </p>
+                        </h3>
+                    </div>
+
+                    <!-- Partner Info -->
+                    <t t-set="partner" t-value="docs[0].partner_id"/>
+                    <t t-set="currency" t-value="docs[0].currency_id"/>
+
+                    <div class="partner-box">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>
+                                    <t t-if="is_arabic">العميل / المورد: </t>
+                                    <t t-else="">Customer / Vendor: </t>
+                                </strong>
+                                <span t-esc="partner.name"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>
+                                    <t t-if="is_arabic">المستلم: </t>
+                                    <t t-else="">Recipient: </t>
+                                </strong>
+                                <span t-esc="docs[0].recipient_name"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>
+                                    <t t-if="is_arabic">عدد المدفوعات: </t>
+                                    <t t-else="">Number of Payments: </t>
+                                </strong>
+                                <span t-esc="len(docs)"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payments Table -->
+                    <table class="payment-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">#</th>
+                                <th style="width: 10%;">
+                                    <t t-if="is_arabic">رقم التسلسل</t>
+                                    <t t-else="">Seq #</t>
+                                </th>
+                                <th style="width: 15%;">
+                                    <t t-if="is_arabic">التاريخ</t>
+                                    <t t-else="">Date</t>
+                                </th>
+                                <th style="width: 25%;">
+                                    <t t-if="is_arabic">المرجع / المذكرة</t>
+                                    <t t-else="">Reference / Memo</t>
+                                </th>
+                                <th style="width: 15%;">
+                                    <t t-if="is_arabic">رقم الشيك</t>
+                                    <t t-else="">Check Number</t>
+                                </th>
+                                <th style="width: 15%;">
+                                    <t t-if="is_arabic">تاريخ إستحقاق الشيك</t>
+                                    <t t-else="">Check Due Date</t>
+                                </th>
+                                <th style="width: 15%;">
+                                    <t t-if="is_arabic">البنك</t>
+                                    <t t-else="">Bank</t>
+                                </th>
+                                <th style="width: 25%;">
+                                    <t t-if="is_arabic">المبلغ</t>
+                                    <t t-else="">Amount</t>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="total_amount" t-value="0.0"/>
+                            <t t-foreach="docs" t-as="o">
+                                <t t-set="total_amount" t-value="total_amount + o.amount"/>
+                                <tr>
+                                    <td><span t-esc="o_index + 1"/></td>
+                                    <td><span t-field="o.payment_sequence_number"/></td>
+                                    <td><span t-field="o.date"/></td>
+                                    <td>
+                                        <span t-field="o.memo"/> 
+                                    </td>                                    
+                                    <td><span t-field="o.cheque_number"/></td>
+                                    <td><span t-field="o.cheque_due_date"/></td>
+                                    <td><span t-field="o.bank_id.name"/></td>
+                                    <td>
+                                        <span t-field="o.amount"
+                                              t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <!-- Total Row -->
+                            <tr class="total-row">
+                                <td colspan="8" style="text-align: left;">
+                                    <t t-if="is_arabic" >
+                                        <span style="float: right;">الإجمالي</span>
+                                    </t>
+                                    <t t-else="">Total</t>
+                                </td>
+                                <td>
+                                    <span t-esc="total_amount"
+                                          t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Signature Section -->
+                    <div class="signature-section">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="signature-box">
+                                    <strong>
+                                        <t t-if="is_arabic">أمين الخزينة</t>
+                                        <t t-else="">Cashier</t>
+                                    </strong>
+                                    <div class="signature-line"></div>
+                                    <div class="signature-label">
+                                        <t t-if="is_arabic">التوقيع والختم</t>
+                                        <t t-else="">Signature &amp; Stamp</t>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="signature-box">
+                                    <strong>
+                                        <t t-if="is_arabic">المستلم</t>
+                                        <t t-else="">Receiver</t>
+                                    </strong>
+                                    <div class="signature-line"></div>
+                                    <div class="signature-label">
+                                        <t t-if="is_arabic">التوقيع والختم</t>
+                                        <t t-else="">Signature &amp; Stamp</t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

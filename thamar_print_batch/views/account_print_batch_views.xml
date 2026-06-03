@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--                 Print Batch Form View                        -->
+    <!-- ============================================================ -->
+    <record id="view_account_print_batch_form" model="ir.ui.view">
+        <field name="name">account.print.batch.form</field>
+        <field name="model">account.print.batch</field>
+        <field name="arch" type="xml">
+            <form string="Print Batch">
+                <header>
+                    <!-- Validate and Post button -->
+                    <button name="action_post"
+                            string="تأكيد وترحيل العمليات"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"
+                            confirm="سيتم ترحيل جميع المدفوعات المسودة في هذه المطبوعة. هل أنت متأكد؟"
+                            data-hotkey="v"/>
+                    <!-- Reset to Draft button -->
+                    <button name="action_draft"
+                            string="إعادة إلى مسودة"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state != 'posted'"
+                            data-hotkey="d"/>
+                    <!-- Print Report button -->
+                    <button name="action_print_report"
+                            string="طباعة التقرير"
+                            type="object"
+                            class="btn-secondary"
+                            icon="fa-print"
+                            data-hotkey="p"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1" class="oe_inline"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="batch_type"/>
+                            <field name="date"/>
+                            <field name="partner_id"/>
+                            <field name="recipient_name" readonly="state != 'draft'"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="payment_count"/>
+                            <field name="total_amount" widget="monetary"/>
+                            <field name="amount_in_words"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="المدفوعات (Payments)" name="payments">
+                            <field name="payment_ids">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="partner_id"/>
+                                    <field name="memo" string="Memo / Check Ref"/>
+                                    <field name="cheque_number" optional="show"/>
+                                    <field name="cheque_due_date" optional="show"/>
+                                    <field name="bank_id" optional="show"/>
+                                    <field name="payment_type"/>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="state" widget="badge"
+                                           decoration-info="state == 'draft'"
+                                           decoration-success="state == 'posted'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="ملاحظات (Notes)" name="notes">
+                            <field name="notes" readonly="state != 'draft'" placeholder="Add internal notes here..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--                 Print Batch List/Tree View                   -->
+    <!-- ============================================================ -->
+    <record id="view_account_print_batch_list" model="ir.ui.view">
+        <field name="name">account.print.batch.list</field>
+        <field name="model">account.print.batch</field>
+        <field name="arch" type="xml">
+            <list string="Print Batches" decoration-info="state == 'draft'"
+                  decoration-success="state == 'posted'"
+                  default_order="date desc, id desc">
+                <field name="name"/>
+                <field name="batch_type"/>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="recipient_name" optional="show"/>
+                <field name="payment_count" string="# Payments"/>
+                <field name="total_amount" sum="Total" widget="monetary"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'posted'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--                 Print Batch Search View                      -->
+    <!-- ============================================================ -->
+    <record id="view_account_print_batch_search" model="ir.ui.view">
+        <field name="name">account.print.batch.search</field>
+        <field name="model">account.print.batch</field>
+        <field name="arch" type="xml">
+            <search string="Search Print Batches">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="date"/>
+                <separator/>
+                <filter string="جاري الإعداد (Draft)" name="filter_draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter string="تم الترحيل (Posted)" name="filter_posted"
+                        domain="[('state', '=', 'posted')]"/>
+                <separator/>
+                
+                    <separator/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Partner" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'date:month'}"/>
+                    <filter string="Check Due Date" name="group_cheque_due_date"/>
+                    <filter string="Batch Type" name="group_batch_type" context="{'group_by': 'batch_type'}"/>
+            
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--                 Action and Menu Items                        -->
+    <!-- ============================================================ -->
+    <record id="action_account_print_batch" model="ir.actions.act_window">
+        <field name="name">المطبوعات (Print Batches)</field>
+        <field name="res_model">account.print.batch</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_account_print_batch_search"/>
+        <field name="context">{'search_default_filter_draft': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first print batch
+            </p>
+            <p>
+                Group draft payments into print batches and validate them in bulk.
+            </p>
+        </field>
+    </record>
+
+
+    <!-- Menu item under Accounting > Payments -->
+    <!-- Menu item under Accounting > Customers -->
+    <menuitem id="menu_account_print_batch_customer"
+              name="المطبوعات (Print Batches)"
+              parent="account.menu_finance_receivables"
+              action="action_account_print_batch"
+              sequence="30"/>
+
+    <!-- Menu item under Accounting > Vendors -->
+    <menuitem id="menu_account_print_batch_vendor"
+              name="المطبوعات (Print Batches)"
+              parent="account.menu_finance_payables"
+              action="action_account_print_batch"
+              sequence="30"/>
+
+
+</odoo>
