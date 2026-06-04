@@ -20,51 +20,49 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            set -e  # الخروج فوراً في حال حدوث أي خطأ
+            set -e
 
-            # Variables
             COMPOSE_FILE="docker/server/odoo.yaml"
             PROJECT_DIR="/root/odoo19/thamar_dani"
 
-            # Navigate to project directory
             if [ -d "$PROJECT_DIR" ]; then
-                echo "المجلد موجود، جاري الدخول..."
+                echo "Directory exists, navigating..."
             else
-                echo "Project directory not found at expected location: $PROJECT_DIR"
+                echo "Project directory not found at: $PROJECT_DIR"
                 exit 1
             fi
 
             cd "$PROJECT_DIR"
-            echo "المسار الحالي: $PROJECT_DIR"
+            echo "Current path: $PROJECT_DIR"
 
-            # Verify docker-compose file exists
             if [ ! -f "$COMPOSE_FILE" ]; then
               echo "Docker compose file not found: $COMPOSE_FILE"
               exit 1
             fi
 
-            # Pull latest changes
             echo "Syncing with latest changes..."
             git fetch origin master
             git reset --hard origin/master
 
-            # تحديث وبناء الحاويات دون مسح الـ Volumes الثابتة
             echo "Updating containers..."
             docker compose -f "$COMPOSE_FILE" up -d --build
 
-            # ✨ التعديل السحري: تشغيل حاوية موازية مؤقتة ومستقلة لتنظيف الـ Assets دون تعارض المنافذ
-            echo "Regenerating assets and icons for Live database (Port Isolated Mode)..."
+            echo "Regenerating assets for Live database..."
             docker compose -f "$COMPOSE_FILE" run --rm --no-deps odoo odoo -d Live -u web --stop-after-init
 
-            # إعادة تشغيل خفيفة لحاوية أودو الرئيسية لتقرأ الملفات المصنفة الجديدة
-            echo "Soft restarting Odoo service to apply clean assets..."
+            echo "Soft restarting Odoo service..."
             docker compose -f "$COMPOSE_FILE" restart odoo
 
-            # الانتظار حتى يتأكد النظام أن المنفذ يعمل
-            echo "Waiting for Odoo to be ready (Port 8069)..."
-            until curl -s http://localhost:8069 > /dev/null; do 
-              echo "Odoo is still loading its Registry... (Waiting 5s)"
+            echo "Waiting for Odoo to be ready on port 8069..."
+            sleep 10
+            
+            for i in {1..12}; do
+              if curl -s http://localhost:8069 > /dev/null; then
+                echo "Odoo is up and responding!"
+                break
+              fi
+              echo "Odoo registry is still loading... waiting 5s (Attempt $i/12)"
               sleep 5
-            done 
+            done
 
-            echo "Deployment completed successfully with asset auto-repair!"`````````````````````````
+            echo "Deployment completed successfully!"
