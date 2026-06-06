@@ -182,13 +182,8 @@ class AccountPayment(models.Model):
         Also assigns a sequence number based on payment type.
         """
         for payment in self:
-            # Only check approval for outbound payments
-            if payment.payment_type == 'outbound':
-                if not payment.is_approved and payment.state == 'draft':
-                    raise UserError(_(
-                        'Outbound payment must be approved before confirmation.\n'
-                        'Please click the "Approve" button first.'
-                    ))
+            # Approval check disabled - payments can be confirmed directly
+            pass
 
         res = super(AccountPayment, self).action_post()
 
@@ -236,7 +231,7 @@ class AccountPayment(models.Model):
 
     destination_account_id = fields.Many2one(
         comodel_name='account.account',
-        domain="[('account_type', 'in', ('asset_receivable', 'liability_payable', 'expense', 'expense_other', 'expense_depreciation', 'expense_direct_cost'))]"
+        domain=[],
     )
 
     is_direct_expense = fields.Boolean(

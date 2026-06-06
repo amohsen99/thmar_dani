@@ -8,65 +8,23 @@
         <field name="priority">99</field>
         <field name="arch" type="xml">
 
-            <!-- Add approval fields as invisible -->
+            <!-- Approval fields kept invisible (approval feature disabled) -->
             <field name="state" position="after">
                 <field name="is_approved" invisible="1"/>
                 <field name="approved_by" invisible="1"/>
                 <field name="approved_date" invisible="1"/>
             </field>
 
-            <!-- Add payment_type field for visibility conditions -->
-            <field name="payment_type" position="after">
-                <field name="payment_type" invisible="1"/>
-            </field>
-
-            <!-- Add Approve button before Confirm button (ONLY for outbound payments) -->
-            <xpath expr="//button[@name='action_post']" position="before">
-                <button name="action_approve_payment"
-                        string="Approve"
-                        type="object"
-                        class="oe_highlight"
-                        invisible="state != 'draft' or is_approved or payment_type != 'outbound'"
-                        groups="thamar_invoice_custom.group_payment_approval"
-                        data-hotkey="a"/>
-            </xpath>
-
-            <!-- Confirm button stays visible - error will show if not approved -->
-            <!-- No modification to Confirm button visibility -->
-
-            <!-- Add Reject Approval button (ONLY for outbound payments) -->
-            <xpath expr="//button[@name='action_post']" position="after">
-                <button name="action_reject_approval"
-                        string="Reject Approval"
-                        type="object"
-                        class="btn-secondary"
-                        invisible="state != 'draft' or not is_approved or payment_type != 'outbound'"
-                        groups="thamar_invoice_custom.group_payment_approval"
-                        confirm="Are you sure you want to reject this approval?"
-                        data-hotkey="z"/>
-            </xpath>
-
-            <!-- Add approval info banner (ONLY for outbound payments) -->
-            <xpath expr="//sheet" position="before">
-                <div class="alert alert-success mb-0" role="alert"
-                     invisible="not is_approved or state != 'draft' or payment_type != 'outbound'">
-                    <strong>✓ Approved</strong> by <field name="approved_by" readonly="1" class="oe_inline"/>
-                    on <field name="approved_date" readonly="1" class="oe_inline"/>
-                </div>
-                <div class="alert alert-warning mb-0" role="alert"
-                     invisible="is_approved or state != 'draft' or payment_type != 'outbound'">
-                    <strong>⚠ Approval Required:</strong> This outbound payment must be approved before confirmation.
-                </div>
-            </xpath>
+            <!-- Approval buttons and banners removed (approval feature disabled) -->
 
             <!-- Add Payment Sequence Number field after the name field -->
             <xpath expr="//field[@name='name']" position="after">
                 <field name="payment_sequence_number" readonly="1" invisible="not payment_sequence_number"/>
             </xpath>
 
-            <!-- <xpath expr="//field[@name='partner_id']" position="after">
-                <field name="recipient_name"/>
-            </xpath> -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="recipient_name" invisible="1"/>
+            </xpath>
 
             <!-- Add Bank, Cheque Due Date, and Cheque Number fields after payment_method_line_id -->
             <xpath expr="//field[@name='payment_method_line_id']" position="after">
@@ -79,13 +37,12 @@
             <!-- Add Destination Account and Analytic Distribution fields after partner_id -->
             <xpath expr="//field[@name='partner_id'][2]" position="after">
                 <field name="destination_account_id"
+                       domain="[]"
                        options="{'no_create': True}"
                        readonly="state != 'draft'"/>
                 <field name="is_direct_expense" invisible="1"/>
                 <field name="analytic_distribution"
-                       widget="analytic_distribution"
-                       invisible="payment_type != 'outbound' and not is_direct_expense"
-                       readonly="state != 'draft'"/>
+                       widget="analytic_distribution" readonly="state != 'draft'"/>
             </xpath>
 
         </field>
