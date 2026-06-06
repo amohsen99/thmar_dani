@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -216,4 +216,20 @@ class AccountPrintBatch(models.Model):
             'thamar_print_batch.action_report_print_batch'
         ).report_action(self)
 
-    
+    # ==================== Constraints ====================
+
+    @api.constrains('payment_ids')
+    def _check_duplicate_payments(self):
+        """Ensure no payment is already linked to another batch."""
+        for batch in self:
+            for payment in batch.payment_ids:
+                other_batch = self.env['account.print.batch'].search([
+                    ('payment_ids', 'in', payment.id),
+                    ('id', '!=', batch.id),
+                ], limit=1)
+                if other_batch:
+                    raise ValidationError(
+                        "عذراً يا هندسة! الحركة رقم (%s) تم إدراجها بالفعل في المطبوعة المجمعة رقم (%s). "
+                        "لا يمكن تكرار طباعتها."
+                        % (payment.name, other_batch.name)
+                    )

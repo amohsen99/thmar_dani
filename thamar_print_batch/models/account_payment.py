@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 
 
 class AccountPayment(models.Model):
@@ -18,6 +19,33 @@ class AccountPayment(models.Model):
         store=True,
         readonly=True,
     )
+    is_printed = fields.Boolean(
+        string='Printed in Batch',
+        compute='_compute_is_printed',
+        store=True,
+        help='Indicates whether this payment has been included in a print batch.',
+    )
+
+    @api.depends('print_batch_id')
+    def _compute_is_printed(self):
+        for payment in self:
+            payment.is_printed = bool(payment.print_batch_id)
+
+    # ==================== Actions ====================
+
+    def action_open_print_batch(self):
+        """Open the linked print batch form view (smart button action)."""
+        self.ensure_one()
+        if not self.print_batch_id:
+            return
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Print Batch'),
+            'res_model': 'account.print.batch',
+            'res_id': self.print_batch_id.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
 
     def action_add_to_new_print_batch(self):
         """
@@ -31,11 +59,19 @@ class AccountPayment(models.Model):
         # Ensure all selected payments have the same type (inbound/outbound)
         payment_types = set(self.mapped('payment_type'))
         if len(payment_types) > 1:
-            from odoo.exceptions import UserError
             raise UserError(_(
                 "عذراً! لا يمكنك إنشاء مطبوعة مجمعة لمدفوعات ومقبوضات في نفس الوقت. "
                 "يرجى تحديد عمليات من نفس النوع (صادر أو وارد) فقط."
             ))
+
+        # Check for payments already linked to another batch
+        for payment in self:
+            if payment.print_batch_id:
+                raise ValidationError(
+                    "عذراً يا هندسة! الحركة رقم (%s) تم إدراجها بالفعل في المطبوعة المجمعة رقم (%s). "
+                    "لا يمكن تكرار طباعتها."
+                    % (payment.name, payment.print_batch_id.name)
+                )
 
         # Determine partner from selected payments
         partners = self.mapped('partner_id')

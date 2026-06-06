@@ -18,6 +18,7 @@
     'data': [
         'security/ir.model.access.csv',
         'data/sequence_data.xml',
+        'data/paperformat_data.xml',
         'views/account_print_batch_views.xml',
         'views/account_payment_views.xml',
         'report/print_batch_report.xml',

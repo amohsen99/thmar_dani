@@ -1,231 +1,301 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- QWeb Template for Print Batch PDF Report -->
     <template id="report_print_batch_document">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
-                <t t-call="web.external_layout">
-                    <div class="page" dir="rtl" style="font-family: 'DejaVu Sans', 'Arial', sans-serif;">
+                <t t-call="web.basic_layout">
+
+                    <div class="page" dir="rtl" style="font-family: 'DejaVu Sans', 'Arial', sans-serif; font-size: 15px; color: #2c3e50; line-height: 1.5; padding: 5px;">
 
                         <style>
-                            .batch-header {
-                                text-align: center;
-                                margin: 20px 0 30px 0;
-                                padding: 15px;
-                                border: 2px solid #2c3e50;
-                                border-radius: 8px;
-                                background-color: #f8f9fa;
+                            * {
+                                box-sizing: border-box;
                             }
-                            .batch-serial {
-                                font-size: 28px;
-                                font-weight: 900;
-                                color: #2c3e50;
-                                letter-spacing: 2px;
+                            .page {
+                                padding: 0 !important;
+                                margin: 0 !important;
+                                width: 100%;
+                            }
+                            .header-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                border-bottom: 3px solid #2c3e50;
+                                margin-bottom: 15px;
+                            }
+                            .header-table td {
+                                padding: 8px;
+                                border: none;
+                                vertical-align: middle;
+                            }
+                            .header-logo {
+                                max-height: 65px;
+                                max-width: 150px;
+                                display: block;
                                 margin-bottom: 5px;
                             }
-                            .batch-title {
+                            .company-title {
                                 font-size: 18px;
+                                font-weight: 900;
+                                color: #2c3e50;
+                                margin: 4px 0;
+                            }
+                            .company-details-text {
+                                font-size: 12px;
                                 color: #555;
-                                margin-top: 5px;
+                                margin: 2px 0;
                             }
-                            .batch-info-box {
-                                background-color: #f0f4f8;
-                                border: 1px solid #d1d9e0;
+                            .batch-title-text {
+                                font-size: 20px;
+                                font-weight: bold;
+                                color: #2c3e50;
+                                margin-bottom: 5px;
+                            }
+                            .batch-serial-text {
+                                font-size: 20px;
+                                font-weight: 900;
+                                color: #e74c3c;
+                                letter-spacing: 0.5px;
+                            }
+                            .info-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                background-color: #f8f9fa;
+                                border: 1px solid #dee2e6;
                                 border-radius: 6px;
-                                padding: 14px 20px;
-                                margin-bottom: 25px;
+                                margin-bottom: 15px;
                             }
-                            .batch-info-label {
+                            .info-table td {
+                                padding: 10px 12px;
+                                border: none;
+                                font-size: 15px;
+                                vertical-align: middle;
+                                white-space: normal;
+                                word-wrap: break-word;
+                            }
+                            .info-label {
                                 font-weight: bold;
                                 color: #34495e;
-                                display: inline-block;
-                                min-width: 120px;
+                                padding-right: 40px;
+                            }
+                            .info-value {
+                                color: #000;
+                            }
+                            .section-title {
+                                color: #2c3e50;
+                                border-bottom: 2px solid #2c3e50;
+                                padding-bottom: 5px;
+                                text-align: right;
+                                font-size: 16px;
+                                margin: 15px 0 10px 0;
+                                font-weight: bold;
                             }
                             .batch-table {
                                 width: 100%;
                                 border-collapse: collapse;
-                                margin-top: 10px;
+                                table-layout: fixed;
+                                margin-top: 5px;
                             }
                             .batch-table thead th {
                                 background-color: #2c3e50;
-                                color: #ffffff;
-                                padding: 10px 14px;
+                                color: #fff;
+                                padding: 10px 6px;
                                 font-weight: bold;
                                 border: 1px solid #1a252f;
-                                text-align: right;
-                                font-size: 13px;
+                                text-align: center;
+                                font-size: 14px;
+                                white-space: normal;
+                                word-wrap: break-word;
                             }
                             .batch-table tbody td {
-                                padding: 9px 14px;
+                                padding: 5px 3px;
                                 border: 1px solid #dee2e6;
-                                text-align: right;
+                                text-align: center;
                                 font-size: 12px;
+                                white-space: normal;
+                                word-wrap: break-word;
+                                overflow-wrap: break-word;
+                                vertical-align: middle;
                             }
                             .batch-table tbody tr:nth-child(even) {
                                 background-color: #f8f9fa;
                             }
-                            .batch-table tbody tr:hover {
-                                background-color: #e9ecef;
-                            }
                             .batch-total-row td {
                                 font-weight: bold;
-                                background-color: #d5e8d4 !important;
-                                border-top: 3px solid #2c3e50;
-                                padding: 12px 14px;
-                                font-size: 14px;
+                                background-color: #e2f0d9 !important;
+                                border-top: 2px solid #2c3e50;
+                                border-bottom: 1px solid #dee2e6;
+                                padding: 12px 10px;
+                                font-size: 15px;
+                                color: #1e4620;
                             }
-                            .batch-status {
-                                display: inline-block;
-                                padding: 3px 12px;
-                                border-radius: 12px;
-                                font-size: 12px;
-                                font-weight: bold;
+                            .amount-words-row td {
+                                background-color: #f2f4f4 !important;
+                                padding: 12px 10px;
+                                font-size: 15px;
+                                white-space: normal;
+                                word-wrap: break-word;
+                                border-bottom: 2px solid #2c3e50;
                             }
-                            .batch-status-draft {
-                                background-color: #ffeaa7;
-                                color: #856404;
-                            }
-                            .batch-status-posted {
-                                background-color: #d4edda;
-                                color: #155724;
-                            }
-                            .batch-barcode {
-                                text-align: center;
-                                margin: 10px 0;
-                            }
-                            .batch-signature-section {
-                                margin-top: 60px;
+                            .sig-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-top: 30px;
                                 page-break-inside: avoid;
                             }
-                            .batch-signature-box {
+                            .sig-table td {
+                                width: 50%;
+                                border: none;
                                 text-align: center;
+                                padding: 0 15px;
+                                vertical-align: top;
                             }
-                            .batch-signature-line {
-                                border-bottom: 1px solid #333;
-                                width: 80%;
-                                margin: 40px auto 8px auto;
+                            .sig-line {
+                                border-bottom: 1px dashed #7f8c8d;
+                                width: 85%;
+                                margin: 30px auto 6px auto;
                             }
-                            .batch-signature-label {
+                            .sig-label {
+                                font-size: 12px;
+                                color: #7f8c8d;
+                            }
+                            .batch-footer {
+                                border-top: 1px solid #dee2e6;
+                                margin-top: 25px;
+                                padding-top: 5px;
+                                text-align: center;
                                 font-size: 11px;
-                                color: #666;
+                                color: #7f8c8d;
                             }
                         </style>
 
-                        <!-- ==================== Header with Serial ==================== -->
-                        <div class="batch-header">
-                            <div class="batch-title">
-                                <t t-if="o.batch_type == 'inbound'">إيصال استلام</t>
-                                <t t-else="">إيصال دفع</t>
-                            </div>
-                            <div class="batch-serial">
-                                <span t-field="o.name"/>
-                            </div>
-                        </div>
+                        <table class="header-table">
+                            <tr>
+                                <td style="width: 50%; text-align: right;">
+                                    <t t-if="o.company_id.logo">
+                                        <img t-att-src="image_data_uri(o.company_id.logo)" class="header-logo" alt="Logo"/>
+                                    </t>
+                                    <div class="company-title">
+                                        <t t-esc="o.company_id.name"/>
+                                    </div>
+                                    <div t-if="o.company_id.phone" class="company-details-text">
+                                        هاتف: <t t-esc="o.company_id.phone"/>
+                                        <t t-if="o.company_id.email"> | <t t-esc="o.company_id.email"/></t>
+                                    </div>
+                                    <div t-if="o.company_id.vat" class="company-details-text">
+                                        الرقم الضريبي: <t t-esc="o.company_id.vat"/>
+                                    </div>
+                                </td>
+                                <td style="width: 50%; text-align: left; vertical-align: middle;">
+                                    <div class="batch-title-text">
+                                        <t t-if="o.batch_type == 'inbound'">إيصال استلام نقدي</t>
+                                        <t t-else="">إيصال صرف نقدي</t>
+                                    </div>
+                                    <div class="batch-serial-text">
+                                        الرقم: <span t-field="o.name"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
 
-                        <!-- ==================== Batch Info ==================== -->
-                        <div class="batch-info-box">
-                            <div class="row" style="direction: rtl;">
-                                <div class="col-4">
-                                    <span class="batch-info-label">التاريخ:</span>
-                                    <span t-field="o.date"/>
-                                </div>
-                                <div class="col-4">
-                                    <span class="batch-info-label">
+                        <table class="info-table">
+                            <tr>
+                                <td style="width: 50%;">
+                                    <span class="info-label">التاريخ:</span>
+                                    <span class="info-value" t-field="o.date" t-options='{"widget": "date"}'/>
+                                </td>
+                                <td style="width: 50%;">
+                                    <span class="info-label">
                                         <t t-if="o.batch_type == 'inbound'">استلمنا من:</t>
                                         <t t-else="">صرفنا إلى:</t>
                                     </span>
-                                    <span t-field="o.recipient_name"/>
-                                </div>
-                                <div class="col-4">
-                                    <span class="batch-info-label">إجمالي المبلغ:</span>
-                                    <strong>
-                                        <span t-field="o.total_amount"
-                                              t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    <span class="info-value" t-field="o.recipient_name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 50%;">
+                                    <span class="info-label">إجمالي المبلغ:</span>
+                                    <strong class="info-value">
+                                        <span t-field="o.total_amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                     </strong>
-                                </div>
-                            </div>
-                            <div class="row mt-2" style="direction: rtl;">
-                                <div class="col-4">
-                                    <span class="batch-info-label">عدد المدفوعات:</span>
-                                    <span t-field="o.payment_count"/>
-                                </div>
-                                <div class="col-4">
-                                    <span class="batch-info-label">المورد/العميل:</span>
-                                    <span t-field="o.partner_id.name"/>
-                                </div>
-                            </div>
-                        </div>
+                                </td>
+                                <td style="width: 50%;">
+                                    <span class="info-label">عدد الحركات:</span>
+                                    <span class="info-value" t-field="o.payment_count"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span class="info-label">المورد / العميل:</span>
+                                    <span class="info-value" t-field="o.partner_id.name"/>
+                                </td>
+                            </tr>
+                        </table>
 
-                        <!-- ==================== Payments Table ==================== -->
-                        <h4 style="color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 8px; text-align: right;">
-                            تفاصيل المدفوعات
-                        </h4>
+                        <div class="section-title">تفاصيل الدفعات والمسيرات</div>
                         <table class="batch-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 5%;">#</th>
-                                    <th style="width: 15%;">التاريخ</th>
-                                    <th style="width: 25%;">المرجع / المذكرة</th>
-                                    <th style="width: 15%;">رقم الشيك</th>
-                                    <th style="width: 15%;">تاريخ الإستحقاق</th>
-                                    <th style="width: 10%;">البنك</th>
-                                    <th style="width: 15%;">المبلغ</th>
+                                    <th style="width: 6%;">#</th>
+                                    <th style="width: 14%;">التاريخ</th>
+                                    <th style="width: 24%;">البيان / المذكرة</th>
+                                    <th style="width: 14%;">رقم الشيك</th>
+                                    <th style="width: 14%;">الاستحقاق</th>
+                                    <th style="width: 14%;">البنك</th>
+                                    <th style="width: 14%;">المبلغ</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <t t-foreach="o.payment_ids" t-as="pay">
                                     <tr>
                                         <td><span t-esc="pay_index + 1"/></td>
-                                        <td><span t-field="pay.date"/></td>
-                                        <td><span t-field="pay.memo"/></td>
+                                        <td><span t-field="pay.date" t-options='{"widget": "date"}'/></td>
+                                        <td style="text-align: right;"><span t-field="pay.memo"/></td>
                                         <td><span t-field="pay.cheque_number"/></td>
-                                        <td><span t-field="pay.cheque_due_date"/></td>
+                                        <td><span t-field="pay.cheque_due_date" t-options='{"widget": "date"}'/></td>
                                         <td><span t-field="pay.bank_id"/></td>
-                                        <td>
-                                            <span t-field="pay.amount"
-                                                  t-options="{'widget': 'monetary', 'display_currency': pay.currency_id}"/>
+                                        <td style="text-align: left; font-weight: bold;">
+                                            <span t-field="pay.amount" t-options="{'widget': 'monetary', 'display_currency': pay.currency_id}"/>
                                         </td>
                                     </tr>
                                 </t>
-                                <!-- Total Row -->
-                                <tr class="batch-total-row">
-                                    <td colspan="6" style="text-align: right;">
-                                        <strong>الإجمالي: </strong>
 
+                                <tr class="batch-total-row">
+                                    <td colspan="6" style="text-align: left;">
+                                        <strong>المجموع الكلي:</strong>
                                     </td>
-                                    <td>
-                                        <span t-field="o.total_amount"
-                                              t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    <td style="text-align: left;">
+                                        <span t-field="o.total_amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td colspan="7" style="text-align: right; background-color: #f8f9fa;">
-                                        <strong style="color: #2c3e50;">المبلغ فقط: </strong>
-                                        <span t-field="o.amount_in_words" style="font-weight: bold;"/>
+                                <tr class="amount-words-row">
+                                    <td colspan="7" style="text-align: right;">
+                                        <span class="info-label" style="color: #2c3e50;">فقط وقدره: </span>
+                                        <span t-field="o.amount_in_words" style="font-weight: bold; color: #000;"/>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
 
-                        <!-- ==================== Signature Section ==================== -->
-                        <div class="batch-signature-section">
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="batch-signature-box">
-                                        <strong>أمين الخزينة</strong>
-                                        <div class="batch-signature-line"></div>
-                                        <div class="batch-signature-label">التوقيع والختم</div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="batch-signature-box">
-                                        <strong>المستلم</strong>
-                                        <div class="batch-signature-line"></div>
-                                        <div class="batch-signature-label">التوقيع والختم</div>
-                                    </div>
-                                </div>
-                            </div>
+                        <table class="sig-table">
+                            <tr>
+                                <td>
+                                    <strong style="font-size: 14px;">توقيع أمين الصندوق</strong>
+                                    <div class="sig-line"></div>
+                                    <div class="sig-label">الاسم والتوقيع الرسمي</div>
+                                </td>
+                                <td>
+                                    <strong style="font-size: 14px;">توقيع المستلم</strong>
+                                    <div class="sig-line"></div>
+                                    <div class="sig-label">الاسم والتوقيع الرسمي</div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="batch-footer">
+                            <t t-esc="o.company_id.name"/>
+                            <t t-if="o.company_id.phone"> | هاتف: <t t-esc="o.company_id.phone"/></t>
+                            <t t-if="o.company_id.website"> | <t t-esc="o.company_id.website"/></t>
                         </div>
 
                     </div>
