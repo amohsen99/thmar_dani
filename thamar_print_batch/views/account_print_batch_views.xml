@@ -58,7 +58,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="المدفوعات (Payments)" name="payments">
+                        <page string="الدفعات" name="payments">
                             <field name="payment_ids">
                                 <list>
                                     <field name="date"/>
@@ -96,13 +96,13 @@
             <list string="Print Batches" decoration-info="state == 'draft'"
                   decoration-success="state == 'posted'"
                   default_order="date desc, id desc">
-                <field name="name"/>
-                <field name="batch_type"/>
-                <field name="date"/>
-                <field name="partner_id"/>
-                <field name="recipient_name" optional="show"/>
-                <field name="payment_count" string="# Payments"/>
-                <field name="total_amount" sum="Total" widget="monetary"/>
+                <field name="name" string="رقم الايصال"/>
+                <field name="batch_type" string="نوع الايصال"/>
+                <field name="date" string="تاريخ الايصال"/>
+                <field name="partner_id" string="اسم العميل / المورد"/>
+                <field name="recipient_name" optional="show" string="اسم المستلم / الدافع"/>
+                <field name="payment_count" string="عدد الدفعات"/>
+                <field name="total_amount" sum="المبلغ الإجمالي" widget="monetary" string="المبلغ الإجمالي"/>
                 <field name="currency_id" column_invisible="1"/>
                 <field name="state" widget="badge"
                        decoration-info="state == 'draft'"
@@ -163,14 +163,14 @@
     <!-- Menu item under Accounting > Payments -->
     <!-- Menu item under Accounting > Customers -->
     <menuitem id="menu_account_print_batch_customer"
-              name="المطبوعات (Print Batches)"
+              name="الايصالات"
               parent="account.menu_finance_receivables"
               action="action_account_print_batch"
               sequence="30"/>
 
     <!-- Menu item under Accounting > Vendors -->
     <menuitem id="menu_account_print_batch_vendor"
-              name="المطبوعات (Print Batches)"
+              name="الايصالات"
               parent="account.menu_finance_payables"
               action="action_account_print_batch"
               sequence="30"/>

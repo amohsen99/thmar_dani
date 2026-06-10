@@ -6,7 +6,7 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.basic_layout">
 
-                    <div class="page" dir="rtl" style="font-family: 'DejaVu Sans', 'Arial', sans-serif; font-size: 11.5px; color: #2c3e50; line-height: 1.35; padding: 0px;">
+                    <div class="page" dir="rtl" style="font-family: 'DejaVu Sans', 'Arial', sans-serif; font-size: 11.5px; color: #2c3e50; line-height: 1.35; padding: 0px; height: 100%; position: relative;">
 
                         <style>
                             * {
@@ -54,7 +54,6 @@
                             .batch-serial-text {
                                 font-size: 15px;
                                 font-weight: 900;
-                                color: #e74c3c;
                             }
                             .info-table {
                                 width: 100%;
@@ -106,7 +105,6 @@
                                 white-space: normal;
                                 word-wrap: break-word;
                             }
-                            /* Extra-compact configurations for table rows */
                             .batch-table tbody td {
                                 padding: 3px 4px;
                                 border: 1px solid #dee2e6;
@@ -137,15 +135,23 @@
                                 word-wrap: break-word;
                                 border-bottom: 2px solid #2c3e50;
                             }
+                            
+                            /* ===== Fixed Absolute Bottom Container ===== */
+                            .bottom-sticky-container {
+                                position: absolute;
+                                bottom: 0px;
+                                left: 0px;
+                                right: 0px;
+                                width: 100%;
+                            }
                             .sig-table {
                                 width: 100%;
                                 border-collapse: collapse;
-                                margin-top: 6px;
-                                page-break-inside: avoid;
+                                border: none !important;
                             }
                             .sig-table td {
                                 width: 50%;
-                                border: none;
+                                border: none !important; /* Force removes any structural lines */
                                 text-align: center;
                                 padding: 0 4px;
                                 vertical-align: top;
@@ -161,7 +167,7 @@
                             }
                             .batch-footer {
                                 border-top: 1px solid #dee2e6;
-                                margin-top: 10px;
+                                margin-top: 6px;
                                 padding-top: 3px;
                                 text-align: center;
                                 font-size: 9.5px;
@@ -191,7 +197,7 @@
                                         <t t-if="o.batch_type == 'inbound'">إيصال استلام نقدي</t>
                                         <t t-else="">إيصال صرف نقدي</t>
                                     </div>
-                                    <div class="batch-serial-text">
+                                    <div class="batch-serial-text" t-attf-style="color: #{'#27ae60' if o.batch_type == 'inbound' else '#e74c3c'};">
                                         الرقم: <span t-field="o.name"/>
                                     </div>
                                 </td>
@@ -261,7 +267,7 @@
                                 </t>
 
                                 <tr class="batch-total-row">
-                                    <td colspan="6" style="text-align: right;">
+                                    <td colspan="6" style="text-align: left;">
                                         <strong>المجموع الكلي:</strong>
                                     </td>
                                     <td style="text-align: right;">
@@ -277,25 +283,27 @@
                             </tbody>
                         </table>
 
-                        <table class="sig-table">
-                            <tr>
-                                <td>
-                                    <strong style="font-size: 11px;">توقيع أمين الصندوق</strong>
-                                    <div class="sig-line"></div>
-                                    <div class="sig-label">الاسم والتوقيع الرسمي</div>
-                                </td>
-                                <td>
-                                    <strong style="font-size: 11px;">توقيع المستلم</strong>
-                                    <div class="sig-line"></div>
-                                    <div class="sig-label">الاسم والتوقيع الرسمي</div>
-                                </td>
-                            </tr>
-                        </table>
+                        <div >
+                            <table class="sig-table">
+                                <tr>
+                                    <td>
+                                        <strong style="font-size: 11px;">توقيع أمين الصندوق</strong>
+                                        <div class="sig-line"></div>
+                                        <div class="sig-label">الاسم والتوقيع الرسمي</div>
+                                    </td>
+                                    <td>
+                                        <strong style="font-size: 11px;">توقيع المستلم</strong>
+                                        <div class="sig-line"></div>
+                                        <div class="sig-label">الاسم والتوقيع الرسمي</div>
+                                    </td>
+                                </tr>
+                            </table>
 
-                        <div class="batch-footer">
-                            <t t-esc="o.company_id.name"/>
-                            <t t-if="o.company_id.phone"> | هاتف: <t t-esc="o.company_id.phone"/></t>
-                            <t t-if="o.company_id.website"> | <t t-esc="o.company_id.website"/></t>
+                            <div class="batch-footer">
+                                <t t-esc="o.company_id.name"/>
+                                <t t-if="o.company_id.phone"> | هاتف: <t t-esc="o.company_id.phone"/></t>
+                                <t t-if="o.company_id.website"> | <t t-esc="o.company_id.website"/></t>
+                            </div>
                         </div>
 
                     </div>
