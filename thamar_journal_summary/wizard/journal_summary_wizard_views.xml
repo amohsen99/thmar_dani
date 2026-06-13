@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Wizard Form View -->
+    <record id="view_journal_summary_wizard_form" model="ir.ui.view">
+        <field name="name">journal.summary.wizard.form</field>
+        <field name="model">journal.summary.wizard</field>
+        <field name="arch" type="xml">
+            <form string="تقارير تحليل الحسابات">
+                <group>
+                    <field name="report_type" widget="radio"
+                           string="نوع التقرير"/>
+                </group>
+                <group>
+                    <group>
+                        <field name="account_ids" widget="many2many_tags"
+                               options="{'no_create': True}"
+                               placeholder="اختر الحسابات..."/>
+                    </group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_print_report"
+                            string="طباعة التقرير"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-print"/>
+                    <button string="إلغاء" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_journal_summary_wizard" model="ir.actions.act_window">
+        <field name="name">تقارير تحليل الحسابات</field>
+        <field name="res_model">journal.summary.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Menu Item under Accounting > Reporting -->
+    <menuitem id="menu_journal_summary_report"
+              name="تقارير تحليل الحسابات"
+              parent="account.menu_finance_reports"
+              action="action_journal_summary_wizard"
+              sequence="100"/>
+
+</odoo>
