@@ -22,6 +22,19 @@
                         <field name="date_to"/>
                     </group>
                 </group>
+                <group string="أعمدة إضافية في التقرير"
+                       invisible="report_type != 'running_ledger'">
+                    <group>
+                        <field name="show_ending_balance"/>
+                        <field name="show_cheque_number"/>
+                        <field name="show_bank_name"/>
+                    </group>
+                    <group>
+                        <field name="show_cheque_due_date"/>
+                        <field name="show_analytic"/>
+                        <field name="show_analytic_distribution"/>
+                    </group>
+                </group>
                 <footer>
                     <button name="action_print_report"
                             string="طباعة التقرير"

@@ -20,6 +20,14 @@ class ReportJournalSummary(models.AbstractModel):
         date_from = fields.Date.from_string(data.get('date_from'))
         date_to = fields.Date.from_string(data.get('date_to'))
 
+        # Column visibility flags (default to legacy behaviour)
+        show_ending_balance = data.get('show_ending_balance', True)
+        show_cheque_number = data.get('show_cheque_number', False)
+        show_bank_name = data.get('show_bank_name', False)
+        show_cheque_due_date = data.get('show_cheque_due_date', False)
+        show_analytic = data.get('show_analytic', False)
+        show_analytic_distribution = data.get('show_analytic_distribution', False)
+
         accounts = self.env['account.account'].browse(account_ids)
 
         if report_type == 'compound_entry':
@@ -34,6 +42,13 @@ class ReportJournalSummary(models.AbstractModel):
             'report_type': report_type,
             'accounts_data': accounts_data,
             'company': self.env.company,
+            # visibility flags for QWeb
+            'show_ending_balance': show_ending_balance,
+            'show_cheque_number': show_cheque_number,
+            'show_bank_name': show_bank_name,
+            'show_cheque_due_date': show_cheque_due_date,
+            'show_analytic': show_analytic,
+            'show_analytic_distribution': show_analytic_distribution,
         }
 
     # ==================================================================
@@ -295,17 +310,24 @@ class ReportJournalSummary(models.AbstractModel):
         """Fetch individual move lines for the running ledger table.
 
         Returns list of dicts sorted by date, move name.
+        Includes payment-related fields (cheque, bank) and analytic info.
         """
         self.env.cr.execute("""
             SELECT aml.date,
-                   am.name AS move_name,
-                   COALESCE(aml.name, '') AS label,
-                   COALESCE(rp.name, '') AS partner_name,
+                   am.name                          AS move_name,
+                   COALESCE(aml.name, '')            AS label,
+                   COALESCE(rp.name, '')             AS partner_name,
                    aml.debit,
-                   aml.credit
+                   aml.credit,
+                   COALESCE(ap.cheque_number, '')    AS cheque_number,
+                   COALESCE(rb.name, '')             AS bank_name,
+                   ap.cheque_due_date                AS cheque_due_date,
+                   aml.analytic_distribution
               FROM account_move_line aml
               JOIN account_move am ON am.id = aml.move_id
          LEFT JOIN res_partner rp ON rp.id = aml.partner_id
+         LEFT JOIN account_payment ap ON ap.move_id = am.id
+         LEFT JOIN res_bank rb ON rb.id = ap.bank_id
              WHERE aml.account_id = %s
                AND aml.date >= %s
                AND aml.date <= %s
@@ -313,8 +335,25 @@ class ReportJournalSummary(models.AbstractModel):
           ORDER BY aml.date, am.name, aml.id
         """, (account_id, date_from, date_to))
 
+        # Pre-fetch analytic account names for distribution rendering
+        analytic_cache = {}
+
         lines = []
         for row in self.env.cr.fetchall():
+            # Parse analytic distribution JSON → readable string
+            distribution_raw = row[9]  # jsonb / dict or None
+            analytic_names = []
+            analytic_dist_text = ''
+            if distribution_raw and isinstance(distribution_raw, dict):
+                for analytic_id_str, pct in distribution_raw.items():
+                    aid = int(analytic_id_str)
+                    if aid not in analytic_cache:
+                        aa = self.env['account.analytic.account'].browse(aid)
+                        analytic_cache[aid] = aa.name or ''
+                    name = analytic_cache[aid]
+                    analytic_names.append(name)
+                    analytic_dist_text += f"{name} ({pct}%)  "
+
             lines.append({
                 'date': row[0],
                 'move_name': row[1] or '',
@@ -323,5 +362,10 @@ class ReportJournalSummary(models.AbstractModel):
                 'debit': float(row[4]),
                 'credit': float(row[5]),
                 'running_balance': 0.0,  # computed later
+                'cheque_number': row[6] or '',
+                'bank_name': row[7] or '',
+                'cheque_due_date': row[8],
+                'analytic_name': ', '.join(analytic_names),
+                'analytic_distribution_text': analytic_dist_text.strip(),
             })
         return lines

@@ -34,6 +34,38 @@ class JournalSummaryWizard(models.TransientModel):
         default=fields.Date.context_today,
     )
 
+    # ── Optional column toggles (running ledger) ──
+    show_ending_balance = fields.Boolean(
+        string='الرصيد النهائي',
+        default=True,
+        help='Show / hide the Ending Balance metric card and column.',
+    )
+    show_cheque_number = fields.Boolean(
+        string='رقم الشيك',
+        default=False,
+        help='Show / hide the Cheque Number column.',
+    )
+    show_bank_name = fields.Boolean(
+        string='اسم البنك',
+        default=False,
+        help='Show / hide the Bank Name column.',
+    )
+    show_cheque_due_date = fields.Boolean(
+        string='تاريخ استحقاق الشيك',
+        default=False,
+        help='Show / hide the Cheque Due Date column.',
+    )
+    show_analytic = fields.Boolean(
+        string='التحليل التكلفي',
+        default=False,
+        help='Show / hide the Analytic Account column.',
+    )
+    show_analytic_distribution = fields.Boolean(
+        string='التوزيع التحليلي',
+        default=False,
+        help='Show / hide the Analytic Distribution column.',
+    )
+
     @api.constrains('date_from', 'date_to')
     def _check_date_range(self):
         for wizard in self:
@@ -51,6 +83,13 @@ class JournalSummaryWizard(models.TransientModel):
             'account_ids': self.account_ids.ids,
             'date_from': fields.Date.to_string(self.date_from),
             'date_to': fields.Date.to_string(self.date_to),
+            # column visibility flags
+            'show_ending_balance': self.show_ending_balance,
+            'show_cheque_number': self.show_cheque_number,
+            'show_bank_name': self.show_bank_name,
+            'show_cheque_due_date': self.show_cheque_due_date,
+            'show_analytic': self.show_analytic,
+            'show_analytic_distribution': self.show_analytic_distribution,
         }
         return self.env.ref(
             'thamar_journal_summary.action_report_journal_summary'
