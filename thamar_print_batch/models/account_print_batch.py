@@ -111,8 +111,25 @@ class AccountPrintBatch(models.Model):
         # readonly=True,
         # states={'draft': [('readonly', False)]},
     )
+    journal_id = fields.Many2one(
+        'account.journal',
+        string='Journal',
+        compute='_compute_journal_id',
+        store=True,
+    )
+
 
     # ==================== Computed Fields ====================
+
+    @api.depends('payment_ids', 'payment_ids.journal_id')
+    def _compute_journal_id(self):
+        for batch in self:
+            journals = batch.payment_ids.mapped('journal_id')
+            if journals:
+                # Takes the journal of the first payment in the batch
+                batch.journal_id = journals[0].id
+            else:
+                batch.journal_id = False
 
     @api.depends('payment_ids', 'payment_ids.amount')
     def _compute_total_amount(self):
