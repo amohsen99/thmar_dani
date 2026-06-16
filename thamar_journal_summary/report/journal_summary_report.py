@@ -27,6 +27,7 @@ class ReportJournalSummary(models.AbstractModel):
         show_cheque_due_date = data.get('show_cheque_due_date', False)
         show_analytic = data.get('show_analytic', False)
         show_analytic_distribution = data.get('show_analytic_distribution', False)
+        show_partner_account = data.get('show_partner_account', False)
 
         accounts = self.env['account.account'].browse(account_ids)
 
@@ -49,6 +50,7 @@ class ReportJournalSummary(models.AbstractModel):
             'show_cheque_due_date': show_cheque_due_date,
             'show_analytic': show_analytic,
             'show_analytic_distribution': show_analytic_distribution,
+            'show_partner_account': show_partner_account,
         }
 
     # ==================================================================
@@ -310,8 +312,11 @@ class ReportJournalSummary(models.AbstractModel):
         """Fetch individual move lines for the running ledger table.
 
         Returns list of dicts sorted by date, move name.
-        Includes payment-related fields (cheque, bank) and analytic info.
+        Includes payment-related fields (cheque, bank), analytic info,
+        and the partner-linked account (the account on the partner side of the entry).
         """
+        lang = self.env.context.get('lang', 'en_US')
+        company_id = str(self.env.company.id)
         self.env.cr.execute("""
             SELECT aml.date,
                    am.name                          AS move_name,
@@ -322,18 +327,41 @@ class ReportJournalSummary(models.AbstractModel):
                    COALESCE(ap.cheque_number, '')    AS cheque_number,
                    COALESCE(rb.name, '')             AS bank_name,
                    ap.cheque_due_date                AS cheque_due_date,
-                   aml.analytic_distribution
+                   aml.analytic_distribution,
+                   COALESCE(partner_acc.code_store ->> %(company_id)s, '') AS partner_acc_code,
+                   COALESCE(
+                       partner_acc.name ->> %(lang)s,
+                       partner_acc.name ->> 'en_US', ''
+                   )                                AS partner_acc_name
               FROM account_move_line aml
               JOIN account_move am ON am.id = aml.move_id
          LEFT JOIN res_partner rp ON rp.id = aml.partner_id
          LEFT JOIN account_payment ap ON ap.move_id = am.id
          LEFT JOIN res_bank rb ON rb.id = ap.bank_id
-             WHERE aml.account_id = %s
-               AND aml.date >= %s
-               AND aml.date <= %s
+         LEFT JOIN LATERAL (
+                    -- The counterpart line on the same move that belongs to the same partner
+                    -- (or any counterpart when there's no partner on the line)
+                    SELECT ca.id, ca.code_store, ca.name
+                      FROM account_move_line caml
+                      JOIN account_account ca ON ca.id = caml.account_id
+                     WHERE caml.move_id = aml.move_id
+                       AND caml.id      != aml.id
+                       AND caml.account_id != aml.account_id
+                  ORDER BY CASE WHEN caml.partner_id = aml.partner_id THEN 0 ELSE 1 END, caml.id
+                     LIMIT 1
+               ) partner_acc ON true
+             WHERE aml.account_id = %(account_id)s
+               AND aml.date >= %(date_from)s
+               AND aml.date <= %(date_to)s
                AND am.state = 'posted'
           ORDER BY aml.date, am.name, aml.id
-        """, (account_id, date_from, date_to))
+        """, {
+            'account_id': account_id,
+            'date_from': date_from,
+            'date_to': date_to,
+            'company_id': company_id,
+            'lang': lang,
+        })
 
         # Pre-fetch analytic account names for distribution rendering
         analytic_cache = {}
@@ -367,5 +395,7 @@ class ReportJournalSummary(models.AbstractModel):
                 'cheque_due_date': row[8],
                 'analytic_name': ', '.join(analytic_names),
                 'analytic_distribution_text': analytic_dist_text.strip(),
+                'partner_account_code': row[10] or '',
+                'partner_account_name': row[11] or '',
             })
         return lines

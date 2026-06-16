@@ -65,6 +65,16 @@ class JournalSummaryWizard(models.TransientModel):
         default=False,
         help='Show / hide the Analytic Distribution column.',
     )
+    show_partner_account = fields.Boolean(
+        string='حساب العميل/المورد',
+        default=False,
+        help='Show / hide the partner account column (the account linked to the partner on the move line).',
+    )
+    show_metric_cards = fields.Boolean(
+        string='إظهار بطاقات القياس',
+        default=True,
+        help='Show / hide the Metric Cards Row.',
+    )
 
     @api.constrains('date_from', 'date_to')
     def _check_date_range(self):
@@ -90,6 +100,8 @@ class JournalSummaryWizard(models.TransientModel):
             'show_cheque_due_date': self.show_cheque_due_date,
             'show_analytic': self.show_analytic,
             'show_analytic_distribution': self.show_analytic_distribution,
+            'show_partner_account': self.show_partner_account,
+            'show_metric_cards': self.show_metric_cards,
         }
         return self.env.ref(
             'thamar_journal_summary.action_report_journal_summary'

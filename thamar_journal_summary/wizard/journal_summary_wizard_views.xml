@@ -25,6 +25,7 @@
                 <group string="أعمدة إضافية في التقرير"
                        invisible="report_type != 'running_ledger'">
                     <group>
+                        <field name="show_metric_cards"/>
                         <field name="show_ending_balance"/>
                         <field name="show_cheque_number"/>
                         <field name="show_bank_name"/>
@@ -33,6 +34,7 @@
                         <field name="show_cheque_due_date"/>
                         <field name="show_analytic"/>
                         <field name="show_analytic_distribution"/>
+                        <field name="show_partner_account"/>
                     </group>
                 </group>
                 <footer>
