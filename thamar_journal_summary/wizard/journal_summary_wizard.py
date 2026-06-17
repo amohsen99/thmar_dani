@@ -103,6 +103,9 @@ class JournalSummaryWizard(models.TransientModel):
             'show_partner_account': self.show_partner_account,
             'show_metric_cards': self.show_metric_cards,
         }
-        return self.env.ref(
-            'thamar_journal_summary.action_report_journal_summary'
-        ).report_action(self, data=data)
+        if self.report_type == 'running_ledger':
+            action_ref = 'thamar_journal_summary.action_report_running_ledger'
+        else:
+            action_ref = 'thamar_journal_summary.action_report_compound_entry'
+
+        return self.env.ref(action_ref).report_action(self, data=data)

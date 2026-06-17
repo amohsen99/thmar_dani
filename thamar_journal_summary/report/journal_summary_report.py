@@ -8,50 +8,10 @@ from odoo import api, models, fields
 DEBIT_NATURE_PREFIXES = ('asset', 'expense')
 
 
-class ReportJournalSummary(models.AbstractModel):
-    _name = 'report.thamar_journal_summary.report_journal_summary'
-    _description = 'Account Analysis Report'
-
-    @api.model
-    def _get_report_values(self, docids, data=None):
-        """Route to the correct computation based on report_type."""
-        report_type = data.get('report_type', 'compound_entry')
-        account_ids = data.get('account_ids', [])
-        date_from = fields.Date.from_string(data.get('date_from'))
-        date_to = fields.Date.from_string(data.get('date_to'))
-
-        # Column visibility flags (default to legacy behaviour)
-        show_ending_balance = data.get('show_ending_balance', True)
-        show_cheque_number = data.get('show_cheque_number', False)
-        show_bank_name = data.get('show_bank_name', False)
-        show_cheque_due_date = data.get('show_cheque_due_date', False)
-        show_analytic = data.get('show_analytic', False)
-        show_analytic_distribution = data.get('show_analytic_distribution', False)
-        show_partner_account = data.get('show_partner_account', False)
-
-        accounts = self.env['account.account'].browse(account_ids)
-
-        if report_type == 'compound_entry':
-            accounts_data = self._compute_compound_entry(accounts, date_from, date_to)
-        else:
-            accounts_data = self._compute_running_ledger(accounts, date_from, date_to)
-
-        return {
-            'doc_ids': docids,
-            'doc_model': 'journal.summary.wizard',
-            'data': data,
-            'report_type': report_type,
-            'accounts_data': accounts_data,
-            'company': self.env.company,
-            # visibility flags for QWeb
-            'show_ending_balance': show_ending_balance,
-            'show_cheque_number': show_cheque_number,
-            'show_bank_name': show_bank_name,
-            'show_cheque_due_date': show_cheque_due_date,
-            'show_analytic': show_analytic,
-            'show_analytic_distribution': show_analytic_distribution,
-            'show_partner_account': show_partner_account,
-        }
+class ReportJournalSummaryBase(models.AbstractModel):
+    """Shared helper methods for both report types."""
+    _name = 'report.thamar_journal_summary.base'
+    _description = 'Account Analysis Report - Base'
 
     # ==================================================================
     # REPORT TYPE 1: Compound Entry Analysis (Journal Entry Format)
@@ -319,14 +279,14 @@ class ReportJournalSummary(models.AbstractModel):
         company_id = str(self.env.company.id)
         self.env.cr.execute("""
             SELECT aml.date,
-                   am.name                          AS move_name,
-                   COALESCE(aml.name, '')            AS label,
-                   COALESCE(rp.name, '')             AS partner_name,
+                   COALESCE(apb.name, am.name)       AS move_name,
+                   COALESCE(aml.name, '')             AS label,
+                   COALESCE(rp.name, '')              AS partner_name,
                    aml.debit,
                    aml.credit,
-                   COALESCE(ap.cheque_number, '')    AS cheque_number,
-                   COALESCE(rb.name, '')             AS bank_name,
-                   ap.cheque_due_date                AS cheque_due_date,
+                   COALESCE(ap.cheque_number, '')      AS cheque_number,
+                   COALESCE(rb.name, '')               AS bank_name,
+                   ap.cheque_due_date                  AS cheque_due_date,
                    aml.analytic_distribution,
                    COALESCE(partner_acc.code_store ->> %(company_id)s, '') AS partner_acc_code,
                    COALESCE(
@@ -337,6 +297,7 @@ class ReportJournalSummary(models.AbstractModel):
               JOIN account_move am ON am.id = aml.move_id
          LEFT JOIN res_partner rp ON rp.id = aml.partner_id
          LEFT JOIN account_payment ap ON ap.move_id = am.id
+         LEFT JOIN account_print_batch apb ON apb.id = ap.print_batch_id
          LEFT JOIN res_bank rb ON rb.id = ap.bank_id
          LEFT JOIN LATERAL (
                     -- The counterpart line on the same move that belongs to the same partner
@@ -354,6 +315,7 @@ class ReportJournalSummary(models.AbstractModel):
                AND aml.date >= %(date_from)s
                AND aml.date <= %(date_to)s
                AND am.state = 'posted'
+               AND apb.id IS NOT NULL
           ORDER BY aml.date, am.name, aml.id
         """, {
             'account_id': account_id,
@@ -399,3 +361,71 @@ class ReportJournalSummary(models.AbstractModel):
                 'partner_account_name': row[11] or '',
             })
         return lines
+
+
+# ======================================================================
+# Concrete report classes (one per QWeb template)
+# ======================================================================
+
+class ReportCompoundEntry(models.AbstractModel):
+    _name = 'report.thamar_journal_summary.report_compound_entry'
+    _description = 'Compound Entry Report'
+    _inherit = 'report.thamar_journal_summary.base'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        account_ids = data.get('account_ids', [])
+        date_from = fields.Date.from_string(data.get('date_from'))
+        date_to = fields.Date.from_string(data.get('date_to'))
+        accounts = self.env['account.account'].browse(account_ids)
+        accounts_data = self._compute_compound_entry(accounts, date_from, date_to)
+
+        return {
+            'doc_ids': docids,
+            'doc_model': 'journal.summary.wizard',
+            'data': data,
+            'report_type': 'compound_entry',
+            'accounts_data': accounts_data,
+            'company': self.env.company,
+        }
+
+
+class ReportRunningLedger(models.AbstractModel):
+    _name = 'report.thamar_journal_summary.report_running_ledger'
+    _description = 'Running Ledger Report'
+    _inherit = 'report.thamar_journal_summary.base'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        account_ids = data.get('account_ids', [])
+        date_from = fields.Date.from_string(data.get('date_from'))
+        date_to = fields.Date.from_string(data.get('date_to'))
+
+        show_ending_balance = data.get('show_ending_balance', True)
+        show_cheque_number = data.get('show_cheque_number', False)
+        show_bank_name = data.get('show_bank_name', False)
+        show_cheque_due_date = data.get('show_cheque_due_date', False)
+        show_analytic = data.get('show_analytic', False)
+        show_analytic_distribution = data.get('show_analytic_distribution', False)
+        show_partner_account = data.get('show_partner_account', False)
+        show_metric_cards = data.get('show_metric_cards', True)
+
+        accounts = self.env['account.account'].browse(account_ids)
+        accounts_data = self._compute_running_ledger(accounts, date_from, date_to)
+
+        return {
+            'doc_ids': docids,
+            'doc_model': 'journal.summary.wizard',
+            'data': data,
+            'report_type': 'running_ledger',
+            'accounts_data': accounts_data,
+            'company': self.env.company,
+            'show_ending_balance': show_ending_balance,
+            'show_cheque_number': show_cheque_number,
+            'show_bank_name': show_bank_name,
+            'show_cheque_due_date': show_cheque_due_date,
+            'show_analytic': show_analytic,
+            'show_analytic_distribution': show_analytic_distribution,
+            'show_partner_account': show_partner_account,
+            'show_metric_cards': show_metric_cards,
+        }

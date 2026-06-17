@@ -23,6 +23,7 @@
         'views/account_payment_views.xml',
         'report/print_batch_report.xml',
         'report/print_batch_report_template.xml',
+        'views/res_config_settings_views.xml',
     ],
     'installable': True,
     'application': False,

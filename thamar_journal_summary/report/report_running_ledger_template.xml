@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Template: Running Ledger Report (Landscape) -->
+    <!-- ============================================================ -->
+    <template id="report_running_ledger">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+
+                <div class="page" dir="rtl" style="font-family: 'DejaVu Sans', 'Arial', sans-serif;">
+
+                    <style>
+                        /* ===== Base ===== */
+                        .ar-page {
+                            color: #2c3e50;
+                            font-size: 12px;
+                            line-height: 1.5;
+                        }
+
+                        /* ===== Report Title ===== */
+                        .ar-report-title {
+                            text-align: center;
+                            margin-bottom: 18px;
+                        }
+                        .ar-report-title h2 {
+                            font-size: 20px;
+                            font-weight: 800;
+                            color: #2c3e50;
+                            margin: 0 0 4px 0;
+                            letter-spacing: 0.5px;
+                        }
+                        .ar-report-title .ar-subtitle {
+                            font-size: 13px;
+                            color: #555;
+                            font-weight: 600;
+                        }
+
+                        /* ===== Account Section Header ===== */
+                        .ar-account-header {
+                            background: linear-gradient(135deg, #2c3e50, #34495e);
+                            color: #0c0101ff;
+                            padding: 10px 16px;
+                            border-radius: 6px;
+                            margin-bottom: 12px;
+                        }
+                        .ar-account-header h3 {
+                            margin: 0 0 2px 0;
+                            font-size: 16px;
+                            font-weight: 700;
+                        }
+                        .ar-account-header .ar-period {
+                            font-size: 12px;
+                            /* opacity: 0.85; */
+                        }
+
+                        /* ===== Metric Cards ===== */
+                        .ar-metric-label {
+                            font-weight: 700;
+                            font-size: 11px;
+                            margin-bottom: 2px;
+                        }
+                        .ar-metric-value {
+                            font-size: 16px;
+                            font-weight: 800;
+                        }
+
+                        /* ===== Data Tables ===== */
+                        .ar-data-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                        }
+                        .ar-data-table thead th {
+                            background-color: #2c3e50;
+                            color: #fff;
+                            padding: 7px 10px;
+                            font-weight: 700;
+                            font-size: 11.5px;
+                            text-align: center;
+                            border: 1px solid #1a252f;
+                        }
+                        .ar-data-table tbody td {
+                            padding: 6px 10px;
+                            border: 1px solid #dee2e6;
+                            font-size: 11px;
+                            vertical-align: middle;
+                        }
+                        .ar-data-table tbody tr:nth-child(even) {
+                            background-color: #f8f9fa;
+                        }
+
+                        /* Column alignment helpers */
+                        .ar-col-center { text-align: center; }
+                        .ar-col-right { text-align: right; }
+                        .ar-col-bold { font-weight: 600; color: #34495e; }
+
+                        /* ===== Total Row ===== */
+                        .ar-total-row td {
+                            font-weight: 800 !important;
+                            background-color: #e2f0d9 !important;
+                            border-top: 2.5px solid #2c3e50 !important;
+                            color: #1e4620;
+                            font-size: 12px !important;
+                            padding: 7px 10px !important;
+                        }
+
+                        /* ===== Running Balance Column ===== */
+                        .ar-col-balance {
+                            font-weight: 700;
+                            color: #154360;
+                        }
+
+                        /* ===== Empty State ===== */
+                        .ar-empty-state {
+                            text-align: center;
+                            padding: 30px;
+                            color: #7f8c8d;
+                            font-style: italic;
+                            font-size: 13px;
+                            border: 1px dashed #bdc3c7;
+                            border-radius: 6px;
+                            margin-bottom: 16px;
+                        }
+
+                        /* ===== Page Break ===== */
+                        .ar-page-break {
+                            page-break-after: always;
+                        }
+                    </style>
+
+                    <div class="ar-page">
+
+                        <t t-foreach="accounts_data" t-as="adata">
+                            <div t-attf-class="#{'ar-page-break' if not adata_last else ''}">
+
+                                <t t-if="adata_first">
+                                    <div class="ar-report-title">
+                                        <h2>يومية</h2>
+                                    </div>
+                                </t>
+
+                                <div class="ar-account-header">
+                                    <h3>
+                                        <t t-esc="adata['account_code']"/> -
+                                        <t t-esc="adata['account_name']"/>
+                                    </h3>
+                                    <div class="ar-period">
+                                        الفترة: من
+                                        <strong t-esc="adata['date_from']" t-options="{'widget': 'date'}"/>
+                                        إلى
+                                        <strong t-esc="adata['date_to']" t-options="{'widget': 'date'}"/>
+                                    </div>
+                                </div>
+
+                                <!-- ===== Metric Cards Row ===== -->
+                                <t t-if="show_metric_cards">
+                                    <table style="width: 100%; table-layout: fixed; border: none !important; border-collapse: collapse !important; box-shadow: none !important; background-color: transparent !important; margin-bottom: 20px;">
+                                        <tbody style="border: none !important; background-color: transparent !important;">
+                                            <tr style="border: none !important; border-top: none !important; border-bottom: none !important; box-shadow: none !important; background-color: transparent !important;">
+                                                    
+                                                <td style="text-align: center; border: none !important; border-top: none !important; border-bottom: none !important; box-shadow: none !important; background-color: transparent !important; padding: 10px;">
+                                                    <div class="ar-metric-label" style="font-weight: bold; margin-bottom: 5px;">الرصيد الافتتاحي</div>
+                                                    <div class="ar-metric-value" style="font-size: 16px;">
+                                                        <t t-esc="'{:,.2f}'.format(adata['opening_balance'])"/>
+                                                    </div>
+                                                </td>
+                                                    
+                                                <td style="text-align: center; border: none !important; border-top: none !important; border-bottom: none !important; box-shadow: none !important; background-color: transparent !important; padding: 10px;">
+                                                    <div class="ar-metric-label" style="font-weight: bold; margin-bottom: 5px;"> اجمالى الرصيد الداخل </div>
+                                                    <div class="ar-metric-value" style="font-size: 16px;">
+                                                        <t t-esc="'{:,.2f}'.format(adata['total_debit'])"/>
+                                                    </div>
+                                                </td>
+                                                    
+                                                <td style="text-align: center; border: none !important; border-top: none !important; border-bottom: none !important; box-shadow: none !important; background-color: transparent !important; padding: 10px;">
+                                                    <div class="ar-metric-label" style="font-weight: bold; margin-bottom: 5px;"> اجمالي الرصيد الخارج </div>
+                                                    <div class="ar-metric-value" style="font-size: 16px;">
+                                                        <t t-esc="'{:,.2f}'.format(adata['total_credit'])"/>
+                                                    </div>
+                                                </td>
+                                                    
+                                                <!-- Ending Balance — conditionally shown -->
+                                                <t t-if="show_ending_balance">
+                                                    <td style="text-align: center; border: none !important; border-top: none !important; border-bottom: none !important; box-shadow: none !important; background-color: transparent !important; padding: 10px;">
+                                                        <div class="ar-metric-label" style="font-weight: bold; margin-bottom: 5px;">الرصيد النهائي</div>
+                                                        <div class="ar-metric-value" style="font-size: 16px;">
+                                                            <t t-esc="'{:,.2f}'.format(adata['closing_balance'])"/>
+                                                        </div>
+                                                    </td>
+                                                </t>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </t>
+
+                                <t t-if="adata['detail_lines']">
+                                    <table class="ar-data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>التاريخ</th>
+                                                <th>كود الحركة</th>
+                                                <th>البيان</th>
+                                                <th>العميل/المورد</th>
+                                                <t t-if="show_partner_account"><th>حساب العميل/المورد</th></t>
+                                                <t t-if="show_cheque_number"><th>رقم الشيك</th></t>
+                                                <t t-if="show_bank_name"><th>اسم البنك</th></t>
+                                                <t t-if="show_cheque_due_date"><th>تاريخ استحقاق الشيك</th></t>
+                                                <t t-if="show_analytic"><th>التحليل التكلفي</th></t>
+                                                <t t-if="show_analytic_distribution"><th>التوزيع التحليلي</th></t>
+                                                <th>مدين</th>
+                                                <th>دائن</th>
+                                                <t t-if="show_ending_balance"><th>الرصيد المتراكم</th></t>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Opening balance row -->
+                                            <tr style="background-color: #eaf7ed !important;">
+                                                <t t-set="base_cols" t-value="4"/>
+                                                <t t-set="extra_cols" t-value="
+                                                    (1 if show_partner_account else 0) +
+                                                    (1 if show_cheque_number else 0) +
+                                                    (1 if show_bank_name else 0) +
+                                                    (1 if show_cheque_due_date else 0) +
+                                                    (1 if show_analytic else 0) +
+                                                    (1 if show_analytic_distribution else 0)
+                                                "/>
+                                                <td class="ar-col-center" t-att-colspan="base_cols + extra_cols" style="font-weight: 700; color: #155724;">
+                                                    الرصيد الافتتاحي
+                                                </td>
+                                                <td class="ar-col-center">-</td>
+                                                <td class="ar-col-center">-</td>
+                                                <t t-if="show_ending_balance">
+                                                    <td class="ar-col-center ar-col-balance" style="color: #155724;">
+                                                        <t t-esc="'{:,.2f}'.format(adata['opening_balance'])"/>
+                                                    </td>
+                                                </t>
+                                            </tr>
+
+                                            <!-- Detail lines -->
+                                            <t t-foreach="adata['detail_lines']" t-as="line">
+                                                <tr>
+                                                    <td class="ar-col-center">
+                                                        <t t-esc="line['date']" t-options="{'widget': 'date'}"/>
+                                                    </td>
+                                                    <td class="ar-col-center ar-col-bold">
+                                                        <t t-esc="line['move_name']"/>
+                                                    </td>
+                                                    <td class="ar-col-right">
+                                                        <t t-esc="line['label']"/>
+                                                    </td>
+                                                    <td class="ar-col-right">
+                                                        <t t-esc="line['partner_name']"/>
+                                                    </td>
+                                                    <t t-if="show_partner_account">
+                                                        <td class="ar-col-right" style="font-size: 10px; color: #1a5276;">
+                                                            <t t-esc="line['partner_account_code']"/>
+                                                            <t t-if="line['partner_account_name']"><br/><t t-esc="line['partner_account_name']"/></t>
+                                                        </td>
+                                                    </t>
+                                                    <t t-if="show_cheque_number">
+                                                        <td class="ar-col-center">
+                                                            <t t-esc="line['cheque_number']"/>
+                                                        </td>
+                                                    </t>
+                                                    <t t-if="show_bank_name">
+                                                        <td class="ar-col-center">
+                                                            <t t-esc="line['bank_name']"/>
+                                                        </td>
+                                                    </t>
+                                                    <t t-if="show_cheque_due_date">
+                                                        <td class="ar-col-center">
+                                                            <t t-if="line['cheque_due_date']" t-esc="line['cheque_due_date']" t-options="{'widget': 'date'}"/>
+                                                        </td>
+                                                    </t>
+                                                    <t t-if="show_analytic">
+                                                        <td class="ar-col-right">
+                                                            <t t-esc="line['analytic_name']"/>
+                                                        </td>
+                                                    </t>
+                                                    <t t-if="show_analytic_distribution">
+                                                        <td class="ar-col-right" style="font-size: 10px;">
+                                                            <t t-esc="line['analytic_distribution_text']"/>
+                                                        </td>
+                                                    </t>
+                                                    <td class="ar-col-center">
+                                                        <t t-if="line['debit']" t-esc="'{:,.2f}'.format(line['debit'])"/>
+                                                    </td>
+                                                    <td class="ar-col-center">
+                                                        <t t-if="line['credit']" t-esc="'{:,.2f}'.format(line['credit'])"/>
+                                                    </td>
+                                                    <t t-if="show_ending_balance">
+                                                        <td class="ar-col-center ar-col-balance">
+                                                            <t t-esc="'{:,.2f}'.format(line['running_balance'])"/>
+                                                        </td>
+                                                    </t>
+                                                </tr>
+                                            </t>
+
+                                            <!-- Total row -->
+                                            <tr class="ar-total-row">
+                                                <td t-att-colspan="base_cols + extra_cols" style="text-align: center;">
+                                                    المجموع / الرصيد النهائي
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    <t t-esc="'{:,.2f}'.format(adata['total_debit'])"/>
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    <t t-esc="'{:,.2f}'.format(adata['total_credit'])"/>
+                                                </td>
+                                                <t t-if="show_ending_balance">
+                                                    <td style="text-align: center;">
+                                                        <t t-esc="'{:,.2f}'.format(adata['closing_balance'])"/>
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </t>
+
+                                <t t-else="">
+                                    <div class="ar-empty-state">
+                                        لا توجد حركات مسجلة خلال هذه الفترة لهذا الحساب.
+                                    </div>
+                                </t>
+
+                            </div>
+                        </t>
+
+                        <t t-if="not accounts_data">
+                            <div class="ar-report-title">
+                                <h2>يومية</h2>
+                            </div>
+                            <div class="ar-empty-state">
+                                لا توجد بيانات لعرضها. تأكد من اختيار حسابات صحيحة.
+                            </div>
+                        </t>
+
+                        <table style="width: 100%; margin-top: 50px; table-layout: fixed; border: none !important; border-collapse: collapse !important; box-shadow: none !important; background-color: transparent !important;">
+                            <tbody style="border: none !important; background-color: transparent !important;">
+                                <tr style="border: none !important; border-top: none !important; border-bottom: none !important; box-shadow: none !important; background-color: transparent !important;">
+                                    <td style="text-align: center; padding: 0 20px; border: none !important; border-top: none !important; border-bottom: none !important; box-shadow: none !important; background-color: transparent !important; width: 33.33%;">
+                                        <strong>المحاسب (Accountant)</strong>
+                                        <div style="border-bottom: 1px solid #000; margin-top: 40px; width: 100%;"></div>
+                                    </td>
+                                    <td style="text-align: center; padding: 0 20px; border: none !important; border-top: none !important; border-bottom: none !important; box-shadow: none !important; background-color: transparent !important; width: 33.33%;">
+                                        <strong>المراجع (Reviewer)</strong>
+                                        <div style="border-bottom: 1px solid #000; margin-top: 40px; width: 100%;"></div>
+                                    </td>
+                                    <td style="text-align: center; padding: 0 20px; border: none !important; border-top: none !important; border-bottom: none !important; box-shadow: none !important; background-color: transparent !important; width: 33.33%;">
+                                        <strong>المدير المالي (Finance Manager)</strong>
+                                        <div style="border-bottom: 1px solid #000; margin-top: 40px; width: 100%;"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            </t>
+        </t>
+    </template>
+
+</odoo>

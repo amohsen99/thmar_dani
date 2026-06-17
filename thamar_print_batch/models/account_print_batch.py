@@ -193,6 +193,11 @@ class AccountPrintBatch(models.Model):
                     'Cannot delete a posted print batch. '
                     'Please reset it to draft first.'
                 ))
+            if batch.company_id.prevent_delete_print_batch:
+                raise UserError(_(
+                    'Deleting print batches is disabled in the accounting settings. '
+                    'Please contact your administrator if you need to delete this record.'
+                ))
         return super().unlink()
 
     # ==================== Action Methods ====================

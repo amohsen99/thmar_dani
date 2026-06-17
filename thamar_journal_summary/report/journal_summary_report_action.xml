@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Landscape Paper Format -->
+    <!-- ============================================================ -->
+    <!-- Paper Format: Portrait (Compound Entry) -->
+    <!-- ============================================================ -->
+    <record id="paperformat_journal_summary_portrait" model="report.paperformat">
+        <field name="name">Journal Summary Portrait</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">5</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Paper Format: Landscape (Running Ledger) -->
+    <!-- ============================================================ -->
     <record id="paperformat_journal_summary_landscape" model="report.paperformat">
         <field name="name">Journal Summary Landscape</field>
         <field name="default" eval="False"/>
@@ -18,24 +39,29 @@
         <field name="dpi">90</field>
     </record>
 
-    <!-- Report Action - Portrait -->
-    <record id="action_report_journal_summary" model="ir.actions.report">
-        <field name="name">تقارير تحليل الحسابات</field>
+    <!-- ============================================================ -->
+    <!-- Report Action: Compound Entry (Portrait) -->
+    <!-- ============================================================ -->
+    <record id="action_report_compound_entry" model="ir.actions.report">
+        <field name="name">تقرير تحليل مصادر ومصارف الحساب</field>
         <field name="model">journal.summary.wizard</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">thamar_journal_summary.report_journal_summary</field>
-        <field name="report_file">thamar_journal_summary.report_journal_summary</field>
-        <field name="print_report_name">'Account Analysis Report'</field>
+        <field name="report_name">thamar_journal_summary.report_compound_entry</field>
+        <field name="report_file">thamar_journal_summary.report_compound_entry</field>
+        <field name="print_report_name">'Compound Entry Report'</field>
+        <field name="paperformat_id" ref="thamar_journal_summary.paperformat_journal_summary_portrait"/>
     </record>
 
-    <!-- Report Action - Landscape -->
-    <record id="action_report_journal_summary_landscape" model="ir.actions.report">
-        <field name="name">تقارير تحليل الحسابات (عرضي)</field>
+    <!-- ============================================================ -->
+    <!-- Report Action: Running Ledger (Landscape) -->
+    <!-- ============================================================ -->
+    <record id="action_report_running_ledger" model="ir.actions.report">
+        <field name="name">تقرير كشف الحساب التفصيلي</field>
         <field name="model">journal.summary.wizard</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">thamar_journal_summary.report_journal_summary</field>
-        <field name="report_file">thamar_journal_summary.report_journal_summary</field>
-        <field name="print_report_name">'Account Analysis Report'</field>
+        <field name="report_name">thamar_journal_summary.report_running_ledger</field>
+        <field name="report_file">thamar_journal_summary.report_running_ledger</field>
+        <field name="print_report_name">'Running Ledger Report'</field>
         <field name="paperformat_id" ref="thamar_journal_summary.paperformat_journal_summary_landscape"/>
     </record>
 
