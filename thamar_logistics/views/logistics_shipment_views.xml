@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ════════════════════════════════════════════════════════
+         SHIPMENT – List View
+         ════════════════════════════════════════════════════════ -->
+    <record id="logistics_shipment_list" model="ir.ui.view">
+        <field name="name">logistics.shipment.list</field>
+        <field name="model">logistics.shipment</field>
+        <field name="arch" type="xml">
+            <list string="Import Shipments"
+                  decoration-info="state == 'incoming'"
+                  decoration-warning="state == 'bank'"
+                  decoration-primary="state == 'clearance'"
+                  decoration-success="state == 'arrived'">
+                <field name="invoice_no"/>
+                <field name="bl_no"/>
+                <field name="partner_id"/>
+                <field name="acid_no"/>
+                <field name="container_summary" string="Containers"/>
+                <field name="item_type"/>
+                <field name="description"/>
+                <field name="shipping_company_id" optional="show"/>
+                <field name="port_loading_id" optional="show"/>
+                <field name="port_arrival_id" optional="show"/>
+                <field name="date_shipping"/>
+                <field name="date_arrival"/>
+                <field name="total_amount" sum="Total"/>
+                <field name="advance_amount" sum="Advance"/>
+                <field name="balance_amount" sum="Balance"/>
+                <field name="penalty_start_date" optional="hide"/>
+                <field name="bank_id" optional="show"/>
+                <field name="customs_broker" optional="show"/>
+                <field name="deposit_done" optional="hide"/>
+                <field name="linking_done" optional="hide"/>
+                <field name="store_permit_no" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'incoming'"
+                       decoration-warning="state == 'bank'"
+                       decoration-primary="state == 'clearance'"
+                       decoration-success="state == 'arrived'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════
+         SHIPMENT – Form View
+         ════════════════════════════════════════════════════════ -->
+    <record id="logistics_shipment_form" model="ir.ui.view">
+        <field name="name">logistics.shipment.form</field>
+        <field name="model">logistics.shipment</field>
+        <field name="arch" type="xml">
+            <form string="Import Shipment">
+                <header>
+                    <button name="action_to_bank" type="object"
+                            string="بنك" class="btn-primary"
+                            invisible="state != 'incoming'"/>
+                    <button name="action_to_clearance" type="object"
+                            string="تحت التخليص" class="btn-primary"
+                            invisible="state != 'bank'"/>
+                    <button name="action_to_arrived" type="object"
+                            string="وصول المصنع" class="btn-primary"
+                            invisible="state != 'clearance'"/>
+                    <button name="action_to_incoming" type="object"
+                            string="Reset"
+                            invisible="state == 'incoming'"
+                            confirm="Are you sure you want to reset this shipment to وارد?"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="incoming,bank,clearance,arrived"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Shipment Info">
+                            <field name="contract_id"/>
+                            <field name="acid_no"/>
+                            <field name="invoice_no"/>
+                            <field name="bl_no"/>
+                            <field name="partner_id"/>
+                            <field name="country_id"/>
+                        </group>
+                        <group string="Goods">
+                            <field name="item_type"/>
+                            <field name="description"/>
+                            <field name="quantity"/>
+                            <field name="total_containers"/>
+                            <field name="container_summary"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Containers" name="containers">
+                            <field name="container_line_ids">
+                                <list editable="bottom">
+                                    <field name="container_no"/>
+                                    <field name="quantity"/>
+                                    <field name="container_type"/>
+                                    <field name="seal_no"/>
+                                    <field name="weight" sum="Total Weight"/>
+                                    <field name="notes" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Logistics" name="logistics">
+                            <group>
+                                <group>
+                                    <field name="shipping_company_id"/>
+                                    <field name="port_loading_id"/>
+                                    <field name="port_arrival_id"/>
+                                </group>
+                                <group>
+                                    <field name="date_shipping"/>
+                                    <field name="date_arrival"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Financial" name="financial">
+                            <group>
+                                <group>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="total_amount"/>
+                                    <field name="advance_amount"/>
+                                    <field name="balance_amount"/>
+                                </group>
+                                <group>
+                                    <field name="bank_id"/>
+                                    <field name="penalty_start_date"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Operations" name="operations">
+                            <group>
+                                <group>
+                                    <field name="customs_broker"/>
+                                    <field name="store_permit_no"/>
+                                </group>
+                                <group>
+                                    <field name="deposit_done"/>
+                                    <field name="linking_done"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════
+         SHIPMENT – Kanban View
+         ════════════════════════════════════════════════════════ -->
+    <record id="logistics_shipment_kanban" model="ir.ui.view">
+        <field name="name">logistics.shipment.kanban</field>
+        <field name="model">logistics.shipment</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="acid_no"/>
+                <field name="partner_id"/>
+                <field name="container_summary"/>
+                <field name="total_amount"/>
+                <field name="currency_id"/>
+                <field name="state"/>
+                <field name="date_shipping"/>
+                <field name="date_arrival"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_details">
+                            <strong>
+                                <field name="name"/>
+                            </strong>
+                            <div class="o_kanban_record_subtitle">
+                                ACID: <field name="acid_no"/>
+                            </div>
+                            <div>
+                                <field name="partner_id"/>
+                            </div>
+                            <div>
+                                <span class="badge rounded-pill text-bg-info">
+                                    <field name="container_summary"/>
+                                </span>
+                            </div>
+                            <div class="mt-1">
+                                <field name="total_amount"
+                                       widget="monetary"/>
+                            </div>
+                            <div class="text-muted small mt-1"
+                                 t-if="record.date_shipping.raw_value">
+                                Ship: <field name="date_shipping"/>
+                                → <field name="date_arrival"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════
+         SHIPMENT – Search View
+         ════════════════════════════════════════════════════════ -->
+    <record id="logistics_shipment_search" model="ir.ui.view">
+        <field name="name">logistics.shipment.search</field>
+        <field name="model">logistics.shipment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="acid_no"/>
+                <field name="bl_no"/>
+                <field name="invoice_no"/>
+                <field name="partner_id"/>
+                <field name="contract_id"/>
+                <field name="store_permit_no"/>
+                <separator/>
+                <filter name="filter_incoming" string="وارد"
+                        domain="[('state', '=', 'incoming')]"/>
+                <filter name="filter_bank" string="بنك"
+                        domain="[('state', '=', 'bank')]"/>
+                <filter name="filter_clearance" string="تحت التخليص"
+                        domain="[('state', '=', 'clearance')]"/>
+                <filter name="filter_arrived" string="وصول المصنع"
+                        domain="[('state', '=', 'arrived')]"/>
+                <separator/>
+                <filter name="filter_deposit_pending" string="Deposits Pending"
+                        domain="[('deposit_done', '=', False)]"/>
+                <filter name="filter_linking_pending" string="Linking Pending"
+                        domain="[('linking_done', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_partner" string="Supplier"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_contract" string="Contract"
+                            context="{'group_by': 'contract_id'}"/>
+                    <filter name="group_shipping_company" string="Shipping Co."
+                            context="{'group_by': 'shipping_company_id'}"/>
+                    <filter name="group_bank" string="Bank"
+                            context="{'group_by': 'bank_id'}"/>
+                    <filter name="group_port_arrival" string="Arrival Port"
+                            context="{'group_by': 'port_arrival_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════
+         SHIPMENT – Action
+         ════════════════════════════════════════════════════════ -->
+    <record id="logistics_shipment_action" model="ir.actions.act_window">
+        <field name="name">Import Shipments</field>
+        <field name="res_model">logistics.shipment</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="logistics_shipment_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first import shipment
+            </p>
+            <p>Track shipments by ACID number, manage containers, and monitor delivery status.</p>
+        </field>
+    </record>
+
+</odoo>

@@ -26,6 +26,27 @@ services:
     environment:
       - POSTGRES_USER=odoo19
       - POSTGRES_PASSWORD=odoo19
+      # PostgreSQL tuning for 16 GB VPS
+      # shared_buffers: ~25% of RAM
+      - POSTGRES_SHARED_BUFFERS=4GB
+      # effective_cache_size: ~75% of RAM (hint to query planner)
+      - POSTGRES_EFFECTIVE_CACHE_SIZE=12GB
+      # work_mem: RAM per sort/hash per query — important for complex joins
+      - POSTGRES_WORK_MEM=64MB
+      # maintenance_work_mem: for VACUUM, CREATE INDEX
+      - POSTGRES_MAINTENANCE_WORK_MEM=512MB
+    command: >
+      postgres
+        -c shared_buffers=4GB
+        -c effective_cache_size=12GB
+        -c work_mem=64MB
+        -c maintenance_work_mem=512MB
+        -c max_connections=100
+        -c checkpoint_completion_target=0.9
+        -c wal_buffers=64MB
+        -c default_statistics_target=100
+        -c random_page_cost=1.1
+        -c effective_io_concurrency=200
     ports:
       - "5433:5432"
     networks:
@@ -79,7 +100,8 @@ services:
       - HOST=pg-db
       - USER=odoo19
       - PASSWORD=odoo19
-    command: odoo --workers=3 --gevent-port=8072 --proxy-mode    
+    command: odoo --gevent-port=8072 --proxy-mode
+    mem_limit: 10g
     volumes:
       - ./odoo_e/etc/:/etc/odoo/
       - ../../../enterprise-19.0:/mnt/enterprise_addons

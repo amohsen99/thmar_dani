@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_logistics_contract,logistics.contract.user,model_logistics_contract,base.group_user,1,1,1,1
+access_logistics_shipment,logistics.shipment.user,model_logistics_shipment,base.group_user,1,1,1,1
+access_logistics_container_line,logistics.container.line.user,model_logistics_container_line,base.group_user,1,1,1,1
+access_logistics_shipping_company,logistics.shipping.company.user,model_logistics_shipping_company,base.group_user,1,1,1,1
+access_logistics_port,logistics.port.user,model_logistics_port,base.group_user,1,1,1,1

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a73e8"/>
+      <stop offset="100%" style="stop-color:#0d47a1"/>
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="15" fill="url(#bg)"/>
+  <!-- Ship hull -->
+  <path d="M20 60 L30 72 L70 72 L80 60 Z" fill="#ffffff" opacity="0.95"/>
+  <!-- Ship body -->
+  <rect x="35" y="45" width="30" height="15" rx="2" fill="#ffffff" opacity="0.9"/>
+  <!-- Containers stacked -->
+  <rect x="38" y="48" width="8" height="10" rx="1" fill="#ff7043"/>
+  <rect x="48" y="48" width="8" height="10" rx="1" fill="#42a5f5"/>
+  <rect x="58" y="48" width="8" height="10" rx="1" fill="#66bb6a"/>
+  <!-- Smokestack -->
+  <rect x="62" y="36" width="5" height="12" rx="1" fill="#ffffff" opacity="0.8"/>
+  <!-- Smoke -->
+  <circle cx="64" cy="33" r="3" fill="#ffffff" opacity="0.4"/>
+  <circle cx="67" cy="30" r="2" fill="#ffffff" opacity="0.3"/>
+  <!-- Waves -->
+  <path d="M15 75 Q25 70 35 75 Q45 80 55 75 Q65 70 75 75 Q85 80 90 75" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.5"/>
+  <path d="M10 80 Q20 75 30 80 Q40 85 50 80 Q60 75 70 80 Q80 85 95 80" stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.3"/>
+</svg>

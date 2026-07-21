@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Stock Picking Form – Header Button + Smart Button            -->
+    <!-- ============================================================ -->
+    <record id="view_picking_form_invoice_link" model="ir.ui.view">
+        <field name="name">stock.picking.form.invoice.link</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Header button: "Create Invoice" / "Create Bill" -->
+            <xpath expr="//header/button[@name='button_validate'][1]" position="after">
+                <button name="action_create_direct_invoice"
+                        type="object"
+                        string="Create Invoice"
+                        class="oe_highlight"
+                        groups="account.group_account_invoice"
+                        invisible="state != 'done' or invoice_id or picking_type_code != 'outgoing'"
+                        data-hotkey="shift+i"/>
+                <button name="action_create_direct_invoice"
+                        type="object"
+                        string="Create Bill"
+                        class="oe_highlight"
+                        groups="account.group_account_invoice"
+                        invisible="state != 'done' or invoice_id or picking_type_code != 'incoming'"
+                        data-hotkey="shift+b"/>
+            </xpath>
+
+            <!-- Smart Button in the stat-buttons area -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <!-- Invoice smart button (outgoing) -->
+                <button name="action_view_linked_invoice"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-file-text-o"
+                        invisible="not invoice_id or picking_type_code != 'outgoing'">
+                    <field name="invoice_count" string="Invoice" widget="statinfo"/>
+                </button>
+                <!-- Vendor Bill smart button (incoming) -->
+                <button name="action_view_linked_invoice"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-pencil-square-o"
+                        invisible="not invoice_id or picking_type_code != 'incoming'">
+                    <field name="invoice_count" string="Vendor Bill" widget="statinfo"/>
+                </button>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Account Move Form – Smart Button back to Picking             -->
+    <!-- ============================================================ -->
+    <record id="view_account_move_form_picking_link" model="ir.ui.view">
+        <field name="name">account.move.form.picking.link</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_linked_picking"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-truck"
+                        invisible="not picking_id">
+                    <field name="picking_count" string="Receipt/Delivery" widget="statinfo"/>
+                </button>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ════════════════════════════════════════════════════════
+         CONTRACT – List View
+         ════════════════════════════════════════════════════════ -->
+    <record id="logistics_contract_list" model="ir.ui.view">
+        <field name="name">logistics.contract.list</field>
+        <field name="model">logistics.contract</field>
+        <field name="arch" type="xml">
+            <list string="Import Contracts" decoration-info="state == 'draft'"
+                  decoration-success="state == 'confirmed'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="sc_no"/>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="country_id" optional="show"/>
+                <field name="total_amount" sum="Total"/>
+                <field name="advance_amount" sum="Total Advance"/>
+                <field name="balance_amount" sum="Total Balance"/>
+                <field name="bank_id" optional="show"/>
+                <field name="bank_date" optional="hide"/>
+                <field name="shipment_count" string="Shipments"/>
+                <field name="total_containers" string="Containers"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'confirmed'"
+                       decoration-warning="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════
+         CONTRACT – Form View
+         ════════════════════════════════════════════════════════ -->
+    <record id="logistics_contract_form" model="ir.ui.view">
+        <field name="name">logistics.contract.form</field>
+        <field name="model">logistics.contract</field>
+        <field name="arch" type="xml">
+            <form string="Import Contract">
+                <header>
+                    <button name="action_confirm" type="object"
+                            string="Confirm" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_done" type="object"
+                            string="Mark Done" class="btn-primary"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" type="object"
+                            string="Cancel"
+                            invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_draft" type="object"
+                            string="Reset to Draft"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <!-- Smart Buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object"
+                                name="action_view_shipments"
+                                icon="fa-ship">
+                            <field name="shipment_count" widget="statinfo"
+                                   string="Shipments"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-cube"
+                                type="object" name="action_view_shipments">
+                            <field name="total_containers" widget="statinfo"
+                                   string="Containers"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Contract Details">
+                            <field name="sc_no"/>
+                            <field name="date"/>
+                            <field name="partner_id"/>
+                            <field name="country_id"/>
+                        </group>
+                        <group string="Financial">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="total_amount"/>
+                            <field name="advance_amount"/>
+                            <field name="balance_amount"/>
+                            <field name="bank_id"/>
+                            <field name="bank_date"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Shipments" name="shipments">
+                            <field name="shipment_ids">
+                                <list editable="bottom">
+                                    <field name="acid_no"/>
+                                    <field name="invoice_no" optional="show"/>
+                                    <field name="bl_no" optional="show"/>
+                                    <field name="partner_id"/>
+                                    <field name="quantity"/>
+                                    <field name="container_summary"
+                                           string="Containers"/>
+                                    <field name="total_amount" sum="Total"/>
+                                    <field name="advance_amount"
+                                           sum="Advance"/>
+                                    <field name="balance_amount"
+                                           sum="Balance"/>
+                                    <field name="date_shipping"
+                                           optional="show"/>
+                                    <field name="date_arrival"
+                                           optional="show"/>
+                                    <field name="store_permit_no"
+                                           optional="hide"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Additional notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════
+         CONTRACT – Search View
+         ════════════════════════════════════════════════════════ -->
+    <record id="logistics_contract_search" model="ir.ui.view">
+        <field name="name">logistics.contract.search</field>
+        <field name="model">logistics.contract</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="sc_no"/>
+                <field name="partner_id"/>
+                <field name="country_id"/>
+                <separator/>
+                <filter name="filter_draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_confirmed" string="Confirmed"
+                        domain="[('state', '=', 'confirmed')]"/>
+                <filter name="filter_done" string="Done"
+                        domain="[('state', '=', 'done')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_partner" string="Supplier"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_country" string="Country"
+                            context="{'group_by': 'country_id'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_bank" string="Bank"
+                            context="{'group_by': 'bank_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════
+         CONTRACT – Action & Smart-Button Helper
+         ════════════════════════════════════════════════════════ -->
+    <record id="logistics_contract_action" model="ir.actions.act_window">
+        <field name="name">Import Contracts</field>
+        <field name="res_model">logistics.contract</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="logistics_contract_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first import contract
+            </p>
+            <p>Track vendor contracts, shipments, and container allocations.</p>
+        </field>
+    </record>
+
+</odoo>

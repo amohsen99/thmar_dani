@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ════════════════════════════════════════════════════════
+         TOP-LEVEL MENU
+         ════════════════════════════════════════════════════════ -->
+    <menuitem id="menu_logistics_root"
+              name="Logistics"
+              web_icon="thamar_logistics,static/description/icon.png"
+              sequence="60"/>
+
+    <!-- ════════════════════════════════════════════════════════
+         IMPORT SUB-MENU
+         ════════════════════════════════════════════════════════ -->
+    <menuitem id="menu_logistics_import"
+              name="Import"
+              parent="menu_logistics_root"
+              sequence="10"/>
+
+    <menuitem id="menu_logistics_contracts"
+              name="Contracts"
+              parent="menu_logistics_import"
+              action="logistics_contract_action"
+              sequence="10"/>
+
+    <menuitem id="menu_logistics_shipments"
+              name="Shipments"
+              parent="menu_logistics_import"
+              action="logistics_shipment_action"
+              sequence="20"/>
+
+    <!-- ════════════════════════════════════════════════════════
+         CONFIGURATION SUB-MENU
+         ════════════════════════════════════════════════════════ -->
+    <menuitem id="menu_logistics_config"
+              name="Configuration"
+              parent="menu_logistics_root"
+              sequence="90"/>
+
+    <menuitem id="menu_logistics_shipping_companies"
+              name="Shipping Companies"
+              parent="menu_logistics_config"
+              action="logistics_shipping_company_action"
+              sequence="10"/>
+
+    <menuitem id="menu_logistics_ports"
+              name="Ports"
+              parent="menu_logistics_config"
+              action="logistics_port_action"
+              sequence="20"/>
+
+    <menuitem id="menu_logistics_banks"
+              name="Banks"
+              parent="menu_logistics_config"
+              action="logistics_bank_action"
+              sequence="30"/>
+
+</odoo>
