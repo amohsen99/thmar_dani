@@ -290,6 +290,8 @@ class AccountPayment(models.Model):
     @api.constrains('destination_account_id', 'analytic_distribution')
     def _check_analytic_distribution_required(self):
         for payment in self:
+            if payment.state != 'draft':
+                continue
             if payment.destination_account_id and payment.destination_account_id.internal_group == 'expense':
                 if not payment.analytic_distribution:
                     raise ValidationError(_("Analytic distribution is required for direct expense payments."))

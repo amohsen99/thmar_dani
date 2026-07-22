@@ -70,5 +70,17 @@
         </field>
     </record>
 
+    <!-- Payment Search View - Add Cheque Number Search -->
+    <record id="view_account_payment_search_inherit_cheque" model="ir.ui.view">
+        <field name="name">account.payment.search.inherit.cheque</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_search"/>
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="cheque_number" string="Cheque Number"/>
+            </field>
+        </field>
+    </record>
+
 </odoo>
 
