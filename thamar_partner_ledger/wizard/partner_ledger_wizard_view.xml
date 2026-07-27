@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Wizard Form View -->
+    <record id="partner_ledger_wizard_form" model="ir.ui.view">
+        <field name="name">partner.ledger.account.wizard.form</field>
+        <field name="model">partner.ledger.account.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Partner Ledger by Account">
+                <group>
+                    <field name="account_ids"
+                           widget="many2many_tags"
+                           options="{'no_create': True}"
+                           placeholder="Select accounts to filter..."/>
+                </group>
+                <group string="Date Range (optional)">
+                    <group>
+                        <field name="date_from"/>
+                    </group>
+                    <group>
+                        <field name="date_to"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_open_report"
+                            string="View Report"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_partner_ledger_wizard" model="ir.actions.act_window">
+        <field name="name">Partner Ledger by Account</field>
+        <field name="res_model">partner.ledger.account.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Menu under Accounting > Reporting -->
+    <menuitem
+        id="menu_partner_ledger_by_account"
+        name="Partner Ledger by Account"
+        action="action_partner_ledger_wizard"
+        parent="account.menu_finance_reports"
+        sequence="50"/>
+
+</odoo>

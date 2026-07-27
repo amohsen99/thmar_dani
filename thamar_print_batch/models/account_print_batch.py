@@ -70,6 +70,7 @@ class AccountPrintBatch(models.Model):
         string='Payments',
         readonly=True,
         states={'draft': [('readonly', False)]},
+        check_company=True,
     )
     state = fields.Selection(
         selection=[
@@ -183,7 +184,10 @@ class AccountPrintBatch(models.Model):
             if vals.get('name', '/') == '/':
                 batch_type = vals.get('batch_type', 'inbound')
                 seq_code = 'account.print.batch.inbound' if batch_type == 'inbound' else 'account.print.batch.outbound'
-                vals['name'] = self.env['ir.sequence'].next_by_code(seq_code) or '/'
+                company = self.env['res.company'].browse(
+                    vals.get('company_id', self.env.company.id)
+                )
+                vals['name'] = self.env['ir.sequence'].with_company(company).next_by_code(seq_code) or '/'
         return super().create(vals_list)
 
     def unlink(self):

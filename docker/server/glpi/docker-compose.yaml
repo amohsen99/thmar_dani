@@ -1,0 +1,37 @@
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: glpi-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${GLPI_DB_NAME}
+      MYSQL_USER: ${GLPI_DB_USER}
+      MYSQL_PASSWORD: ${GLPI_DB_PASSWORD}
+    volumes:
+      - glpi_db_data:/var/lib/mysql
+    networks:
+      - glpi-net
+
+  glpi:
+    image: diouxx/glpi:latest
+    container_name: glpi-app
+    restart: always
+    ports:
+      - "9090:80"  # <--- Change 8080 to your preferred port here
+    environment:
+      TIMEZONE: ${TIMEZONE}
+    volumes:
+      - glpi_data:/var/www/html/glpi
+    depends_on:
+      - mariadb
+    networks:
+      - glpi-net
+
+networks:
+  glpi-net:
+    driver: bridge
+
+volumes:
+  glpi_db_data:
+  glpi_data:

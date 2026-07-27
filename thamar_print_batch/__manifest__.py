@@ -16,6 +16,7 @@
     'website': 'https://www.thamardani.com',
     'depends': ['account', 'thamar_invoice_custom'],
     'data': [
+        'security/print_batch_security.xml',
         'security/ir.model.access.csv',
         'data/sequence_data.xml',
         'data/paperformat_data.xml',

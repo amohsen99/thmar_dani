@@ -64,6 +64,14 @@ class AccountPayment(models.Model):
                 "يرجى تحديد عمليات من نفس النوع (صادر أو وارد) فقط."
             ))
 
+        # Ensure all selected payments belong to the same company
+        companies = self.mapped('company_id')
+        if len(companies) > 1:
+            raise UserError(_(
+                "عذراً! لا يمكنك إنشاء مطبوعة مجمعة لعمليات تابعة لشركات مختلفة. "
+                "يرجى تحديد عمليات من نفس الشركة فقط."
+            ))
+
         # Check for payments already linked to another batch
         for payment in self:
             if payment.print_batch_id:
@@ -81,6 +89,7 @@ class AccountPayment(models.Model):
         batch = self.env['account.print.batch'].create({
             'batch_type': list(payment_types)[0],
             'partner_id': partner_id,
+            'company_id': self[0].company_id.id,
             'payment_ids': [(6, 0, self.ids)],
         })
 
