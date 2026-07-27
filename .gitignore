@@ -33,7 +33,7 @@ __pycache__/
 # ========================
 
 # Virtual environments
-.env
+# .env
 /env/
 /venv/
 Venv/
