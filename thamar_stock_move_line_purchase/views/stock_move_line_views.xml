@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Inherit the stock.move.line list view (Moves History) to add purchase columns -->
+    <record id="view_move_line_tree_inherit_purchase_info" model="ir.ui.view">
+        <field name="name">stock.move.line.list.inherit.purchase.info</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_uom_id']" position="after">
+                <field name="purchase_currency_id" column_invisible="True"/>
+                <field name="purchase_price_unit" string="Unit Price" optional="hide"/>
+                <field name="purchase_discount" string="Discount (%)" optional="hide"/>
+                <field name="purchase_tax_ids" string="Taxes" widget="many2many_tags" optional="hide"/>
+                <field name="purchase_total_amount" string="Total Amount" optional="hide" sum="Total"/>
+                <field name="income_quantity" string="Income Qty" optional="show" sum="Total Income"/>
+                <field name="outcome_quantity" string="Outcome Qty" optional="show" sum="Total Outcome"/>
+                <field name="product_qty_available" string="On Hand Qty" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit the stock.move.line search view to add income/outcome/on-hand filters -->
+    <record id="view_move_line_search_inherit_purchase_info" model="ir.ui.view">
+        <field name="name">stock.move.line.search.inherit.purchase.info</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.stock_move_line_view_search"/>
+        <field name="arch" type="xml">
+            <!-- Add filters before the separator that precedes the date filters -->
+            <xpath expr="//filter[@name='internal']" position="after">
+                <separator/>
+                <filter string="Has Income" name="has_income"
+                        domain="[('income_quantity', '>', 0)]"/>
+                <filter string="Has Outcome" name="has_outcome"
+                        domain="[('outcome_quantity', '>', 0)]"/>
+            </xpath>
+            <!-- Add group-by options -->
+            <xpath expr="//filter[@name='by_category']" position="after">
+                <filter string="Product (On Hand)" name="groupby_onhand"
+                        domain="[]" context="{'group_by': 'product_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

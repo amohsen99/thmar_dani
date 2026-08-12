@@ -1,0 +1,57 @@
+<odoo>
+    <data>
+        <record id="inherit_product_form_view" model="ir.ui.view">
+            <field name="name">product.product.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <button name="action_open_documents" position="before">
+                    <button type="object"
+                                name="action_secondary_open_quants"
+                                invisible="secondary_uom != True"
+                                class="oe_stat_button" icon="fa-th">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value d-flex gap-1">
+                                        <field name="secondary_product_qty" nolabel="1" class="oe_inline" />
+                                        <field name="secondary_uom_name" class="oe_inline"/>
+                                    </span>
+                                    <span class="o_stat_text">On Hand</span>
+                               </div>
+                    </button>
+                </button>
+                <xpath expr="//field[@name='invoice_policy']" position="before">
+                    <field name="secondary_uom"/>
+                    <field name="secondary_uom_id" invisible="secondary_uom != True" required="secondary_uom == True"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="inherit_product_template_form_view" model="ir.ui.view">
+            <field name="name">product.template.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <button name="action_open_documents" position="before">
+                    <button type="object"
+                                name="action_secondary_open_quants"
+                                invisible="secondary_uom != True"
+                                class="oe_stat_button" icon="fa-th">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value d-flex gap-1">
+                                        <field name="secondary_product_qty" nolabel="1" class="oe_inline" />
+                                        <field name="secondary_uom_name" class="oe_inline"/>
+                                    </span>
+                                    <span class="o_stat_text">On Hand</span>
+                               </div>
+                    </button>
+                </button>
+
+                <xpath expr="//field[@name='invoice_policy']" position="before">
+                    <field name="secondary_uom"/>
+                    <field name="secondary_uom_id" invisible="secondary_uom != True" required="secondary_uom == True"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
