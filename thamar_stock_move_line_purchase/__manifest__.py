@@ -17,7 +17,9 @@
     'author': 'Thamar',
     'depends': ['stock', 'purchase_stock'],
     'data': [
+        'security/ir.model.access.csv',
         'views/stock_move_line_views.xml',
+        'views/stock_inventory_report_views.xml',
     ],
     'installable': True,
     'auto_install': False,

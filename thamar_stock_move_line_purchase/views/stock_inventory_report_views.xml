@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- Wizard Form View                                   -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <record id="view_stock_inventory_report_wizard_form" model="ir.ui.view">
+        <field name="name">stock.inventory.report.wizard.form</field>
+        <field name="model">stock.inventory.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Inventory Report">
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>
+                        <field name="product_category_id"/>
+                        <field name="location_id" groups="stock.group_stock_multi_locations"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="product_ids" widget="many2many_tags"
+                           options="{'no_create': True}"
+                           placeholder="All storable products"/>
+                </group>
+                <footer>
+                    <button name="action_generate_report" type="object"
+                            string="Generate Report" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_stock_inventory_report_wizard" model="ir.actions.act_window">
+        <field name="name">Product Movement Report</field>
+        <field name="res_model">stock.inventory.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- Report Lines List View                             -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <record id="view_stock_inventory_report_line_tree" model="ir.ui.view">
+        <field name="name">stock.inventory.report.line.list</field>
+        <field name="model">stock.inventory.report.line</field>
+        <field name="arch" type="xml">
+            <list string="Inventory Report" create="0" edit="0" delete="0"
+                  decoration-info="total_income > 0"
+                  decoration-danger="total_outcome > 0 and total_income == 0">
+                <field name="product_id"/>
+                <field name="uom_id" string="UoM" groups="uom.group_uom"/>
+                <field name="initial_balance" sum="Total Initial"/>
+                <field name="total_income" sum="Total Income"/>
+                <field name="total_outcome" sum="Total Outcome"/>
+                <field name="end_quantity" sum="Total End Qty"
+                       decoration-danger="end_quantity &lt; 0"
+                       decoration-success="end_quantity &gt; 0"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Report Lines Search View -->
+    <record id="view_stock_inventory_report_line_search" model="ir.ui.view">
+        <field name="name">stock.inventory.report.line.search</field>
+        <field name="model">stock.inventory.report.line</field>
+        <field name="arch" type="xml">
+            <search string="Inventory Report">
+                <field name="product_id"/>
+                <separator/>
+                <filter string="Has Income" name="has_income"
+                        domain="[('total_income', '>', 0)]"/>
+                <filter string="Has Outcome" name="has_outcome"
+                        domain="[('total_outcome', '>', 0)]"/>
+                <separator/>
+                <filter string="Negative End Qty" name="negative_end"
+                        domain="[('end_quantity', '&lt;', 0)]"/>
+                <separator/>
+                <group name="groupby">
+                    <filter string="Product" name="groupby_product"
+                            context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- Menu under Inventory > Reporting                   -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <menuitem
+        id="menu_stock_inventory_report"
+        name="Product Movement Report"
+        action="action_stock_inventory_report_wizard"
+        parent="stock.menu_warehouse_report"
+        sequence="210"/>
+
+</odoo>
