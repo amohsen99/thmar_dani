@@ -40,6 +40,14 @@ class StockMoveLine(models.Model):
         store=True,
     )
 
+    # ── Authorization Number (رقم الاذن) from Picking ──
+    authorization_number = fields.Char(
+        string='رقم الاذن',
+        related='move_id.picking_id.authorization_number',
+        store=True,
+        readonly=True,
+    )
+
     # ── On-hand & Income / Outcome quantities ──
     product_qty_available = fields.Float(
         string='On Hand Qty',

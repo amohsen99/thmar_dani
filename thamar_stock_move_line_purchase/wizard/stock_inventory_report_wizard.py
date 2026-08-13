@@ -10,7 +10,7 @@ class StockInventoryReportWizard(models.TransientModel):
     date_from = fields.Date(
         string='Start Date',
         required=True,
-        default=fields.Date.context_today,
+        default=lambda self: fields.Date.context_today(self).replace(month=1, day=1),
     )
     date_to = fields.Date(
         string='End Date',
@@ -85,7 +85,7 @@ class StockInventoryReportWizard(models.TransientModel):
             JOIN stock_location sl_dest ON sl_dest.id = sml.location_dest_id
             WHERE sml.state = 'done'
               AND sml.product_id IN %s
-              AND sml.date < %s
+              AND sml.date <= %s
               AND (sml.location_id IN %s OR sml.location_dest_id IN %s)
             GROUP BY sml.product_id
         """, (

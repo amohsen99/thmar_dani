@@ -16,6 +16,7 @@
                 <field name="income_quantity" string="Income Qty" optional="show" sum="Total Income"/>
                 <field name="outcome_quantity" string="Outcome Qty" optional="show" sum="Total Outcome"/>
                 <field name="product_qty_available" string="On Hand Qty" optional="show"/>
+                <field name="authorization_number" string="رقم الاذن" optional="show"/>
             </xpath>
         </field>
     </record>
@@ -28,6 +29,8 @@
         <field name="arch" type="xml">
             <!-- Add filters before the separator that precedes the date filters -->
             <xpath expr="//filter[@name='internal']" position="after">
+                <separator/>
+                <field name="authorization_number" string="رقم الاذن"/>
                 <separator/>
                 <filter string="Has Income" name="has_income"
                         domain="[('income_quantity', '>', 0)]"/>

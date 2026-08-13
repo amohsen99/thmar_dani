@@ -15,9 +15,12 @@
         - Total Amount (computed: qty * price_unit * (1 - discount/100))
     """,
     'author': 'Thamar',
-    'depends': ['stock', 'purchase_stock'],
+    'depends': ['stock', 'purchase_stock', 'sale_stock'],
     'data': [
         'security/ir.model.access.csv',
+        'views/sale_order_views.xml',
+        'views/purchase_order_views.xml',
+        'views/stock_picking_views.xml',
         'views/stock_move_line_views.xml',
         'views/stock_inventory_report_views.xml',
     ],

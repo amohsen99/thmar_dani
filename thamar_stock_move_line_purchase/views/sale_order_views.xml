@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Sale Order Form: add authorization_number field -->
+    <record id="view_sale_order_form_inherit_auth_number" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.auth.number</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='client_order_ref']" position="after">
+                <field name="authorization_number"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Sale Order List: add authorization_number column -->
+    <record id="view_sale_order_tree_inherit_auth_number" model="ir.ui.view">
+        <field name="name">sale.order.list.inherit.auth.number</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="authorization_number" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
