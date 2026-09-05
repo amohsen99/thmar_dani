@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Stock Move Line - Purchase Info',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.0.2',
     'category': 'Inventory/Inventory',
     'summary': 'Show purchase order line details (price, discount, taxes, total) on stock move line list view',
     'description': """

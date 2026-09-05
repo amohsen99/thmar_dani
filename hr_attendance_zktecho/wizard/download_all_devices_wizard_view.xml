@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="download_all_devices_wizard_form" model="ir.ui.view">
+            <field name="name">download.all.devices.wizard.form</field>
+            <field name="model">download.all.devices.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Download Attendance From All Devices">
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <footer>
+                        <button name="action_download"
+                                type="object"
+                                string="Download"
+                                class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="download_all_devices_wizard_action" model="ir.actions.act_window">
+            <field name="name">Download All Devices</field>
+            <field name="res_model">download.all.devices.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

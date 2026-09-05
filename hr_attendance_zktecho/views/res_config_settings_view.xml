@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="inherited_res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.zktecho</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="hr_attendance.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//app[@name='hr_attendance']" position="inside">
+
+                    <!-- ═══════════════════════════════════════════ -->
+                    <!-- Block 1: Attendance Routing Mode           -->
+                    <!-- ═══════════════════════════════════════════ -->
+                    <block title="Attendance Routing Mode" name="routing_mode_block">
+                        <setting string="Punch Processing Strategy"
+                                 help="Choose how raw ZKTeco device punches are converted into Odoo attendance records (check-in / check-out).">
+                            <field name="attendance_routing_mode" widget="radio"/>
+                        </setting>
+                    </block>
+
+                    <!-- ═══════════════════════════════════════════ -->
+                    <!-- Block 2: Shift &amp; Duplicate Thresholds -->
+                    <!-- ═══════════════════════════════════════════ -->
+                    <block title="Shift &amp; Duplicate Thresholds" name="shift_thresholds_block">
+                        <setting string="Max Shift Duration"
+                                 help="Open attendances older than this threshold will be auto-closed when a new punch arrives. Prevents ghost check-ins from blocking the pipeline.">
+                            <span class="o_form_label">Auto-close open attendance after</span>
+                            <field name="attendance_max_shift_hours" style="width: 60px;" class="mx-1"/>
+                            <span class="o_form_label">hours</span>
+                        </setting>
+                        <setting string="Anti-Duplicate Window"
+                                 help="Ignore duplicate punches from the same employee within this time window. Applied during both device download and the move wizard.">
+                            <span class="o_form_label">Ignore punches within</span>
+                            <field name="attendance_anti_duplicate_minutes" style="width: 60px;" class="mx-1"/>
+                            <span class="o_form_label">minutes of each other</span>
+                        </setting>
+                    </block>
+
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

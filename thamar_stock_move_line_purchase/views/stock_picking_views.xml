@@ -10,6 +10,21 @@
             <xpath expr="//field[@name='origin']" position="after">
                 <field name="authorization_number"/>
             </xpath>
+            <xpath expr="//page[@name='operations']//list//field[@name='product_id']" position="attributes">
+                <attribute name="context">{'default_is_storable': True, 'search_variant_values': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Enable variant-value lookup in the Detailed Operations (move_line_ids) grid. -->
+    <record id="view_stock_move_line_detailed_operation_tree_inherit_variant_search" model="ir.ui.view">
+        <field name="name">stock.move.line.detailed.operation.tree.inherit.variant.search</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_stock_move_line_detailed_operation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="context">{'default_is_storable': True, 'search_variant_values': True}</attribute>
+            </xpath>
         </field>
     </record>
 
