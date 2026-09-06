@@ -10,11 +10,13 @@
         - Add invoice/bill type selection (cash/credit)
         - Add permission number field
         - Add warehouse field on invoices and bills
+        - Add separate sequences for invoices and bills
     """,
     'author': 'Al-Omar Group',
     'depends': ['account', 'stock'],
     'data': [
         'security/ir.model.access.csv',
+        'data/account_sequence_data.xml',
         'views/account_move_view.xml',
     ],
     'installable': True,

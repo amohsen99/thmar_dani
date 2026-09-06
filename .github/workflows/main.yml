@@ -47,8 +47,8 @@ jobs:
             echo "Updating containers..."
             docker compose -f "$COMPOSE_FILE" up -d --build
 
-            echo "Regenerating assets for Live2 database..."
-            docker compose -f "$COMPOSE_FILE" run --rm --no-deps odoo odoo -d Live2 -u base --stop-after-init
+            # echo "Regenerating assets for Live2 database..."
+            # docker compose -f "$COMPOSE_FILE" run --rm --no-deps odoo odoo -d Live2 -u web --stop-after-init
 
             echo "Soft restarting Odoo service..."
             docker compose -f "$COMPOSE_FILE" restart odoo
