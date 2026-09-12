@@ -4,7 +4,7 @@ FROM odoo:19.0
 USER root
 RUN apt-get update && apt-get install -y nodejs npm \
     && npm install -g less less-plugin-clean-css \
-    && pip3 install --no-cache-dir pyzk \
+    && pip3 install --no-cache-dir --break-system-packages pyzk \
     && apt-get clean
 # Install Python package hijri-converter to /usr/lib/python3/dist-packages # default odoo path
 # RUN pip install --target=/usr/lib/python3/dist-packages hijri_converter==2.3.1
