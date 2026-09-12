@@ -12,6 +12,7 @@ class HrEmployee(models.Model):
         'transport.vehicle', string='المركبة', index=True,
         domain="[('route_id', '=', transport_route_id), ('remaining_seats', '>', 0)]",
     )
+    transport_fixed_first_shift = fields.Boolean(string='ثابت بالوردية الأولى', default=False)
 
     @api.onchange('transport_route_id')
     def _onchange_transport_route_id(self):
@@ -20,7 +21,7 @@ class HrEmployee(models.Model):
         if self.transport_vehicle_id and self.transport_vehicle_id.route_id != self.transport_route_id:
             self.transport_vehicle_id = False
 
-    @api.constrains('transport_route_id', 'transport_vehicle_id')
+    @api.constrains('transport_route_id', 'transport_vehicle_id', 'transport_fixed_first_shift')
     def _check_transport_assignment(self):
         for employee in self:
             vehicle = employee.transport_vehicle_id
@@ -35,3 +36,7 @@ class HrEmployee(models.Model):
                     'المركبة %(vehicle)s مكتملة العدد ولا يمكن تسكين موظفين إضافيين بها.'
                 ) % {'vehicle': vehicle.display_name}
                 raise ValidationError(message)
+            if employee.transport_fixed_first_shift and vehicle.fixed_first_shift_passengers > vehicle.standard_capacity:
+                raise ValidationError(_(
+                    'لا يمكن تسكين الموظف بالوردية الأولى؛ لا توجد مقاعد شاغرة في الوردية الأولى للمركبة %(vehicle)s.'
+                ) % {'vehicle': vehicle.display_name})

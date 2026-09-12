@@ -38,6 +38,8 @@
                             <field name="occupied_seats" readonly="1"/>
                             <field name="remaining_seats" readonly="1"/>
                             <field name="occupancy_rate" widget="percentage" readonly="1"/>
+                            <field name="fixed_first_shift_passengers" readonly="1"/>
+                            <field name="first_shift_remaining_seats" readonly="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -78,6 +80,7 @@
                                     <field name="name"/>
                                     <field name="work_phone"/>
                                     <field name="transport_route_id" readonly="1"/>
+                                    <field name="transport_fixed_first_shift"/>
                                 </list>
                             </field>
                         </page>
@@ -95,6 +98,7 @@
                 <field name="plate_number"/><field name="route_id"/><field name="driver_name"/>
                 <field name="active_shifts"/><field name="effective_capacity"/><field name="occupied_seats"/>
                 <field name="remaining_seats"/><field name="occupancy_rate"/>
+                <field name="fixed_first_shift_passengers"/><field name="first_shift_remaining_seats"/>
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_details">
@@ -106,6 +110,8 @@
                             </div>
                             <div class="mt-2">الركاب: <field name="occupied_seats"/> / <field name="effective_capacity"/></div>
                             <div>المقاعد الشاغرة: <field name="remaining_seats"/></div>
+                            <div>الثابتون بالوردية الأولى: <field name="fixed_first_shift_passengers"/></div>
+                            <div>الشاغر بالوردية الأولى: <field name="first_shift_remaining_seats"/></div>
                             <div>الورديات النشطة: <field name="active_shifts"/></div>
                         </div>
                     </t>

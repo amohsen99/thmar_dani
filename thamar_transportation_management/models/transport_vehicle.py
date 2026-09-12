@@ -38,6 +38,12 @@ class TransportVehicle(models.Model):
     occupied_seats = fields.Integer(string='المقاعد المشغولة', compute='_compute_capacity', store=True)
     remaining_seats = fields.Integer(string='المقاعد الشاغرة', compute='_compute_capacity', store=True)
     occupancy_rate = fields.Float(string='نسبة الإشغال', compute='_compute_capacity', store=True, digits=(5, 2))
+    fixed_first_shift_passengers = fields.Integer(
+        string='الثابتون بالوردية الأولى', compute='_compute_capacity', store=True,
+    )
+    first_shift_remaining_seats = fields.Integer(
+        string='المقاعد الشاغرة بالوردية الأولى', compute='_compute_capacity', store=True,
+    )
 
     _sql_constraints = [
         ('transport_vehicle_plate_unique', 'unique(plate_number)', 'يجب أن يكون رقم اللوحة فريداً.'),
@@ -48,12 +54,21 @@ class TransportVehicle(models.Model):
         for vehicle in self:
             vehicle.name = vehicle.plate_number or False
 
-    @api.depends('standard_capacity', 'active_shifts', 'passenger_ids.transport_vehicle_id')
+    @api.depends(
+        'standard_capacity', 'active_shifts', 'passenger_ids.transport_vehicle_id',
+        'passenger_ids.transport_fixed_first_shift',
+    )
     def _compute_capacity(self):
         for vehicle in self:
             vehicle.effective_capacity = vehicle.standard_capacity * int(vehicle.active_shifts or 0)
             vehicle.occupied_seats = len(vehicle.passenger_ids)
             vehicle.remaining_seats = vehicle.effective_capacity - vehicle.occupied_seats
+            vehicle.fixed_first_shift_passengers = len(
+                vehicle.passenger_ids.filtered('transport_fixed_first_shift')
+            )
+            vehicle.first_shift_remaining_seats = (
+                vehicle.standard_capacity - vehicle.fixed_first_shift_passengers
+            )
             vehicle.occupancy_rate = (
                 vehicle.occupied_seats / vehicle.effective_capacity * 100
                 if vehicle.effective_capacity else 0.0
@@ -72,6 +87,14 @@ class TransportVehicle(models.Model):
                     'capacity': vehicle.effective_capacity,
                 }
                 raise ValidationError(message)
+            if vehicle.fixed_first_shift_passengers > vehicle.standard_capacity:
+                raise ValidationError(_(
+                    'عدد الموظفين الثابتين بالوردية الأولى في المركبة %(vehicle)s '
+                    'أكبر من سعة الوردية الأولى (%(capacity)s مقعداً).'
+                ) % {
+                    'vehicle': vehicle.display_name,
+                    'capacity': vehicle.standard_capacity,
+                })
 
     @api.constrains('standard_capacity')
     def _check_standard_capacity(self):

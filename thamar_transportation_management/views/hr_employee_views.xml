@@ -9,6 +9,7 @@
                 <separator string="Transportation"/>
                 <field name="transport_route_id"/>
                 <field name="transport_vehicle_id" domain="[('route_id', '=', transport_route_id), ('remaining_seats', '&gt;', 0)]"/>
+                <field name="transport_fixed_first_shift"/>
             </xpath>
         </field>
     </record>
@@ -21,6 +22,7 @@
             <xpath expr="//field[@name='department_id']" position="after">
                 <field name="transport_route_id" optional="show"/>
                 <field name="transport_vehicle_id" optional="show"/>
+                <field name="transport_fixed_first_shift" optional="show"/>
             </xpath>
         </field>
     </record>
