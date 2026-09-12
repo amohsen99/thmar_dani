@@ -31,7 +31,7 @@ class TransportVehicleStation(models.Model):
     station_sequence = fields.Integer(related='station_id.sequence', string='ترتيب المحطة', store=True, readonly=True)
     shift_number = fields.Selection(
         [('1', 'الوردية الأولى'), ('2', 'الوردية الثانية'), ('3', 'الوردية الثالثة')],
-        string='الوردية', required=True, default='1', index=True,
+        string='الوردية', required=True, index=True,
     )
     departure_time = fields.Float(string='وقت التحرك', required=True, default=0.0)
     notes = fields.Char(string='ملاحظات')

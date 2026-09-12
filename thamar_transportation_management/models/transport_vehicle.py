@@ -25,15 +25,15 @@ class TransportVehicle(models.Model):
     station_schedule_ids = fields.One2many('transport.vehicle.station', 'vehicle_id', string='جدول المحطات')
     shift_one_schedule_ids = fields.One2many(
         'transport.vehicle.station', 'vehicle_id', string='مواعيد الوردية الأولى',
-        domain=[('shift_number', '=', '1')],
+        domain=[('shift_number', '=', '1')], context={'default_shift_number': '1'},
     )
     shift_two_schedule_ids = fields.One2many(
         'transport.vehicle.station', 'vehicle_id', string='مواعيد الوردية الثانية',
-        domain=[('shift_number', '=', '2')],
+        domain=[('shift_number', '=', '2')], context={'default_shift_number': '2'},
     )
     shift_three_schedule_ids = fields.One2many(
         'transport.vehicle.station', 'vehicle_id', string='مواعيد الوردية الثالثة',
-        domain=[('shift_number', '=', '3')],
+        domain=[('shift_number', '=', '3')], context={'default_shift_number': '3'},
     )
     occupied_seats = fields.Integer(string='المقاعد المشغولة', compute='_compute_capacity', store=True)
     remaining_seats = fields.Integer(string='المقاعد الشاغرة', compute='_compute_capacity', store=True)
