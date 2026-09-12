@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Add split_day_night checkbox to Time Off Type form -->
+    <record id="edit_holiday_status_form_inherit" model="ir.ui.view">
+        <field name="name">hr.leave.type.form.inherit.holiday.overtime</field>
+        <field name="model">hr.leave.type</field>
+        <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form"/>
+        <field name="arch" type="xml">
+            <!-- Add label in the labels column (inside the flex-column div) -->
+            <xpath expr="//group[@name='configuration']//label[@for='allow_request_on_top']" position="after">
+                <label for="split_day_night" class="me-4"/>
+                <label for="day_start_hour" class="me-4" invisible="not split_day_night"/>
+                <label for="day_end_hour" class="me-4" invisible="not split_day_night"/>
+            </xpath>
+            <!-- Add checkbox in the checkboxes column -->
+            <xpath expr="//group[@name='configuration']//field[@name='allow_request_on_top']" position="after">
+                <field name="split_day_night" nolabel="1"/>
+                <field name="day_start_hour" widget="float_time" invisible="not split_day_night"/>
+                <field name="day_end_hour" widget="float_time" invisible="not split_day_night"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

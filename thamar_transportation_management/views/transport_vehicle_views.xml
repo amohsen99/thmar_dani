@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_transport_vehicle_list" model="ir.ui.view">
+        <field name="name">transport.vehicle.list</field>
+        <field name="model">transport.vehicle</field>
+        <field name="arch" type="xml">
+            <list string="المركبات" decoration-success="remaining_seats > 0" decoration-danger="remaining_seats &lt;= 0">
+                <field name="plate_number"/>
+                <field name="route_id"/>
+                <field name="driver_name"/>
+                <field name="standard_capacity"/>
+                <field name="active_shifts"/>
+                <field name="effective_capacity"/>
+                <field name="occupied_seats"/>
+                <field name="remaining_seats"/>
+                <field name="occupancy_rate" widget="percentage"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_transport_vehicle_form" model="ir.ui.view">
+        <field name="name">transport.vehicle.form</field>
+        <field name="model">transport.vehicle</field>
+        <field name="arch" type="xml">
+            <form string="المركبة">
+                <sheet>
+                    <div class="oe_title"><h1><field name="plate_number" placeholder="رقم اللوحة أو كود المركبة"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="route_id"/>
+                            <field name="driver_name"/>
+                            <field name="driver_phone" widget="phone"/>
+                        </group>
+                        <group string="السعة والإشغال">
+                            <field name="standard_capacity"/>
+                            <field name="active_shifts"/>
+                            <field name="effective_capacity" readonly="1"/>
+                            <field name="occupied_seats" readonly="1"/>
+                            <field name="remaining_seats" readonly="1"/>
+                            <field name="occupancy_rate" widget="percentage" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="مواعيد الوردية الأولى">
+                                    <field name="shift_one_schedule_ids" nolabel="1" context="{'default_shift_number': '1'}">
+                                        <list editable="bottom" default_order="station_sequence, id" open_form_view="True">
+                                            <field name="station_sequence" string="الترتيب" readonly="1"/>
+                                            <field name="station_id" domain="[('route_id', '=', parent.route_id)]" options="{'no_create': True, 'no_create_edit': True}"/>
+                                            <field name="departure_time" widget="float_time"/>
+                                            <field name="notes"/>
+                                        </list>
+                                    </field>
+                        </page>
+                        <page string="مواعيد الوردية الثانية" invisible="active_shifts == '1'">
+                                    <field name="shift_two_schedule_ids" nolabel="1" context="{'default_shift_number': '2'}">
+                                        <list editable="bottom" default_order="station_sequence, id" open_form_view="True">
+                                            <field name="station_sequence" string="الترتيب" readonly="1"/>
+                                            <field name="station_id" domain="[('route_id', '=', parent.route_id)]" options="{'no_create': True, 'no_create_edit': True}"/>
+                                            <field name="departure_time" widget="float_time"/>
+                                            <field name="notes"/>
+                                        </list>
+                                    </field>
+                        </page>
+                        <page string="مواعيد الوردية الثالثة" invisible="active_shifts != '3'">
+                                    <field name="shift_three_schedule_ids" nolabel="1" context="{'default_shift_number': '3'}">
+                                        <list editable="bottom" default_order="station_sequence, id" open_form_view="True">
+                                            <field name="station_sequence" string="الترتيب" readonly="1"/>
+                                            <field name="station_id" domain="[('route_id', '=', parent.route_id)]" options="{'no_create': True, 'no_create_edit': True}"/>
+                                            <field name="departure_time" widget="float_time"/>
+                                            <field name="notes"/>
+                                        </list>
+                                    </field>
+                        </page>
+                        <page string="الركاب">
+                            <button name="action_open_assign_employee_wizard" type="object" string="تسكين موظفين" class="btn-primary" icon="fa-users"/>
+                            <field name="passenger_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="work_phone"/>
+                                    <field name="transport_route_id" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_transport_vehicle_kanban" model="ir.ui.view">
+        <field name="name">transport.vehicle.kanban</field>
+        <field name="model">transport.vehicle</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column">
+                <field name="plate_number"/><field name="route_id"/><field name="driver_name"/>
+                <field name="active_shifts"/><field name="effective_capacity"/><field name="occupied_seats"/>
+                <field name="remaining_seats"/><field name="occupancy_rate"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_details">
+                            <strong><field name="plate_number"/></strong>
+                            <div class="text-muted"><field name="route_id"/></div>
+                            <div t-if="record.driver_name.raw_value">السائق: <field name="driver_name"/></div>
+                            <div class="mt-2">
+                                <field name="occupancy_rate" widget="progressbar" options="{'max_value': 100}"/>
+                            </div>
+                            <div class="mt-2">الركاب: <field name="occupied_seats"/> / <field name="effective_capacity"/></div>
+                            <div>المقاعد الشاغرة: <field name="remaining_seats"/></div>
+                            <div>الورديات النشطة: <field name="active_shifts"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_transport_vehicle_search" model="ir.ui.view">
+        <field name="name">transport.vehicle.search</field>
+        <field name="model">transport.vehicle</field>
+        <field name="arch" type="xml">
+            <search string="بحث في المركبات">
+                <field name="plate_number"/><field name="route_id"/><field name="driver_name"/>
+                <filter name="available_seats" string="مقاعد شاغرة متاحة" domain="[('remaining_seats', '&gt;', 0)]"/>
+                <filter name="full" string="مركبات مكتملة" domain="[('remaining_seats', '&lt;=', 0)]"/>
+                <group>
+                    <filter name="group_route" string="خط السير" context="{'group_by': 'route_id'}"/>
+                    <filter name="group_active_shifts" string="الورديات النشطة" context="{'group_by': 'active_shifts'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_transport_vehicle" model="ir.actions.act_window">
+        <field name="name">المركبات</field>
+        <field name="res_model">transport.vehicle</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_transport_vehicle_search"/>
+    </record>
+</odoo>

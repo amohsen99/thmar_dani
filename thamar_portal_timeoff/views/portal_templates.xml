@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Portal Home: Employee Profile Entry -->
+    <template id="portal_my_home_employee" name="Portal: Employee Profile Entry"
+              inherit_id="thamar_portal_timeoff.portal_my_home_timeoff" priority="1">
+        <div id="portal_client_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/thamar_portal_timeoff/static/src/img/employee_icon.svg'"/>
+                <t t-set="title">My Profile</t>
+                <t t-set="url" t-value="'/my/employee'"/>
+                <t t-set="text">View your personal information</t>
+                <t t-set="placeholder_count" t-value="''"/>
+            </t>
+        </div>
+    </template>
+
+    <!-- Portal Home: Time Off Counter Badge -->
+    <template id="portal_my_home_timeoff" name="Portal: Time Off Entry"
+              inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_client_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/thamar_portal_timeoff/static/src/img/timeoff_icon.svg'"/>
+                <t t-set="title">Time Off</t>
+                <t t-set="url" t-value="'/my/timeoff'"/>
+                <t t-set="text">Manage your time off requests</t>
+                <t t-set="placeholder_count" t-value="'timeoff_count'"/>
+            </t>
+        </div>
+    </template>
+
+    <!-- Portal Time Off Page -->
+    <template id="portal_timeoff_page" name="Portal: Time Off Management">
+        <t t-call="portal.portal_layout">
+            <t t-set="head">
+                <t t-call-assets="thamar_portal_timeoff.assets_timeoff"/>
+            </t>
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Time Off</t>
+            </t>
+
+            <div class="o_portal_timeoff_app" t-att-data-employee-id="employee_id" t-att-data-employee-name="employee_name">
+                <!-- OWL mounts here -->
+                <div class="text-center py-5" id="timeoff_loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Loading your time off data...</p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal Breadcrumb -->
+    <template id="portal_breadcrumb_timeoff" name="Portal: Time Off Breadcrumb"
+              inherit_id="portal.portal_breadcrumbs" priority="40">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'timeoff'" class="breadcrumb-item active">
+                Time Off
+            </li>
+        </xpath>
+    </template>
+
+    <!-- Portal Employee Info Page -->
+    <template id="portal_employee_page" name="Portal: Employee Information">
+        <t t-call="portal.portal_layout">
+            <t t-set="head">
+                <t t-call-assets="thamar_portal_timeoff.assets_employee"/>
+            </t>
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My Profile</t>
+            </t>
+
+            <div class="o_portal_employee_app" t-att-data-employee-id="employee_id" t-att-data-employee-name="employee_name">
+                <div class="text-center py-5" id="employee_loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Loading your profile...</p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

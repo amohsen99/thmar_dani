@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================ -->
+    <!-- Loan Form View                                                    -->
+    <!-- ================================================================ -->
+    <record id="hr_loan_view_form" model="ir.ui.view">
+        <field name="name">hr.loan.view.form</field>
+        <field name="model">hr.loan</field>
+        <field name="arch" type="xml">
+            <form string="Employee Loan">
+                <header>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_manager_approve"
+                            string="Manager Approve"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'waiting_approval'"
+                            groups="hr.group_hr_manager"/>
+                    <button name="action_hr_approve"
+                            string="HR Approve"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'approved'"
+                            groups="hr_payroll.group_hr_payroll_user"/>
+                    <button name="action_refuse"
+                            string="Refuse"
+                            type="object"
+                            class="btn-danger"
+                            invisible="state not in ('waiting_approval', 'approved')"
+                            groups="hr.group_hr_manager"/>
+                    <button name="action_reset_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            invisible="state != 'refused'"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,waiting_approval,approved,confirm,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Employee Information">
+                            <field name="employee_id"
+                                   readonly="state != 'draft'"/>
+                            <field name="department_id"/>
+                            <field name="job_id"/>
+                            <field name="request_date"/>
+                            <field name="company_id"
+                                   invisible="1"/>
+                            <field name="currency_id"
+                                   invisible="1"/>
+                        </group>
+                        <group string="Loan Details">
+                            <field name="loan_type"
+                                   readonly="state != 'draft'"/>
+                            <field name="loan_amount"
+                                   readonly="state != 'draft'"/>
+                            <field name="installment_count"
+                                   readonly="state != 'draft' or loan_type == 'small'"/>
+                            <field name="payment_start_date"
+                                   readonly="state != 'draft'"/>
+                            <field name="installment_amount"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Payment Summary">
+                            <field name="total_paid"/>
+                            <field name="balance"/>
+                        </group>
+                        <group string="Approval Information">
+                            <field name="manager_id"
+                                   invisible="not manager_id"/>
+                            <field name="manager_approve_date"
+                                   invisible="not manager_approve_date"/>
+                            <field name="hr_manager_id"
+                                   invisible="not hr_manager_id"/>
+                            <field name="hr_approve_date"
+                                   invisible="not hr_approve_date"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="reason"
+                               placeholder="Reason for loan request..."
+                               readonly="state != 'draft'"/>
+                    </group>
+                    <notebook>
+                        <page string="Installments">
+                            <field name="installment_ids"
+                                   readonly="state != 'draft'">
+                                <list editable="bottom"
+                                      decoration-success="paid == True"
+                                      decoration-muted="paid == True">
+                                    <field name="date"/>
+                                    <field name="amount"/>
+                                    <field name="paid"/>
+                                    <field name="payslip_id"/>
+                                    <field name="employee_id" column_invisible="True"/>
+                                </list>
+                            </field>
+                            <button name="compute_installments"
+                                    string="⟳ Compute Installments"
+                                    type="object"
+                                    class="btn-secondary mt-2"
+                                    invisible="state != 'draft'"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Loan Tree View                                                    -->
+    <!-- ================================================================ -->
+    <record id="hr_loan_view_tree" model="ir.ui.view">
+        <field name="name">hr.loan.view.tree</field>
+        <field name="model">hr.loan</field>
+        <field name="arch" type="xml">
+            <list string="Employee Loans"
+                  decoration-info="state == 'draft'"
+                  decoration-warning="state in ('waiting_approval', 'approved')"
+                  decoration-success="state == 'confirm'"
+                  decoration-muted="state in ('done', 'refused')">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id" optional="show"/>
+                <field name="loan_type"/>
+                <field name="loan_amount"/>
+                <field name="installment_count"/>
+                <field name="total_paid"/>
+                <field name="balance"/>
+                <field name="payment_start_date"/>
+                <field name="state"
+                       widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state in ('waiting_approval', 'approved')"
+                       decoration-success="state == 'confirm'"
+                       decoration-danger="state == 'refused'"
+                       />
+            </list>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Loan Search View                                                  -->
+    <!-- ================================================================ -->
+    <record id="hr_loan_view_search" model="ir.ui.view">
+        <field name="name">hr.loan.view.search</field>
+        <field name="model">hr.loan</field>
+        <field name="arch" type="xml">
+            <search string="Search Loans">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <separator/>
+                <filter name="filter_small" string="Small Loans"
+                        domain="[('loan_type', '=', 'small')]"/>
+                <filter name="filter_long" string="Long Loans"
+                        domain="[('loan_type', '=', 'long')]"/>
+                <separator/>
+                <filter name="filter_draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_waiting" string="Waiting Approval"
+                        domain="[('state', '=', 'waiting_approval')]"/>
+                <filter name="filter_approved" string="Approved"
+                        domain="[('state', '=', 'approved')]"/>
+                <filter name="filter_confirmed" string="Confirmed"
+                        domain="[('state', '=', 'confirm')]"/>
+                <filter name="filter_done" string="Done"
+                        domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <group>
+                    <filter name="group_employee" string="Employee"
+                            context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_department" string="Department"
+                            context="{'group_by': 'department_id'}"/>
+                    <filter name="group_type" string="Loan Type"
+                            context="{'group_by': 'loan_type'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Action                                                            -->
+    <!-- ================================================================ -->
+    <record id="hr_loan_action" model="ir.actions.act_window">
+        <field name="name">Loans</field>
+        <field name="res_model">hr.loan</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hr_loan_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new employee loan
+            </p>
+            <p>
+                Manage small and long-term employee loans with approval
+                workflows and automatic payroll deductions.
+            </p>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Menu Items (under Payroll)                                        -->
+    <!-- ================================================================ -->
+    <menuitem id="hr_loan_menu_root"
+              name="Loans"
+              parent="hr_work_entry_enterprise.menu_hr_payroll_root"
+              sequence="65"/>
+
+    <menuitem id="hr_loan_menu_loan"
+              name="Employee Loans"
+              parent="hr_loan_menu_root"
+              action="hr_loan_action"
+              sequence="10"/>
+
+</odoo>

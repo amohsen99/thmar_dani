@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         Main App Template
+         ═══════════════════════════════════════════════════════════ -->
+    <t t-name="thamar_portal_timeoff.TimeOffApp">
+        <div class="pto-wrapper">
+            <!-- Header -->
+            <div class="pto-header">
+                <h2>
+                    <i class="fa fa-sun-o me-2" style="color: #fbbf24;"/>
+                    My <span>Time Off</span>
+                </h2>
+                <button class="pto-btn-primary" t-on-click="onNewRequest">
+                    <i class="fa fa-plus"/>
+                    New Request
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <TimeOffStats balances="state.balances"/>
+
+            <!-- Filters -->
+            <TimeOffList
+                leaves="state.leaves"
+                filter="state.filter"
+                onFilterChange.bind="onFilterChange"
+                onEdit.bind="onEdit"
+                onDelete.bind="onDelete"/>
+
+            <!-- Form Modal -->
+            <TimeOffForm
+                t-if="state.showForm &amp;&amp; state.editingLeave"
+                leave="state.editingLeave"
+                leaveTypes="state.leaveTypes"
+                onSave.bind="onSave"
+                onClose.bind="onCloseForm"/>
+            <TimeOffForm
+                t-if="state.showForm &amp;&amp; !state.editingLeave"
+                leaveTypes="state.leaveTypes"
+                onSave.bind="onSave"
+                onClose.bind="onCloseForm"/>
+
+            <!-- Toast -->
+            <t t-if="state.toast">
+                <div t-attf-class="pto-toast {{ state.toast.type }}">
+                    <i t-attf-class="fa {{ state.toast.type === 'success' ? 'fa-check-circle success' : 'fa-exclamation-circle error' }}"/>
+                    <span t-esc="state.toast.message"/>
+                </div>
+            </t>
+        </div>
+    </t>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         Stats Component
+         ═══════════════════════════════════════════════════════════ -->
+    <t t-name="thamar_portal_timeoff.TimeOffStats">
+        <div class="pto-stats" t-if="props.balances.length">
+            <t t-foreach="props.balances" t-as="balance" t-key="balance.id">
+                <div class="pto-stat-card" t-att-data-color="balance.color % 8">
+                    <div class="pto-stat-name" t-esc="balance.name"/>
+                    <div class="pto-stat-body">
+                        <div>
+                            <div class="pto-stat-value" t-esc="balance.remaining"/>
+                            <div class="pto-stat-label">
+                                of <t t-esc="balance.max_leaves"/> days remaining
+                            </div>
+                        </div>
+                        <svg class="pto-progress-ring" viewBox="0 0 52 52">
+                            <circle class="pto-progress-ring__bg" cx="26" cy="26" r="22"/>
+                            <circle class="pto-progress-ring__fill"
+                                    cx="26" cy="26" r="22"
+                                    t-att-stroke-dasharray="138.23"
+                                    t-att-stroke-dashoffset="138.23 - (138.23 * balance.percentage / 100)"/>
+                            <text class="pto-progress-ring__text" x="26" y="26"
+                                  t-esc="balance.percentage + '%'"/>
+                        </svg>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         List Component
+         ═══════════════════════════════════════════════════════════ -->
+    <t t-name="thamar_portal_timeoff.TimeOffList">
+        <!-- Filter Tabs -->
+        <div class="pto-filters">
+            <button t-attf-class="pto-filter-btn {{ props.filter === 'all' ? 'active' : '' }}"
+                    t-on-click="() => props.onFilterChange('all')">
+                <i class="fa fa-th-list me-1"/> All
+            </button>
+            <button t-attf-class="pto-filter-btn {{ props.filter === 'pending' ? 'active' : '' }}"
+                    t-on-click="() => props.onFilterChange('pending')">
+                <i class="fa fa-clock-o me-1"/> Pending
+            </button>
+            <button t-attf-class="pto-filter-btn {{ props.filter === 'approved' ? 'active' : '' }}"
+                    t-on-click="() => props.onFilterChange('approved')">
+                <i class="fa fa-check me-1"/> Approved
+            </button>
+            <button t-attf-class="pto-filter-btn {{ props.filter === 'refused' ? 'active' : '' }}"
+                    t-on-click="() => props.onFilterChange('refused')">
+                <i class="fa fa-times me-1"/> Refused
+            </button>
+        </div>
+
+        <!-- Leave Cards -->
+        <div class="pto-leaves-grid" t-if="props.leaves.length">
+            <t t-foreach="props.leaves" t-as="leave" t-key="leave.id">
+                <div class="pto-leave-card" t-att-style="'animation-delay:' + (leave_index * 0.05) + 's'">
+                    <div class="pto-leave-info">
+                        <div class="pto-leave-type-dot" t-att-data-color="leave.leave_type_color % 8"/>
+                        <div class="pto-leave-details">
+                            <div class="pto-leave-type-name" t-esc="leave.leave_type"/>
+                            <div class="pto-leave-dates">
+                                <i class="fa fa-calendar"/>
+                                <span t-esc="leave.date_from"/>
+                                <i class="fa fa-arrow-right"/>
+                                <span t-esc="leave.date_to"/>
+                            </div>
+                            <div class="pto-leave-description" t-if="leave.description"
+                                 t-esc="leave.description"/>
+                        </div>
+                    </div>
+                    <div class="pto-leave-meta">
+                        <span class="pto-leave-duration" t-esc="leave.duration_display"/>
+                        <span t-attf-class="pto-status {{ leave.state }}" t-esc="leave.state_label"/>
+                        <div class="pto-leave-actions" t-if="leave.can_edit or leave.can_delete">
+                            <button class="pto-btn-icon" t-if="leave.can_edit"
+                                    t-on-click="() => props.onEdit(leave)" title="Edit">
+                                <i class="fa fa-pencil"/>
+                            </button>
+                            <button class="pto-btn-icon danger" t-if="leave.can_delete"
+                                    t-on-click="() => props.onDelete(leave)" title="Delete">
+                                <i class="fa fa-trash-o"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </div>
+
+        <!-- Empty State -->
+        <div class="pto-empty" t-if="!props.leaves.length">
+            <div class="pto-empty-icon">🏖️</div>
+            <h3>No time off requests</h3>
+            <p>You haven't submitted any time off requests yet.<br/>Click "New Request" to get started!</p>
+        </div>
+    </t>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         Form Component
+         ═══════════════════════════════════════════════════════════ -->
+    <t t-name="thamar_portal_timeoff.TimeOffForm">
+        <div class="pto-form-overlay" t-on-click.self="props.onClose">
+            <div class="pto-form-panel">
+                <div class="pto-form-title">
+                    <span>
+                        <i class="fa fa-calendar-plus-o me-2" style="color: var(--pto-primary-light);"/>
+                        <t t-if="props.leave">Edit Request</t>
+                        <t t-else="">New Time Off Request</t>
+                    </span>
+                    <button class="pto-form-close" t-on-click="props.onClose">
+                        <i class="fa fa-times"/>
+                    </button>
+                </div>
+
+                <!-- Error message -->
+                <div class="pto-form-error" t-if="state.error">
+                    <i class="fa fa-exclamation-triangle me-2"/>
+                    <t t-esc="state.error"/>
+                </div>
+
+                <!-- Leave Type -->
+                <div class="pto-form-group">
+                    <label class="pto-form-label">Leave Type</label>
+                    <select class="pto-form-select"
+                            t-on-change="onLeaveTypeChange"
+                            t-att-value="state.form.leave_type_id">
+                        <option value="">-- Select Type --</option>
+                        <t t-foreach="props.leaveTypes" t-as="lt" t-key="lt.id">
+                            <option t-att-value="lt.id"
+                                    t-att-selected="state.form.leave_type_id == lt.id"
+                                    t-esc="lt.name"/>
+                        </t>
+                    </select>
+                </div>
+
+                <!-- Date Range -->
+                <div class="pto-form-row">
+                    <div class="pto-form-group">
+                        <label class="pto-form-label">From</label>
+                        <input type="date" class="pto-form-input"
+                               t-att-value="state.form.date_from"
+                               t-on-change="(ev) => this.onFieldChange('date_from', ev.target.value)"/>
+                    </div>
+                    <div class="pto-form-group">
+                        <label class="pto-form-label">To</label>
+                        <input type="date" class="pto-form-input"
+                               t-att-value="state.form.date_to"
+                               t-on-change="(ev) => this.onFieldChange('date_to', ev.target.value)"/>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="pto-form-group">
+                    <label class="pto-form-label">Description (optional)</label>
+                    <textarea class="pto-form-textarea"
+                              placeholder="Reason for time off..."
+                              t-on-input="(ev) => this.onFieldChange('description', ev.target.value)"
+                              t-att-value="state.form.description"/>
+                </div>
+
+                <!-- Actions -->
+                <div class="pto-form-actions">
+                    <button class="pto-btn-secondary" t-on-click="props.onClose">
+                        Cancel
+                    </button>
+                    <button class="pto-btn-primary" t-on-click="onSubmit"
+                            t-att-disabled="state.submitting">
+                        <i t-attf-class="fa {{ state.submitting ? 'fa-spinner fa-spin' : 'fa-check' }}"/>
+                        <t t-if="props.leave">Update</t>
+                        <t t-else="">Submit Request</t>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

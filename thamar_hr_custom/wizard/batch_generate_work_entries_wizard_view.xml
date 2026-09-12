@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Wizard Form View -->
+    <record id="batch_generate_work_entries_wizard_form" model="ir.ui.view">
+        <field name="name">batch.generate.work.entries.wizard.form</field>
+        <field name="model">batch.generate.work.entries.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Batch Generate Work Entries">
+                <group>
+                    <group string="Date Range">
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group string="Options">
+                        <field name="batch_size"/>
+                        <field name="force"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="employee_ids" widget="many2many_tags"
+                           placeholder="Leave empty for ALL employees with contracts..."/>
+                </group>
+                <footer>
+                    <button name="action_generate"
+                            string="Generate Work Entries"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-cogs"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open the wizard -->
+    <record id="batch_generate_work_entries_action" model="ir.actions.act_window">
+        <field name="name">Batch Generate Work Entries</field>
+        <field name="res_model">batch.generate.work.entries.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Menu item under Work Entries -->
+    <menuitem
+        id="menu_batch_generate_work_entries"
+        name="Batch Generate Work Entries"
+        action="batch_generate_work_entries_action"
+        parent="hr_work_entry_enterprise.menu_hr_payroll_work_entries_root"
+        sequence="27"/>
+
+</odoo>

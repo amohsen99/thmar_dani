@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ============================================================ -->
+        <!-- Payslip Input Types                                          -->
+        <!-- ============================================================ -->
+        <record id="input_hol_ot_day" model="hr.payslip.input.type">
+            <field name="name">Holiday Overtime - Day Hours</field>
+            <field name="code">HOL_OT_DAY</field>
+            <field name="country_id" eval="False"/>
+        </record>
+
+        <record id="input_hol_ot_night" model="hr.payslip.input.type">
+            <field name="name">Holiday Overtime - Night Hours</field>
+            <field name="code">HOL_OT_NIGHT</field>
+            <field name="country_id" eval="False"/>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Salary Rules (attached to Regular Pay structure)             -->
+        <!-- ============================================================ -->
+
+        <!-- Holiday Overtime - Day (1.35x multiplier) -->
+        <record id="salary_rule_hol_ot_day" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll.ALW"/>
+            <field name="name">Holiday Overtime - Day</field>
+            <field name="sequence">50</field>
+            <field name="code">HOL_OT_DAY</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = 'HOL_OT_DAY' in inputs</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+salary = categories['BASIC'] + categories['BASICALW']
+result = 1.35 * inputs['HOL_OT_DAY'].amount * salary / ((payslip.date_to - payslip.date_from).days + 1) / version.resource_calendar_id.hours_per_day
+            </field>
+            <field name="struct_id" ref="hr_payroll.structure_002"/>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+        <!-- Holiday Overtime - Night (1.70x multiplier) -->
+        <record id="salary_rule_hol_ot_night" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll.ALW"/>
+            <field name="name">Holiday Overtime - Night</field>
+            <field name="sequence">51</field>
+            <field name="code">HOL_OT_NIGHT</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = 'HOL_OT_NIGHT' in inputs</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+salary = categories['BASIC'] + categories['BASICALW']
+result = 1.70 * inputs['HOL_OT_NIGHT'].amount * salary / ((payslip.date_to - payslip.date_from).days + 1) / version.resource_calendar_id.hours_per_day
+            </field>
+            <field name="struct_id" ref="hr_payroll.structure_002"/>
+            <field name="appears_on_payslip" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

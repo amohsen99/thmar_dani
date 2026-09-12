@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- Leave Type Form: Annual / Casual flags                 -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <record id="hr_leave_type_view_form_inherit_thamar_leaves" model="ir.ui.view">
+        <field name="name">hr.leave.type.view.form.inherit.thamar.leaves</field>
+        <field name="model">hr.leave.type</field>
+        <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='requires_allocation']" position="after">
+                <field name="is_annual_leave"/>
+                <field name="is_casual_leave"/>
+                <field name="use_monthly_accrual"
+                       invisible="is_casual_leave"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

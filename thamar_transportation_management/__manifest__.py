@@ -1,0 +1,20 @@
+# -*- coding: utf-8 -*-
+{
+    'name': 'Thamar Transportation Management',
+    'summary': 'Bus routes, vehicle capacity, and employee transportation allocation',
+    'version': '19.0.1.0.0',
+    'category': 'Human Resources',
+    'author': 'Thamar',
+    'license': 'Other proprietary',
+    'depends': ['hr'],
+    'data': [
+        'security/ir.model.access.csv',
+        'views/transport_route_views.xml',
+        'views/transport_vehicle_views.xml',
+        'views/hr_employee_views.xml',
+        'views/transport_vehicle_assign_wizard_views.xml',
+        'views/transport_menus.xml',
+    ],
+    'application': True,
+    'installable': True,
+}

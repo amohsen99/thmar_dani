@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_transportation_root" name="النقل والمواصلات" sequence="60" groups="base.group_user"/>
+    <menuitem id="menu_transport_route" name="خطوط السير" parent="menu_transportation_root" action="action_transport_route" sequence="10"/>
+    <menuitem id="menu_transport_station" name="المحطات" parent="menu_transportation_root" action="action_transport_station" sequence="20"/>
+    <menuitem id="menu_transport_vehicle" name="المركبات" parent="menu_transportation_root" action="action_transport_vehicle" sequence="30"/>
+    <menuitem id="menu_transport_employee" name="الموظفون" parent="menu_transportation_root" action="action_transport_employee" sequence="40" groups="hr.group_hr_user"/>
+</odoo>

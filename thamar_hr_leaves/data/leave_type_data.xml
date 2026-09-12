@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Leave Type: Casual Leave (إجازة عارضة)                 -->
+        <!-- 7 days/year; prorated in the hiring year, no carryover -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <record id="leave_type_casual" model="hr.leave.type">
+            <field name="name">إجازة عارضة (Casual Leave)</field>
+            <field name="is_casual_leave" eval="True"/>
+            <field name="requires_allocation" eval="True"/>
+            <field name="employee_requests" eval="True"/>
+            <field name="leave_validation_type">hr</field>
+            <field name="allocation_validation_type">no_validation</field>
+            <field name="request_unit">day</field>
+            <field name="time_type">leave</field>
+            <field name="color">4</field>
+            <field name="sequence">10</field>
+            <field name="allows_negative" eval="False"/>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- Leave Type: Annual Leave (إجازة اعتيادية)               -->
+        <!-- Dynamic computation, carryover, accrual                -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <record id="leave_type_annual" model="hr.leave.type">
+            <field name="name">إجازة اعتيادية (Annual Leave)</field>
+            <field name="is_annual_leave" eval="True"/>
+            <field name="use_monthly_accrual" eval="True"/>
+            <field name="requires_allocation" eval="True"/>
+            <field name="employee_requests" eval="True"/>
+            <field name="leave_validation_type">hr</field>
+            <field name="allocation_validation_type">no_validation</field>
+            <field name="request_unit">day</field>
+            <field name="time_type">leave</field>
+            <field name="color">2</field>
+            <field name="sequence">5</field>
+            <field name="allows_negative" eval="False"/>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

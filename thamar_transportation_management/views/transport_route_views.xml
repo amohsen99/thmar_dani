@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_transport_route_list" model="ir.ui.view">
+        <field name="name">transport.route.list</field>
+        <field name="model">transport.route</field>
+        <field name="arch" type="xml">
+            <list string="خطوط السير">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="total_capacity"/>
+                <field name="total_assigned"/>
+                <field name="total_remaining_seats"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_transport_route_form" model="ir.ui.view">
+        <field name="name">transport.route.form</field>
+        <field name="model">transport.route</field>
+        <field name="arch" type="xml">
+            <form string="خط السير">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" placeholder="مثال: خط بنها"/></h1></div>
+                    <group>
+                        <group><field name="code"/></group>
+                        <group string="ملخص السعة اليومية">
+                            <field name="total_capacity" readonly="1"/>
+                            <field name="total_assigned" readonly="1"/>
+                            <field name="total_remaining_seats" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="المحطات">
+                            <field name="station_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="المركبات">
+                            <field name="vehicle_ids">
+                                <list editable="bottom">
+                                    <field name="plate_number"/>
+                                    <field name="driver_name"/>
+                                    <field name="standard_capacity"/>
+                                    <field name="active_shifts"/>
+                                    <field name="effective_capacity" readonly="1"/>
+                                    <field name="occupied_seats" readonly="1"/>
+                                    <field name="remaining_seats" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="الموظفون المسكنون">
+                            <field name="employee_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="work_phone"/>
+                                    <field name="transport_vehicle_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_transport_route_search" model="ir.ui.view">
+        <field name="name">transport.route.search</field>
+        <field name="model">transport.route</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_transport_route" model="ir.actions.act_window">
+        <field name="name">خطوط السير</field>
+        <field name="res_model">transport.route</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_transport_route_search"/>
+    </record>
+
+    <record id="view_transport_station_list" model="ir.ui.view">
+        <field name="name">transport.station.list</field>
+        <field name="model">transport.station</field>
+        <field name="arch" type="xml">
+            <list string="المحطات" default_order="route_id, sequence, id">
+                <field name="route_id"/>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="notes"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_transport_station_form" model="ir.ui.view">
+        <field name="name">transport.station.form</field>
+        <field name="model">transport.station</field>
+        <field name="arch" type="xml">
+            <form string="المحطة">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" placeholder="اسم المحطة"/></h1></div>
+                    <group>
+                        <field name="route_id"/>
+                        <field name="sequence"/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_transport_station_search" model="ir.ui.view">
+        <field name="name">transport.station.search</field>
+        <field name="model">transport.station</field>
+        <field name="arch" type="xml">
+            <search string="بحث في المحطات">
+                <field name="name"/>
+                <field name="route_id"/>
+                <group>
+                    <filter name="group_route" string="خط السير" context="{'group_by': 'route_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_transport_station" model="ir.actions.act_window">
+        <field name="name">المحطات</field>
+        <field name="res_model">transport.station</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_transport_station_search"/>
+    </record>
+</odoo>

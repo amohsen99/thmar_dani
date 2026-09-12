@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Inherit the work entry list view to add "Regenerate Work Entries" button -->
+    <record id="hr_work_entry_view_tree_inherit_regenerate" model="ir.ui.view">
+        <field name="name">hr.work.entry.list.inherit.regenerate</field>
+        <field name="model">hr.work.entry</field>
+        <field name="inherit_id" ref="hr_work_entry.hr_work_entry_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="%(hr_work_entry.hr_work_entry_regeneration_wizard_action)d"
+                            string="Regenerate Work Entries"
+                            type="action"
+                            icon="fa-refresh"
+                            class="btn-secondary"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Action that opens Work Entries in list view first (faster than gantt) -->
+    <record id="hr_work_entry_action_list" model="ir.actions.act_window">
+        <field name="name">Work Entries (List)</field>
+        <field name="res_model">hr.work.entry</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="context">{'search_default_active_employees': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No work entries found.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu under Payroll > Work Entries -->
+    <menuitem
+        id="menu_work_entry_list"
+        name="Work Entries (List)"
+        action="hr_work_entry_action_list"
+        parent="hr_work_entry_enterprise.menu_hr_payroll_work_entries_root"
+        sequence="26"/>
+
+</odoo>

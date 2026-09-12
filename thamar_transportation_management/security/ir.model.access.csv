@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_transport_route_user,transport.route.user,model_transport_route,base.group_user,1,1,1,0
+access_transport_vehicle_user,transport.vehicle.user,model_transport_vehicle,base.group_user,1,1,1,0
+access_transport_route_manager,transport.route.manager,model_transport_route,hr.group_hr_manager,1,1,1,1
+access_transport_vehicle_manager,transport.vehicle.manager,model_transport_vehicle,hr.group_hr_manager,1,1,1,1
+access_transport_station_user,transport.station.user,model_transport_station,base.group_user,1,1,1,0
+access_transport_station_manager,transport.station.manager,model_transport_station,hr.group_hr_manager,1,1,1,1
+access_transport_vehicle_station_user,transport.vehicle.station.user,model_transport_vehicle_station,base.group_user,1,1,1,0
+access_transport_vehicle_station_manager,transport.vehicle.station.manager,model_transport_vehicle_station,hr.group_hr_manager,1,1,1,1
+access_transport_vehicle_assign_employee_wizard,transport.vehicle.assign.employee.wizard,model_transport_vehicle_assign_employee_wizard,hr.group_hr_user,1,1,1,1
