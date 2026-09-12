@@ -1,9 +1,10 @@
-# Use Odoo 17 base image
-FROM odoo:18.0
+# Match the production Odoo version used by the server compose file.
+FROM odoo:19.0
 # Switch to root user
 USER root
 RUN apt-get update && apt-get install -y nodejs npm \
     && npm install -g less less-plugin-clean-css \
+    && pip3 install --no-cache-dir pyzk \
     && apt-get clean
 # Install Python package hijri-converter to /usr/lib/python3/dist-packages # default odoo path
 # RUN pip install --target=/usr/lib/python3/dist-packages hijri_converter==2.3.1

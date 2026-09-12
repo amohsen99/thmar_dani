@@ -88,7 +88,9 @@ services:
       - thmar-apps
 
   odoo:
-    image: odoo:19.0
+    build:
+      context: ./odoo_e
+    image: thamar-odoo:19.0
     container_name: odoo
     logging: *default-logging
     depends_on:
