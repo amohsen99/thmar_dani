@@ -6,7 +6,9 @@
     'category': 'Human Resources',
     'author': 'Thamar',
     'license': 'Other proprietary',
-    'depends': ['hr'],
+    # The employee form in this database includes the Certifications page
+    # supplied by hr_skills, so load its model fields before inheriting it.
+    'depends': ['hr', 'hr_skills'],
     'data': [
         'security/ir.model.access.csv',
         'views/transport_route_views.xml',
