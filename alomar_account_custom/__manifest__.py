@@ -17,6 +17,7 @@
     'data': [
         'security/ir.model.access.csv',
         'data/account_sequence_data.xml',
+        'views/res_partner_view.xml',
         'views/account_move_view.xml',
     ],
     'installable': True,

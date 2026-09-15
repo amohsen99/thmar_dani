@@ -21,6 +21,13 @@ class AccountMove(models.Model):
         comodel_name='stock.warehouse',
         string='المخزن',
     )
+    partner_code = fields.Char(
+        related='partner_id.partner_code',
+        string='Customer / Vendor Code',
+        store=True,
+        readonly=True,
+        index=True,
+    )
 
     def _post(self, soft=True):
         for move in self.filtered(lambda m: not m.name or m.name == '/'):

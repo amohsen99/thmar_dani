@@ -10,6 +10,7 @@
                 <field name="invoice_type"/>
                 <field name="permission_number"/>
                 <field name="warehouse_id"/>
+                <field name="partner_code" readonly="1"/>
             </xpath>
         </field>
     </record>
@@ -24,6 +25,7 @@
                 <field name="invoice_type"/>
                 <field name="permission_number"/>
                 <field name="warehouse_id"/>
+                <field name="partner_code" optional="show"/>
             </field>
         </field>
     </record>
@@ -38,6 +40,7 @@
                 <field name="invoice_type"/>
                 <field name="permission_number"/>
                 <field name="warehouse_id"/>
+                <field name="partner_code" optional="show"/>
             </field>
         </field>
     </record>
@@ -52,6 +55,7 @@
                 <field name="invoice_type" string="نوع الفاتورة"/>
                 <field name="permission_number" string="رقم الاذن"/>
                 <field name="warehouse_id" string="المخزن"/>
+                <field name="partner_code" string="Customer / Vendor Code"/>
             </xpath>
 
             <xpath expr="//filter[@name='invoice_date']" position="after">
@@ -93,6 +97,7 @@
                 <field name="invoice_type" string="نوع الفاتورة"/>
                 <field name="permission_number" string="رقم الاذن"/>
                 <field name="warehouse_id" string="المخزن"/>
+                <field name="partner_code" string="Customer / Vendor Code"/>
             </xpath>
 
             <xpath expr="//filter[@name='invoice_date']" position="after">

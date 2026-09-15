@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_inherit_alomar" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.alomar</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='function']" position="after">
+                <field name="partner_code"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_tree_inherit_alomar" model="ir.ui.view">
+        <field name="name">res.partner.list.inherit.alomar</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <field name="complete_name" position="after">
+                <field name="partner_code" optional="show"/>
+            </field>
+        </field>
+    </record>
+</odoo>
