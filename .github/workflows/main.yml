@@ -44,14 +44,15 @@ jobs:
             git fetch origin master
             git reset --hard origin/master
 
-            echo "Updating containers..."
-            docker compose -f "$COMPOSE_FILE" up -d --build
+            echo "Building the updated Odoo image..."
+            docker compose -f "$COMPOSE_FILE" build odoo
 
-            # echo "Regenerating assets for Live2 database..."
-            docker compose -f "$COMPOSE_FILE" run --rm --no-deps odoo odoo -d Live2 -u alomar_account_custom --stop-after-init
+            echo "Upgrading Al-Omar Account Custom on Live2..."
+            docker compose -f "$COMPOSE_FILE" run --rm --no-deps odoo \
+              odoo -d Live2 -u alomar_account_custom --stop-after-init
 
-            echo "Soft restarting Odoo service..."
-            docker compose -f "$COMPOSE_FILE" restart odoo
+            echo "Recreating the Odoo service with the updated code..."
+            docker compose -f "$COMPOSE_FILE" up -d --no-deps --force-recreate odoo
 
             echo "Waiting for Odoo to be ready on port 8069..."
             sleep 10
