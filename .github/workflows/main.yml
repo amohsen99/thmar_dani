@@ -49,7 +49,7 @@ jobs:
 
             echo "Upgrading Al-Omar Account Custom on Live2..."
             docker compose -f "$COMPOSE_FILE" run --rm --no-deps odoo \
-              odoo -d Live2 -u alomar_account_custom --stop-after-init
+              odoo -d hr -u alomar_account_custom --stop-after-init
 
             echo "Recreating the Odoo service with the updated code..."
             docker compose -f "$COMPOSE_FILE" up -d --no-deps --force-recreate odoo
