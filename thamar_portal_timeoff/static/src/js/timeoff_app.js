@@ -17,6 +17,7 @@ export class TimeOffApp extends Component {
     static props = {
         employeeId: { type: Number, optional: true },
         employeeName: { type: String, optional: true },
+        requestKind: { type: String, optional: true },
     };
 
     setup() {
@@ -37,12 +38,13 @@ export class TimeOffApp extends Component {
 
     async loadData() {
         try {
-            const data = await timeoffService.fetchData(this.state.filter);
+            const data = await timeoffService.fetchData(this.state.filter, this.props.requestKind);
             this.state.leaves = data.leaves || [];
             this.state.balances = data.balances || [];
             this.state.leaveTypes = data.leave_types || [];
         } catch (e) {
-            this.showToast('error', 'Failed to load time off data.');
+            const itemName = this.props.requestKind === 'assignment' ? 'التكليفات' : 'الإجازات';
+            this.showToast('error', `تعذر تحميل بيانات ${itemName}.`);
             console.error(e);
         }
     }
@@ -53,6 +55,10 @@ export class TimeOffApp extends Component {
     }
 
     onNewRequest() {
+        if (!this.state.leaveTypes.length) {
+            this.showToast('error', 'لا يوجد نوع إجازة متاح حالياً للطلب من البوابة.');
+            return;
+        }
         this.state.editingLeave = null;
         this.state.showForm = true;
     }
@@ -100,7 +106,7 @@ export class TimeOffApp extends Component {
     }
 
     async onDelete(leave) {
-        if (!confirm('Are you sure you want to delete this time off request?')) {
+        if (!confirm('هل أنت متأكد من حذف طلب الإجازة؟')) {
             return;
         }
 
@@ -113,14 +119,14 @@ export class TimeOffApp extends Component {
                 this.showToast('error', res.message);
             }
         } catch (e) {
-            this.showToast('error', 'An error occurred while deleting the request.');
+            this.showToast('error', 'حدث خطأ أثناء حذف الطلب.');
             console.error(e);
         }
     }
 
     showToast(type, message) {
         this.state.toast = { type, message };
-        setTimeout(() => {
+        window.setTimeout(() => {
             this.state.toast = null;
         }, 3000);
     }
@@ -140,22 +146,23 @@ export class TimeOffAppInteraction extends Interaction {
             this.el.innerHTML = `
                 <div class="alert alert-warning text-center m-4">
                     <i class="fa fa-exclamation-triangle me-2"></i>
-                    No employee record is linked to your portal account. Please contact HR.
+                    لا يوجد سجل موظف مرتبط بحساب البوابة. يرجى التواصل مع إدارة الموارد البشرية.
                 </div>`;
             return;
         }
 
         const employeeName = this.el.dataset.employeeName || '';
+        const requestKind = this.el.dataset.requestKind || 'timeoff';
         
         // Remove loading state
-        const loadingEl = document.getElementById("timeoff_loading");
+        const loadingEl = this.el.querySelector(".pto-loading");
         if (loadingEl) {
             loadingEl.remove();
         }
 
         // Mount the OWL component
         this.env.config = { ...this.env.config, isPortal: true };
-        this.mountComponent(this.el, TimeOffApp, { employeeId, employeeName });
+        this.mountComponent(this.el, TimeOffApp, { employeeId, employeeName, requestKind });
     }
 }
 

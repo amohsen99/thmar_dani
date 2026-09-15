@@ -6,7 +6,47 @@ from odoo.exceptions import ValidationError
 class HrLeaveType(models.Model):
     _inherit = 'hr.leave.type'
 
+    _THAMAR_PORTAL_LEAVE_TYPE_XMLIDS = (
+        'thamar_hr_leaves.leave_type_annual',
+        'thamar_hr_leaves.leave_type_casual',
+        'thamar_hr_leaves.leave_type_work_injury',
+        'thamar_hr_leaves.leave_type_sick',
+        'thamar_hr_leaves.leave_type_unpaid',
+        'thamar_hr_leaves.leave_type_marriage_paid',
+        'thamar_hr_leaves.leave_type_death_paid',
+        'thamar_hr_leaves.leave_type_newborn_paid',
+        'thamar_hr_leaves.leave_type_exams',
+    )
+
     requires_clinical_approval = fields.Boolean(string='Requires Clinical Approval', default=False, help="If checked, leaves of this type will require approval from the company's Clinical Manager.")
+
+    manager_only_requests = fields.Boolean(
+        string='Manager Creates Requests',
+        default=False,
+        help=(
+            'Employees cannot create, edit, or delete requests of this type '
+            'from the employee portal. Their manager or a Time Off officer '
+            'must create the request from the internal Time Off application.'
+        ),
+    )
+    portal_self_service = fields.Boolean(
+        string='Available in Employee Portal',
+        default=False,
+        help=(
+            'Allow employees to select this time off type when creating a '
+            'request from the portal. Manager-only types remain unavailable.'
+        ),
+    )
+
+    @api.model
+    def _configure_thamar_portal_leave_types(self):
+        """Keep the portal whitelist stable across installs and upgrades."""
+        leave_types = self.browse([
+            record.id
+            for xmlid in self._THAMAR_PORTAL_LEAVE_TYPE_XMLIDS
+            if (record := self.env.ref(xmlid, raise_if_not_found=False))
+        ])
+        leave_types.write({'portal_self_service': True})
 
     is_annual_leave = fields.Boolean(
         string='Is Annual Leave (إجازة اعتيادية)',

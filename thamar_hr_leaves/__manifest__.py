@@ -14,7 +14,7 @@
     'license': 'Other proprietary',
     'author': 'Thamar',
     'category': 'Human Resources/Time Off',
-    'version': '19.0.1.1.2',
+    'version': '19.0.1.3.0',
     'pre_init_hook': 'pre_init_hook',
     'depends': [
         'hr',
@@ -28,6 +28,7 @@
         'security/ir.model.access.csv',
         'data/leave_type_data.xml',
         'data/leave_type_special_data.xml',
+        'data/leave_type_portal_data.xml',
         'data/ir_cron_data.xml',
         'views/hr_employee_views.xml',
         'views/hr_leave_type_views.xml',

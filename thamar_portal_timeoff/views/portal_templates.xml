@@ -1,15 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!-- Shared employee portal shell: branding and primary navigation. -->
+    <template id="portal_parent_branding" name="Portal: Al-Omar Parent Layout"
+              inherit_id="portal.frontend_layout" priority="90">
+        <xpath expr="//nav[hasclass('navbar')]" position="attributes">
+            <attribute name="class" add="thamar-portal-navbar" separator=" "/>
+        </xpath>
+        <xpath expr="//nav[hasclass('navbar')]/div[hasclass('container')]" position="attributes">
+            <attribute name="class" add="thamar-portal-navbar-inner" separator=" "/>
+        </xpath>
+        <xpath expr="//nav[hasclass('navbar')]//a[hasclass('navbar-brand')]" position="attributes">
+            <attribute name="href">/my/home</attribute>
+            <attribute name="class" add="thamar-portal-brand" separator=" "/>
+            <attribute name="aria-label">الرئيسية لبوابة موظفي مجموعة العمر</attribute>
+        </xpath>
+        <xpath expr="//nav[hasclass('navbar')]//a[hasclass('navbar-brand')]/img" position="attributes">
+            <attribute name="t-att-src"/>
+            <attribute name="t-att-alt"/>
+            <attribute name="t-att-title"/>
+            <attribute name="src">/thamar_portal_timeoff/static/src/img/al_omar_group_logo.png</attribute>
+            <attribute name="alt">Al-Omar Group</attribute>
+            <attribute name="title">Al-Omar Group</attribute>
+            <attribute name="class">thamar-portal-logo</attribute>
+        </xpath>
+        <xpath expr="//ul[@id='top_menu']/t[@t-call='portal.placeholder_user_sign_in']" position="before">
+            <li t-if="not request.env.user._is_public()" class="nav-item thamar-portal-nav-item">
+                <a href="/my/home" class="nav-link thamar-portal-nav-link">
+                    <i class="fa fa-home" aria-hidden="true"/>
+                    <span>الرئيسية</span>
+                </a>
+            </li>
+            <li t-if="not request.env.user._is_public()" class="nav-item thamar-portal-nav-item">
+                <a href="/my/employee" class="nav-link thamar-portal-nav-link">
+                    <i class="fa fa-user" aria-hidden="true"/>
+                    <span>ملفي الشخصي</span>
+                </a>
+            </li>
+            <li t-if="not request.env.user._is_public()" class="nav-item thamar-portal-nav-item">
+                <a href="/my/timeoff" class="nav-link thamar-portal-nav-link">
+                    <i class="fa fa-calendar-check-o" aria-hidden="true"/>
+                    <span>الإجازات</span>
+                </a>
+            </li>
+            <li t-if="not request.env.user._is_public()" class="nav-item thamar-portal-nav-item">
+                <a href="/my/assignments" class="nav-link thamar-portal-nav-link">
+                    <i class="fa fa-clipboard" aria-hidden="true"/>
+                    <span>التكليفات</span>
+                </a>
+            </li>
+            <li t-if="not request.env.user._is_public() and request.env['hr.leave']._portal_can_manage_team()"
+                class="nav-item thamar-portal-nav-item">
+                <a href="/my/team/timeoff" class="nav-link thamar-portal-nav-link">
+                    <i class="fa fa-users" aria-hidden="true"/>
+                    <span>إدارة إجازات الفريق</span>
+                </a>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_home_welcome" name="Portal: Employee Welcome"
+              inherit_id="portal.portal_my_home" priority="45">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <section class="thamar-portal-welcome" aria-labelledby="thamar-welcome-title">
+                <div>
+                    <span class="thamar-portal-eyebrow">الخدمة الذاتية للموظف</span>
+                    <h1 id="thamar-welcome-title">
+                        مرحباً، <t t-out="user_id.name"/>
+                    </h1>
+                    <p>يمكنك الاطلاع على ملفك الوظيفي وإدارة طلبات الإجازات من مكان واحد وآمن.</p>
+                </div>
+                <a href="/my/timeoff" class="btn thamar-portal-primary-action">
+                    <i class="fa fa-calendar-plus-o" aria-hidden="true"/>
+                    طلب إجازة
+                </a>
+            </section>
+        </xpath>
+    </template>
+
     <!-- Portal Home: Employee Profile Entry -->
     <template id="portal_my_home_employee" name="Portal: Employee Profile Entry"
               inherit_id="thamar_portal_timeoff.portal_my_home_timeoff" priority="1">
         <div id="portal_client_category" position="inside">
             <t t-call="portal.portal_docs_entry">
                 <t t-set="icon" t-value="'/thamar_portal_timeoff/static/src/img/employee_icon.svg'"/>
-                <t t-set="title">My Profile</t>
+                <t t-set="title">ملفي الشخصي</t>
                 <t t-set="url" t-value="'/my/employee'"/>
-                <t t-set="text">View your personal information</t>
+                <t t-set="text">عرض بياناتك الشخصية والوظيفية</t>
                 <t t-set="placeholder_count" t-value="''"/>
             </t>
         </div>
@@ -24,10 +101,38 @@
         <div id="portal_client_category" position="inside">
             <t t-call="portal.portal_docs_entry">
                 <t t-set="icon" t-value="'/thamar_portal_timeoff/static/src/img/timeoff_icon.svg'"/>
-                <t t-set="title">Time Off</t>
+                <t t-set="title">الإجازات</t>
                 <t t-set="url" t-value="'/my/timeoff'"/>
-                <t t-set="text">Manage your time off requests</t>
+                <t t-set="text">إنشاء ومتابعة طلبات الإجازات</t>
                 <t t-set="placeholder_count" t-value="'timeoff_count'"/>
+            </t>
+        </div>
+    </template>
+
+    <!-- Portal Home: Manager-created assignments -->
+    <template id="portal_my_home_assignments" name="Portal: Assignments Entry"
+              inherit_id="thamar_portal_timeoff.portal_my_home_timeoff" priority="2">
+        <div id="portal_client_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/thamar_portal_timeoff/static/src/img/assignment_icon.svg'"/>
+                <t t-set="title">التكليفات</t>
+                <t t-set="url" t-value="'/my/assignments'"/>
+                <t t-set="text">متابعة تكليفات العمل الإضافي المسجلة بواسطة المدير</t>
+                <t t-set="placeholder_count" t-value="'assignment_count'"/>
+            </t>
+        </div>
+    </template>
+
+    <!-- Portal Home: Team leave management for department approvers -->
+    <template id="portal_my_home_team_timeoff" name="Portal: Team Time Off Entry"
+              inherit_id="thamar_portal_timeoff.portal_my_home_timeoff" priority="3">
+        <div id="portal_client_category" position="inside">
+            <t t-if="can_manage_team" t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/thamar_portal_timeoff/static/src/img/team_timeoff_icon.svg'"/>
+                <t t-set="title">إدارة إجازات الفريق</t>
+                <t t-set="url" t-value="'/my/team/timeoff'"/>
+                <t t-set="text">متابعة واعتماد طلبات موظفي الأقسام المسؤول عنها</t>
+                <t t-set="placeholder_count" t-value="'team_leave_count'"/>
             </t>
         </div>
     </template>
@@ -36,21 +141,69 @@
     <template id="portal_timeoff_page" name="Portal: Time Off Management">
         <t t-call="portal.portal_layout">
             <t t-set="head">
-                <t t-call-assets="thamar_portal_timeoff.assets_timeoff"/>
+                <t t-call-assets="thamar_portal_timeoff.assets_timeoff" defer_load="True"/>
             </t>
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
 
             <t t-call="portal.portal_searchbar">
-                <t t-set="title">Time Off</t>
+                <t t-set="title">الإجازات</t>
             </t>
 
-            <div class="o_portal_timeoff_app" t-att-data-employee-id="employee_id" t-att-data-employee-name="employee_name">
+            <div class="o_portal_timeoff_app" data-request-kind="timeoff"
+                 t-att-data-employee-id="employee_id" t-att-data-employee-name="employee_name">
                 <!-- OWL mounts here -->
-                <div class="text-center py-5" id="timeoff_loading">
+                <div class="pto-loading text-center py-5">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
+                        <span class="visually-hidden">جارٍ التحميل...</span>
                     </div>
-                    <p class="mt-3 text-muted">Loading your time off data...</p>
+                    <p class="mt-3 text-muted">جارٍ تحميل بيانات الإجازات...</p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal Assignments Page -->
+    <template id="portal_assignments_page" name="Portal: Work Assignments">
+        <t t-call="portal.portal_layout">
+            <t t-set="head">
+                <t t-call-assets="thamar_portal_timeoff.assets_timeoff" defer_load="True"/>
+            </t>
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">التكليفات</t>
+            </t>
+
+            <div class="o_portal_timeoff_app" data-request-kind="assignment"
+                 t-att-data-employee-id="employee_id" t-att-data-employee-name="employee_name">
+                <div class="pto-loading text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">جارٍ التحميل...</span>
+                    </div>
+                    <p class="mt-3 text-muted">جارٍ تحميل بيانات التكليفات...</p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal Team Time Off Management Page -->
+    <template id="portal_team_timeoff_page" name="Portal: Team Time Off Management">
+        <t t-call="portal.portal_layout">
+            <t t-set="head">
+                <t t-call-assets="thamar_portal_timeoff.assets_timeoff" defer_load="True"/>
+            </t>
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">إدارة إجازات الفريق</t>
+            </t>
+
+            <div class="o_portal_team_timeoff_app" t-att-data-manager-name="employee_name">
+                <div class="pto-loading text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">جارٍ التحميل...</span>
+                    </div>
+                    <p class="mt-3 text-muted">جارٍ تحميل طلبات الفريق...</p>
                 </div>
             </div>
         </t>
@@ -61,7 +214,13 @@
               inherit_id="portal.portal_breadcrumbs" priority="40">
         <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
             <li t-if="page_name == 'timeoff'" class="breadcrumb-item active">
-                Time Off
+                الإجازات
+            </li>
+            <li t-if="page_name == 'assignments'" class="breadcrumb-item active">
+                التكليفات
+            </li>
+            <li t-if="page_name == 'team_timeoff'" class="breadcrumb-item active">
+                إدارة إجازات الفريق
             </li>
         </xpath>
     </template>
@@ -70,20 +229,20 @@
     <template id="portal_employee_page" name="Portal: Employee Information">
         <t t-call="portal.portal_layout">
             <t t-set="head">
-                <t t-call-assets="thamar_portal_timeoff.assets_employee"/>
+                <t t-call-assets="thamar_portal_timeoff.assets_employee" defer_load="True"/>
             </t>
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
 
             <t t-call="portal.portal_searchbar">
-                <t t-set="title">My Profile</t>
+                <t t-set="title">ملفي الشخصي</t>
             </t>
 
             <div class="o_portal_employee_app" t-att-data-employee-id="employee_id" t-att-data-employee-name="employee_name">
                 <div class="text-center py-5" id="employee_loading">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
+                        <span class="visually-hidden">جارٍ التحميل...</span>
                     </div>
-                    <p class="mt-3 text-muted">Loading your profile...</p>
+                    <p class="mt-3 text-muted">جارٍ تحميل ملفك الشخصي...</p>
                 </div>
             </div>
         </t>

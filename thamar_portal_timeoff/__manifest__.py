@@ -1,26 +1,28 @@
 {
     'name': 'Thamar Portal Time Off',
-    'summary': 'Allow portal users to manage their time off requests via an attractive OWL interface',
+    'summary': 'Secure employee self-service for portal time off requests',
     'description': """
 Portal Time Off Management
 ==========================
 Provides a modern, single-page portal interface for employees with portal access
-to create, edit, and delete their time off requests.
+to create, edit, and delete eligible time off requests.
 
 Features:
 * Beautiful OWL-based dashboard with leave balance cards
 * Create / edit / delete time off requests
 * Real-time status tracking (Pending, Approved, Refused)
+* Manager-only request types controlled from Time Off configuration
+* Server-side ownership, date, balance, and leave-type validation
 * Glassmorphism design with smooth animations
 * Fully responsive layout
     """,
     'author': 'Thamar',
     'category': 'Human Resources',
-    'version': '19.0.1.0.2',
+    'version': '19.0.2.6.0',
     'license': 'Other proprietary',
     'depends': [
         'portal',
-        'hr_holidays',
+        'thamar_hr_leaves',
     ],
     'data': [
         'security/security.xml',
@@ -28,6 +30,11 @@ Features:
         'views/portal_templates.xml',
     ],
     'assets': {
+        # Shared portal chrome. Every selector is scoped below #wrapwrap.o_portal
+        # so public website and login pages keep their original appearance.
+        'web.assets_frontend': [
+            'thamar_portal_timeoff/static/src/css/portal_shell.css',
+        ],
         # Loaded only by the Time Off portal page. Keeping these assets out of
         # web.assets_frontend prevents this optional application from affecting
         # the login page or other portal pages.
@@ -39,6 +46,8 @@ Features:
             'thamar_portal_timeoff/static/src/js/timeoff_list.js',
             'thamar_portal_timeoff/static/src/js/timeoff_form.js',
             'thamar_portal_timeoff/static/src/js/timeoff_app.js',
+            'thamar_portal_timeoff/static/src/js/team_leave_service.js',
+            'thamar_portal_timeoff/static/src/js/team_leave_app.js',
         ],
         'thamar_portal_timeoff.assets_employee': [
             'thamar_portal_timeoff/static/src/css/employee_portal.css',

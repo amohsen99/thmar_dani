@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A function is required because the canonical records were created in
+         noupdate data and ordinary XML record updates are therefore skipped. -->
+    <function model="hr.leave.type"
+              name="_configure_thamar_portal_leave_types"/>
+</odoo>

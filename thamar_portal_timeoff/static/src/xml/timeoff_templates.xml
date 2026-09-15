@@ -5,26 +5,39 @@
          Main App Template
          ═══════════════════════════════════════════════════════════ -->
     <t t-name="thamar_portal_timeoff.TimeOffApp">
-        <div class="pto-wrapper">
+        <div class="pto-wrapper" dir="rtl" lang="ar">
             <!-- Header -->
             <div class="pto-header">
                 <h2>
-                    <i class="fa fa-sun-o me-2" style="color: #fbbf24;"/>
-                    My <span>Time Off</span>
+                    <i t-attf-class="fa {{ props.requestKind === 'assignment' ? 'fa-clipboard' : 'fa-sun-o' }} me-2"
+                       style="color: var(--pto-primary);"/>
+                    <span t-if="props.requestKind === 'assignment'">تكليفاتي</span>
+                    <span t-else="">إجازاتي</span>
                 </h2>
-                <button class="pto-btn-primary" t-on-click="onNewRequest">
+                <button t-if="props.requestKind !== 'assignment'" class="pto-btn-primary" t-on-click="onNewRequest">
                     <i class="fa fa-plus"/>
-                    New Request
+                    طلب إجازة
                 </button>
             </div>
 
+            <div class="pto-policy-note">
+                <i class="fa fa-shield me-2"/>
+                <t t-if="props.requestKind === 'assignment'">
+                    هذه التكليفات ينشئها المدير لتسجيل العمل الإضافي، ويمكنك متابعتها وحالتها من هنا.
+                </t>
+                <t t-else="">
+                    بعض أنواع الإجازات لا يمكن تقديمها إلا بواسطة مديرك أو إدارة الموارد البشرية.
+                </t>
+            </div>
+
             <!-- Stats -->
-            <TimeOffStats balances="state.balances"/>
+            <TimeOffStats t-if="props.requestKind !== 'assignment'" balances="state.balances"/>
 
             <!-- Filters -->
             <TimeOffList
                 leaves="state.leaves"
                 filter="state.filter"
+                requestKind="props.requestKind || 'timeoff'"
                 onFilterChange.bind="onFilterChange"
                 onEdit.bind="onEdit"
                 onDelete.bind="onDelete"/>
@@ -64,7 +77,7 @@
                         <div>
                             <div class="pto-stat-value" t-esc="balance.remaining"/>
                             <div class="pto-stat-label">
-                                of <t t-esc="balance.max_leaves"/> days remaining
+                                متبقي من أصل <t t-esc="balance.max_leaves"/> يوماً
                             </div>
                         </div>
                         <svg class="pto-progress-ring" viewBox="0 0 52 52">
@@ -90,19 +103,19 @@
         <div class="pto-filters">
             <button t-attf-class="pto-filter-btn {{ props.filter === 'all' ? 'active' : '' }}"
                     t-on-click="() => props.onFilterChange('all')">
-                <i class="fa fa-th-list me-1"/> All
+                <i class="fa fa-th-list me-1"/> الكل
             </button>
             <button t-attf-class="pto-filter-btn {{ props.filter === 'pending' ? 'active' : '' }}"
                     t-on-click="() => props.onFilterChange('pending')">
-                <i class="fa fa-clock-o me-1"/> Pending
+                <i class="fa fa-clock-o me-1"/> قيد الموافقة
             </button>
             <button t-attf-class="pto-filter-btn {{ props.filter === 'approved' ? 'active' : '' }}"
                     t-on-click="() => props.onFilterChange('approved')">
-                <i class="fa fa-check me-1"/> Approved
+                <i class="fa fa-check me-1"/> معتمدة
             </button>
             <button t-attf-class="pto-filter-btn {{ props.filter === 'refused' ? 'active' : '' }}"
                     t-on-click="() => props.onFilterChange('refused')">
-                <i class="fa fa-times me-1"/> Refused
+                <i class="fa fa-times me-1"/> مرفوضة
             </button>
         </div>
 
@@ -122,6 +135,23 @@
                             </div>
                             <div class="pto-leave-description" t-if="leave.description"
                                  t-esc="leave.description"/>
+                            <div t-attf-class="pto-approval-current {{ leave.approval_stage }}">
+                                <i class="fa fa-sitemap" aria-hidden="true"/>
+                                <span t-esc="leave.approval_stage_label"/>
+                                <small t-if="leave.approval_stage_actor">
+                                    — <t t-esc="leave.approval_stage_actor"/>
+                                </small>
+                            </div>
+                            <div class="pto-approval-flow" t-if="leave.approval_steps.length">
+                                <t t-foreach="leave.approval_steps" t-as="step" t-key="step.key">
+                                    <span t-attf-class="pto-approval-step {{ step.status }}"
+                                          t-att-title="step.actor">
+                                        <i t-attf-class="fa {{ step.status === 'approved' ? 'fa-check-circle' : step.status === 'pending' ? 'fa-clock-o' : step.status === 'stopped' ? 'fa-times-circle' : 'fa-circle-o' }}"
+                                           aria-hidden="true"/>
+                                        <t t-esc="step.label"/>
+                                    </span>
+                                </t>
+                            </div>
                         </div>
                     </div>
                     <div class="pto-leave-meta">
@@ -129,11 +159,11 @@
                         <span t-attf-class="pto-status {{ leave.state }}" t-esc="leave.state_label"/>
                         <div class="pto-leave-actions" t-if="leave.can_edit or leave.can_delete">
                             <button class="pto-btn-icon" t-if="leave.can_edit"
-                                    t-on-click="() => props.onEdit(leave)" title="Edit">
+                                    t-on-click="() => props.onEdit(leave)" title="تعديل">
                                 <i class="fa fa-pencil"/>
                             </button>
                             <button class="pto-btn-icon danger" t-if="leave.can_delete"
-                                    t-on-click="() => props.onDelete(leave)" title="Delete">
+                                    t-on-click="() => props.onDelete(leave)" title="حذف">
                                 <i class="fa fa-trash-o"/>
                             </button>
                         </div>
@@ -144,9 +174,16 @@
 
         <!-- Empty State -->
         <div class="pto-empty" t-if="!props.leaves.length">
-            <div class="pto-empty-icon">🏖️</div>
-            <h3>No time off requests</h3>
-            <p>You haven't submitted any time off requests yet.<br/>Click "New Request" to get started!</p>
+            <t t-if="props.requestKind === 'assignment'">
+                <div class="pto-empty-icon"><i class="fa fa-clipboard"/></div>
+                <h3>لا توجد تكليفات</h3>
+                <p>لم يسجل مديرك أي تكليف عمل إضافي لك حتى الآن.</p>
+            </t>
+            <t t-else="">
+                <div class="pto-empty-icon">🏖️</div>
+                <h3>لا توجد طلبات إجازة</h3>
+                <p>لم تقدم أي طلب إجازة حتى الآن.<br/>اضغط على «طلب إجازة» للبدء.</p>
+            </t>
         </div>
     </t>
 
@@ -159,8 +196,8 @@
                 <div class="pto-form-title">
                     <span>
                         <i class="fa fa-calendar-plus-o me-2" style="color: var(--pto-primary-light);"/>
-                        <t t-if="props.leave">Edit Request</t>
-                        <t t-else="">New Time Off Request</t>
+                        <t t-if="props.leave">تعديل طلب الإجازة</t>
+                        <t t-else="">طلب إجازة جديد</t>
                     </span>
                     <button class="pto-form-close" t-on-click="props.onClose">
                         <i class="fa fa-times"/>
@@ -175,15 +212,15 @@
 
                 <!-- Leave Type -->
                 <div class="pto-form-group">
-                    <label class="pto-form-label">Leave Type</label>
+                    <label class="pto-form-label">نوع الإجازة</label>
                     <select class="pto-form-select"
                             t-on-change="onLeaveTypeChange"
                             t-att-value="state.form.leave_type_id">
-                        <option value="">-- Select Type --</option>
-                        <t t-foreach="props.leaveTypes" t-as="lt" t-key="lt.id">
-                            <option t-att-value="lt.id"
-                                    t-att-selected="state.form.leave_type_id == lt.id"
-                                    t-esc="lt.name"/>
+                        <option value="">-- اختر نوع الإجازة --</option>
+                        <t t-foreach="props.leaveTypes" t-as="leaveType" t-key="leaveType.id">
+                            <option t-att-value="leaveType.id"
+                                    t-att-selected="state.form.leave_type_id == leaveType.id"
+                                    t-esc="leaveType.name"/>
                         </t>
                     </select>
                 </div>
@@ -191,13 +228,13 @@
                 <!-- Date Range -->
                 <div class="pto-form-row">
                     <div class="pto-form-group">
-                        <label class="pto-form-label">From</label>
+                        <label class="pto-form-label">من تاريخ</label>
                         <input type="date" class="pto-form-input"
                                t-att-value="state.form.date_from"
                                t-on-change="(ev) => this.onFieldChange('date_from', ev.target.value)"/>
                     </div>
                     <div class="pto-form-group">
-                        <label class="pto-form-label">To</label>
+                        <label class="pto-form-label">إلى تاريخ</label>
                         <input type="date" class="pto-form-input"
                                t-att-value="state.form.date_to"
                                t-on-change="(ev) => this.onFieldChange('date_to', ev.target.value)"/>
@@ -206,9 +243,10 @@
 
                 <!-- Description -->
                 <div class="pto-form-group">
-                    <label class="pto-form-label">Description (optional)</label>
+                    <label class="pto-form-label">الوصف (اختياري)</label>
                     <textarea class="pto-form-textarea"
-                              placeholder="Reason for time off..."
+                              placeholder="سبب طلب الإجازة..."
+                              maxlength="500"
                               t-on-input="(ev) => this.onFieldChange('description', ev.target.value)"
                               t-att-value="state.form.description"/>
                 </div>
@@ -216,15 +254,188 @@
                 <!-- Actions -->
                 <div class="pto-form-actions">
                     <button class="pto-btn-secondary" t-on-click="props.onClose">
-                        Cancel
+                        إلغاء
                     </button>
                     <button class="pto-btn-primary" t-on-click="onSubmit"
                             t-att-disabled="state.submitting">
                         <i t-attf-class="fa {{ state.submitting ? 'fa-spinner fa-spin' : 'fa-check' }}"/>
-                        <t t-if="props.leave">Update</t>
-                        <t t-else="">Submit Request</t>
+                        <t t-if="props.leave">تحديث الطلب</t>
+                        <t t-else="">إرسال الطلب</t>
                     </button>
                 </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- Department manager / supervisor workspace -->
+    <t t-name="thamar_portal_timeoff.TeamLeaveApp">
+        <div class="pto-wrapper pto-team-wrapper" dir="rtl" lang="ar">
+            <div class="pto-header">
+                <h2>
+                    <i class="fa fa-users me-2" style="color: var(--pto-primary);"/>
+                    <span>إدارة إجازات الفريق</span>
+                </h2>
+                <button t-if="state.canCreateAssignments" class="pto-btn-primary"
+                        t-on-click="openAssignmentForm">
+                    <i class="fa fa-clipboard"/>
+                    إنشاء تكليف
+                </button>
+            </div>
+
+            <div class="pto-policy-note">
+                <i class="fa fa-shield me-2"/>
+                تظهر الطلبات الخاصة بالأقسام التي تديرها أو تشرف عليها فقط، ويُتاح الإجراء عند وصول الطلب إلى مرحلتك.
+            </div>
+
+            <div class="pto-filters">
+                <button t-attf-class="pto-filter-btn {{ state.filter === 'all' ? 'active' : '' }}"
+                        t-on-click="() => this.onFilterChange('all')">
+                    <i class="fa fa-th-list me-1"/> الكل
+                </button>
+                <button t-attf-class="pto-filter-btn {{ state.filter === 'pending' ? 'active' : '' }}"
+                        t-on-click="() => this.onFilterChange('pending')">
+                    <i class="fa fa-clock-o me-1"/> قيد الموافقة
+                </button>
+                <button t-attf-class="pto-filter-btn {{ state.filter === 'approved' ? 'active' : '' }}"
+                        t-on-click="() => this.onFilterChange('approved')">
+                    <i class="fa fa-check me-1"/> معتمدة
+                </button>
+                <button t-attf-class="pto-filter-btn {{ state.filter === 'refused' ? 'active' : '' }}"
+                        t-on-click="() => this.onFilterChange('refused')">
+                    <i class="fa fa-times me-1"/> مرفوضة
+                </button>
+            </div>
+
+            <div class="pto-team-loading" t-if="state.loading">
+                <i class="fa fa-spinner fa-spin"/>
+                جارٍ تحديث الطلبات...
+            </div>
+
+            <div class="pto-leaves-grid" t-if="!state.loading &amp;&amp; state.leaves.length">
+                <t t-foreach="state.leaves" t-as="leave" t-key="leave.id">
+                    <div class="pto-leave-card" t-att-style="'animation-delay:' + (leave_index * 0.04) + 's'">
+                        <div class="pto-leave-info">
+                            <div class="pto-leave-type-dot" t-att-data-color="leave.leave_type_color % 8"/>
+                            <div class="pto-leave-details">
+                                <div class="pto-team-employee">
+                                    <i class="fa fa-user-circle"/>
+                                    <strong t-esc="leave.employee_name"/>
+                                    <span t-if="leave.department_name" t-esc="leave.department_name"/>
+                                </div>
+                                <div class="pto-leave-type-name">
+                                    <t t-esc="leave.leave_type"/>
+                                    <span t-if="leave.is_assignment" class="pto-kind-badge assignment">تكليف</span>
+                                    <span t-else="" class="pto-kind-badge leave">إجازة</span>
+                                </div>
+                                <div class="pto-leave-dates">
+                                    <i class="fa fa-calendar"/>
+                                    <span t-esc="leave.date_from"/>
+                                    <i class="fa fa-arrow-left"/>
+                                    <span t-esc="leave.date_to"/>
+                                </div>
+                                <div class="pto-leave-description" t-if="leave.description" t-esc="leave.description"/>
+                                <div t-attf-class="pto-approval-current {{ leave.approval_stage }}">
+                                    <i class="fa fa-sitemap"/>
+                                    <span t-esc="leave.approval_stage_label"/>
+                                    <small t-if="leave.approval_stage_actor">— <t t-esc="leave.approval_stage_actor"/></small>
+                                </div>
+                                <div class="pto-approval-flow" t-if="leave.approval_steps.length">
+                                    <t t-foreach="leave.approval_steps" t-as="step" t-key="step.key">
+                                        <span t-attf-class="pto-approval-step {{ step.status }}" t-att-title="step.actor">
+                                            <i t-attf-class="fa {{ step.status === 'approved' ? 'fa-check-circle' : step.status === 'pending' ? 'fa-clock-o' : step.status === 'stopped' ? 'fa-times-circle' : 'fa-circle-o' }}"/>
+                                            <t t-esc="step.label"/>
+                                        </span>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pto-leave-meta">
+                            <span class="pto-leave-duration" t-esc="leave.duration_display"/>
+                            <span t-attf-class="pto-status {{ leave.state }}" t-esc="leave.state_label"/>
+                            <div class="pto-team-actions" t-if="leave.can_approve">
+                                <small t-esc="leave.action_role_label"/>
+                                <button class="pto-team-approve" t-on-click="() => this.onAction(leave, 'approve')"
+                                        t-att-disabled="state.processingId === leave.id">
+                                    <i class="fa fa-check"/> اعتماد
+                                </button>
+                                <button class="pto-team-refuse" t-on-click="() => this.onAction(leave, 'refuse')"
+                                        t-att-disabled="state.processingId === leave.id">
+                                    <i class="fa fa-times"/> رفض
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+
+            <div class="pto-empty" t-if="!state.loading &amp;&amp; !state.leaves.length">
+                <div class="pto-empty-icon"><i class="fa fa-users"/></div>
+                <h3>لا توجد طلبات ضمن هذا التصنيف</h3>
+                <p>ستظهر هنا طلبات موظفي الأقسام التي تديرها أو تشرف عليها.</p>
+            </div>
+
+            <div class="pto-form-overlay" t-if="state.showAssignmentForm" t-on-click.self="closeAssignmentForm">
+                <div class="pto-form-panel">
+                    <div class="pto-form-title">
+                        <span><i class="fa fa-clipboard me-2"/>إنشاء تكليف عمل إضافي</span>
+                        <button class="pto-form-close" t-on-click="closeAssignmentForm"><i class="fa fa-times"/></button>
+                    </div>
+                    <div class="pto-form-error" t-if="state.error">
+                        <i class="fa fa-exclamation-triangle me-2"/><t t-esc="state.error"/>
+                    </div>
+                    <div class="pto-form-group">
+                        <label class="pto-form-label">الموظف</label>
+                        <select class="pto-form-select" t-att-value="state.form.employee_id"
+                                t-on-change="(ev) => this.onFormField('employee_id', ev)">
+                            <option value="">-- اختر الموظف --</option>
+                            <t t-foreach="state.employees" t-as="employee" t-key="employee.id">
+                                <option t-att-value="employee.id">
+                                    <t t-esc="employee.name"/> — <t t-esc="employee.department"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="pto-form-group">
+                        <label class="pto-form-label">نوع التكليف</label>
+                        <select class="pto-form-select" t-att-value="state.form.leave_type_id"
+                                t-on-change="(ev) => this.onFormField('leave_type_id', ev)">
+                            <option value="">-- اختر نوع التكليف --</option>
+                            <t t-foreach="state.assignmentTypes" t-as="assignmentType" t-key="assignmentType.id">
+                                <option t-att-value="assignmentType.id" t-esc="assignmentType.name"/>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="pto-form-row">
+                        <div class="pto-form-group">
+                            <label class="pto-form-label">من تاريخ</label>
+                            <input type="date" class="pto-form-input" t-att-value="state.form.date_from"
+                                   t-on-change="(ev) => this.onFormField('date_from', ev)"/>
+                        </div>
+                        <div class="pto-form-group">
+                            <label class="pto-form-label">إلى تاريخ</label>
+                            <input type="date" class="pto-form-input" t-att-value="state.form.date_to"
+                                   t-on-change="(ev) => this.onFormField('date_to', ev)"/>
+                        </div>
+                    </div>
+                    <div class="pto-form-group">
+                        <label class="pto-form-label">تفاصيل التكليف (اختياري)</label>
+                        <textarea class="pto-form-textarea" maxlength="500" placeholder="وصف العمل الإضافي..."
+                                  t-att-value="state.form.description"
+                                  t-on-input="(ev) => this.onFormField('description', ev)"/>
+                    </div>
+                    <div class="pto-form-actions">
+                        <button class="pto-btn-secondary" t-on-click="closeAssignmentForm">إلغاء</button>
+                        <button class="pto-btn-primary" t-on-click="createAssignment" t-att-disabled="state.submitting">
+                            <i t-attf-class="fa {{ state.submitting ? 'fa-spinner fa-spin' : 'fa-check' }}"/>
+                            حفظ التكليف
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div t-if="state.toast" t-attf-class="pto-toast {{ state.toast.type }}">
+                <i t-attf-class="fa {{ state.toast.type === 'success' ? 'fa-check-circle success' : 'fa-exclamation-circle error' }}"/>
+                <span t-esc="state.toast.message"/>
             </div>
         </div>
     </t>

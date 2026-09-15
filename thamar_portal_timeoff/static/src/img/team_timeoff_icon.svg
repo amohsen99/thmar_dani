@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">إدارة إجازات الفريق</title>
+  <circle cx="24" cy="22" r="9" fill="#a58b64"/>
+  <circle cx="45" cy="25" r="7" fill="#c8ad82"/>
+  <path d="M7 52c1-11 8-17 17-17s16 6 17 17" fill="#fffdf9" stroke="#826b49" stroke-width="3" stroke-linecap="round"/>
+  <path d="M38 39c3-4 7-6 11-5 6 1 9 7 9 14" fill="none" stroke="#a58b64" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="48" cy="48" r="11" fill="#287a5b" stroke="#fff" stroke-width="2"/>
+  <path d="m43 48 3 3 7-7" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -148,6 +148,8 @@ class HrLeave(models.Model):
     @api.constrains('date_from', 'holiday_status_id', 'employee_id')
     def _check_appointment_month_eligibility(self):
         """Annual and casual leave cannot be taken during the hire month."""
+        if self.env.context.get('skip_thamar_leave_policy_checks'):
+            return
         Allocation = self.env['hr.leave.allocation']
         for leave in self:
             leave_type = leave.holiday_status_id
@@ -174,6 +176,8 @@ class HrLeave(models.Model):
     @api.constrains('date_from', 'date_to', 'holiday_status_id', 'employee_id', 'number_of_days', 'accrual_limit_override')
     def _check_monthly_accrual_cap(self):
         """Block leave requests that exceed the monthly rate unless HR overrides."""
+        if self.env.context.get('skip_thamar_leave_policy_checks'):
+            return
         for leave in self:
             if leave.state in ('refuse', 'cancel'):
                 continue

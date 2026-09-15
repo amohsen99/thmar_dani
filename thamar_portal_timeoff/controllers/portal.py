@@ -1,32 +1,126 @@
-import logging
 from odoo import http, fields, _
 from odoo.http import request
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.addons.portal.controllers.portal import CustomerPortal
 
-_logger = logging.getLogger(__name__)
-
-
 class PortalTimeOff(CustomerPortal):
+
+    _PORTAL_POLICY_CONTEXT = {'skip_thamar_leave_policy_checks': True}
+
+    def _prepare_portal_layout_values(self):
+        values = super()._prepare_portal_layout_values()
+        values['can_manage_team'] = request.env['hr.leave']._portal_can_manage_team()
+        return values
 
     def _prepare_home_portal_values(self, counters):
         values = super()._prepare_home_portal_values(counters)
-        if 'timeoff_count' in counters:
+        requested_counters = {
+            'timeoff_count', 'assignment_count', 'team_leave_count',
+        }.intersection(counters)
+        if requested_counters:
             employee = request.env.user.employee_id
             if employee:
-                values['timeoff_count'] = request.env['hr.leave'].sudo().search_count([
-                    ('employee_id', '=', employee.id),
-                ])
+                base_domain = [('employee_id', '=', employee.id)]
+                if 'timeoff_count' in requested_counters:
+                    values['timeoff_count'] = request.env['hr.leave'].sudo().search_count(
+                        base_domain + [('holiday_status_id.manager_only_requests', '=', False)]
+                    )
+                if 'assignment_count' in requested_counters:
+                    values['assignment_count'] = request.env['hr.leave'].sudo().search_count(
+                        base_domain + [('holiday_status_id.manager_only_requests', '=', True)]
+                    )
+                if 'team_leave_count' in requested_counters:
+                    departments = request.env['hr.leave']._portal_managed_departments()
+                    values['team_leave_count'] = request.env['hr.leave'].sudo().search_count([
+                        ('department_id', 'in', departments.ids),
+                        ('employee_id.user_id', '!=', request.env.user.id),
+                        ('state', 'in', ['confirm', 'validate1']),
+                    ])
             else:
-                values['timeoff_count'] = 0
+                for counter in requested_counters:
+                    values[counter] = 0
         return values
 
     def _get_employee(self):
         """Get the employee linked to the current portal user."""
         employee = request.env.user.sudo().employee_id
         if not employee:
-            raise AccessError(_("No employee record is linked to your account."))
+            raise AccessError(_("لا يوجد سجل موظف مرتبط بحسابك."))
         return employee
+
+    def _parse_positive_id(self, value, label):
+        try:
+            record_id = int(value)
+        except (TypeError, ValueError):
+            raise UserError(_('%s غير صالح.', label))
+        if record_id <= 0:
+            raise UserError(_('%s غير صالح.', label))
+        return record_id
+
+    def _parse_date_range(self, date_from, date_to):
+        try:
+            parsed_date_from = fields.Date.to_date(date_from)
+            parsed_date_to = fields.Date.to_date(date_to)
+        except (TypeError, ValueError):
+            raise UserError(_('أدخل تاريخ بداية وتاريخ نهاية صالحين.'))
+        if not parsed_date_from or not parsed_date_to:
+            raise UserError(_('تاريخ البداية وتاريخ النهاية مطلوبان.'))
+        if parsed_date_from > parsed_date_to:
+            raise UserError(_('يجب أن يكون تاريخ النهاية مساوياً لتاريخ البداية أو بعده.'))
+        return parsed_date_from, parsed_date_to
+
+    def _prepare_leave_values(self, employee, leave_type_id, date_from, date_to, description):
+        parsed_date_from, parsed_date_to = self._parse_date_range(date_from, date_to)
+
+        leave_type_id = self._parse_positive_id(leave_type_id, _('نوع الإجازة'))
+        request.env['hr.leave']._portal_validate_leave_type(
+            employee.id, leave_type_id, parsed_date_from, parsed_date_to,
+        )
+        description = (description or '').strip()
+        if len(description) > 500:
+            raise UserError(_('لا يمكن أن يتجاوز الوصف 500 حرف.'))
+        return {
+            'employee_id': employee.id,
+            'holiday_status_id': leave_type_id,
+            'request_date_from': parsed_date_from,
+            'request_date_to': parsed_date_to,
+            'private_name': description or False,
+        }
+
+    def _prepare_assignment_values(self, employee_id, leave_type_id, date_from, date_to, description):
+        HrLeave = request.env['hr.leave']
+        managed_departments = HrLeave._portal_managed_departments(manager_only=True)
+        employee_id = self._parse_positive_id(employee_id, _('الموظف'))
+        employee = request.env['hr.employee'].sudo().browse(employee_id).exists()
+        if not employee or employee.department_id not in managed_departments:
+            raise AccessError(_('يمكن للمدير إنشاء تكليف لموظفي أقسامه فقط.'))
+        if employee.user_id == request.env.user:
+            raise AccessError(_('لا يمكنك إنشاء تكليف لنفسك.'))
+
+        leave_type_id = self._parse_positive_id(leave_type_id, _('نوع التكليف'))
+        leave_type = request.env['hr.leave.type'].sudo().browse(leave_type_id).exists()
+        if (
+            not leave_type
+            or not leave_type.active
+            or not leave_type.manager_only_requests
+            or (leave_type.company_id and leave_type.company_id != employee.company_id)
+        ):
+            raise UserError(_('نوع التكليف المحدد غير متاح لهذا الموظف.'))
+
+        parsed_date_from, parsed_date_to = self._parse_date_range(date_from, date_to)
+        description = (description or '').strip()
+        if len(description) > 500:
+            raise UserError(_('لا يمكن أن يتجاوز الوصف 500 حرف.'))
+        return {
+            'employee_id': employee.id,
+            'holiday_status_id': leave_type.id,
+            'request_date_from': parsed_date_from,
+            'request_date_to': parsed_date_to,
+            'private_name': description or False,
+        }
+
+    def _portal_error(self, error):
+        return {'success': False, 'message': str(error)}
 
     # ── Portal Page ─────────────────────────────────────────────────
     @http.route('/my/timeoff', type='http', auth='user', website=True)
@@ -42,8 +136,32 @@ class PortalTimeOff(CustomerPortal):
             values['employee_name'] = ''
         return request.render('thamar_portal_timeoff.portal_timeoff_page', values)
 
+    @http.route('/my/assignments', type='http', auth='user', website=True)
+    def portal_assignments(self, **kw):
+        values = self._prepare_portal_layout_values()
+        values['page_name'] = 'assignments'
+        try:
+            employee = self._get_employee()
+            values['employee_id'] = employee.id
+            values['employee_name'] = employee.name
+        except AccessError:
+            values['employee_id'] = False
+            values['employee_name'] = ''
+        return request.render('thamar_portal_timeoff.portal_assignments_page', values)
+
+    @http.route('/my/team/timeoff', type='http', auth='user', website=True)
+    def portal_team_timeoff(self, **kw):
+        values = self._prepare_portal_layout_values()
+        if not values['can_manage_team']:
+            return request.not_found()
+        values.update({
+            'page_name': 'team_timeoff',
+            'employee_name': request.env.user.name,
+        })
+        return request.render('thamar_portal_timeoff.portal_team_timeoff_page', values)
+
     # ── JSON-RPC Endpoints ──────────────────────────────────────────
-    @http.route('/my/timeoff/data', type='json', auth='user', website=True, readonly=True)
+    @http.route('/my/timeoff/data', type='jsonrpc', auth='user', website=True, readonly=True, methods=['POST'])
     def portal_timeoff_data(self, status_filter='all', **kw):
         employee = self._get_employee()
         HrLeave = request.env['hr.leave']
@@ -54,85 +172,136 @@ class PortalTimeOff(CustomerPortal):
             'employee_name': employee.name,
         }
 
-    @http.route('/my/timeoff/create', type='json', auth='user', website=True)
-    def portal_timeoff_create(self, leave_type_id, date_from, date_to, description='', **kw):
+    @http.route('/my/assignments/data', type='jsonrpc', auth='user', website=True, readonly=True, methods=['POST'])
+    def portal_assignments_data(self, status_filter='all', **kw):
         employee = self._get_employee()
+        return {
+            'leaves': request.env['hr.leave']._portal_get_leaves(
+                employee.id, status_filter, request_kind='assignment'
+            ),
+            'balances': [],
+            'leave_types': [],
+            'employee_name': employee.name,
+        }
+
+    @http.route('/my/team/timeoff/data', type='jsonrpc', auth='user', website=True, readonly=True, methods=['POST'])
+    def portal_team_timeoff_data(self, status_filter='all', **kw):
+        HrLeave = request.env['hr.leave']
+        if not HrLeave._portal_can_manage_team():
+            raise AccessError(_('لا تملك صلاحية إدارة إجازات فريق.'))
+        employees = HrLeave._portal_get_assignment_employees()
+        assignment_types = HrLeave._portal_get_assignment_types()
+        return {
+            'leaves': HrLeave._portal_get_team_leaves(status_filter),
+            'employees': employees,
+            'assignment_types': assignment_types,
+            'can_create_assignments': bool(employees and assignment_types),
+        }
+
+    @http.route('/my/team/timeoff/action', type='jsonrpc', auth='user', website=True, methods=['POST'])
+    def portal_team_timeoff_action(self, leave_id, action, **kw):
         try:
-            leave = request.env['hr.leave'].sudo().create({
-                'employee_id': employee.id,
-                'holiday_status_id': int(leave_type_id),
-                'request_date_from': date_from,
-                'request_date_to': date_to,
-                'private_name': description or False,
-            })
+            leave_id = self._parse_positive_id(leave_id, _('طلب الإجازة'))
+            leave = request.env['hr.leave'].sudo().browse(leave_id).exists()
+            if not leave:
+                raise UserError(_('تعذر العثور على طلب الإجازة.'))
+            role = leave._portal_apply_team_action(action)
+            role_label = _('المشرف') if role == 'supervisor' else _('المدير')
+            action_label = _('اعتماد') if action == 'approve' else _('رفض')
+            return {
+                'success': True,
+                'message': _('%(action)s الطلب بواسطة %(role)s بنجاح.', action=action_label, role=role_label),
+            }
+        except (AccessError, UserError, ValidationError) as error:
+            return self._portal_error(error)
+
+    @http.route('/my/team/assignments/create', type='jsonrpc', auth='user', website=True, methods=['POST'])
+    def portal_team_assignment_create(
+        self, employee_id, leave_type_id, date_from, date_to, description='', **kw
+    ):
+        try:
+            values = self._prepare_assignment_values(
+                employee_id, leave_type_id, date_from, date_to, description,
+            )
+            leave = request.env['hr.leave'].with_context(
+                **self._PORTAL_POLICY_CONTEXT
+            ).sudo().create(values)
             return {
                 'success': True,
                 'leave_id': leave.id,
-                'message': _("Time off request created successfully."),
+                'message': _('تم إنشاء التكليف للموظف بنجاح.'),
             }
-        except (UserError, ValidationError) as e:
-            return {
-                'success': False,
-                'message': str(e),
-            }
+        except (AccessError, UserError, ValidationError) as error:
+            return self._portal_error(error)
 
-    @http.route('/my/timeoff/update', type='json', auth='user', website=True)
-    def portal_timeoff_update(self, leave_id, leave_type_id, date_from, date_to, description='', **kw):
+    @http.route('/my/timeoff/create', type='jsonrpc', auth='user', website=True, methods=['POST'])
+    def portal_timeoff_create(self, leave_type_id, date_from, date_to, description='', **kw):
         employee = self._get_employee()
-        leave = request.env['hr.leave'].sudo().browse(int(leave_id))
-
-        if not leave.exists() or leave.employee_id.id != employee.id:
-            return {'success': False, 'message': _("Leave not found.")}
-
-        if leave.state not in ('confirm', 'refuse'):
-            return {'success': False, 'message': _("Only draft or refused requests can be edited.")}
-
         try:
-            # If refused, reset to draft first
-            if leave.state == 'refuse':
-                leave.action_draft()
-
-            leave.write({
-                'holiday_status_id': int(leave_type_id),
-                'request_date_from': date_from,
-                'request_date_to': date_to,
-                'private_name': description or False,
-            })
+            values = self._prepare_leave_values(
+                employee, leave_type_id, date_from, date_to, description,
+            )
+            leave = request.env['hr.leave'].with_context(
+                **self._PORTAL_POLICY_CONTEXT
+            ).sudo().create(values)
             return {
                 'success': True,
-                'message': _("Time off request updated successfully."),
+                'leave_id': leave.id,
+                'message': _("تم إنشاء طلب الإجازة بنجاح."),
             }
-        except (UserError, ValidationError) as e:
-            return {
-                'success': False,
-                'message': str(e),
-            }
+        except (AccessError, UserError, ValidationError) as error:
+            return self._portal_error(error)
 
-    @http.route('/my/timeoff/delete', type='json', auth='user', website=True)
+    @http.route('/my/timeoff/update', type='jsonrpc', auth='user', website=True, methods=['POST'])
+    def portal_timeoff_update(self, leave_id, leave_type_id, date_from, date_to, description='', **kw):
+        employee = self._get_employee()
+        try:
+            leave_id = self._parse_positive_id(leave_id, _('طلب الإجازة'))
+            leave = request.env['hr.leave'].sudo().browse(leave_id).exists()
+            if not leave or leave.employee_id.id != employee.id:
+                raise UserError(_('تعذر العثور على طلب الإجازة.'))
+            if not leave._portal_employee_can_modify():
+                raise UserError(_(
+                    'لا يمكن تعديل الطلب بعد تسجيل إحدى الموافقات عليه.'
+                ))
+
+            values = self._prepare_leave_values(
+                employee, leave_type_id, date_from, date_to, description,
+            )
+            if leave.state == 'refuse':
+                values.update({
+                    'state': 'confirm',
+                    'supervisor_approved': False,
+                    'manager_approved': False,
+                    'clinical_approved': False,
+                })
+            leave.with_context(**self._PORTAL_POLICY_CONTEXT).write(values)
+            return {
+                'success': True,
+                'message': _("تم تحديث طلب الإجازة بنجاح."),
+            }
+        except (AccessError, UserError, ValidationError) as error:
+            return self._portal_error(error)
+
+    @http.route('/my/timeoff/delete', type='jsonrpc', auth='user', website=True, methods=['POST'])
     def portal_timeoff_delete(self, leave_id, **kw):
         employee = self._get_employee()
-        leave = request.env['hr.leave'].sudo().browse(int(leave_id))
-
-        if not leave.exists() or leave.employee_id.id != employee.id:
-            return {'success': False, 'message': _("Leave not found.")}
-
-        if leave.state not in ('confirm', 'refuse'):
-            return {'success': False, 'message': _("Only draft or refused requests can be deleted.")}
-
         try:
-            # If refused, reset to draft first so it can be unlinked
-            if leave.state == 'refuse':
-                leave.action_draft()
+            leave_id = self._parse_positive_id(leave_id, _('طلب الإجازة'))
+            leave = request.env['hr.leave'].sudo().browse(leave_id).exists()
+            if not leave or leave.employee_id.id != employee.id:
+                raise UserError(_('تعذر العثور على طلب الإجازة.'))
+            if not leave._portal_employee_can_modify():
+                raise UserError(_(
+                    'لا يمكن حذف الطلب بعد تسجيل إحدى الموافقات عليه.'
+                ))
             leave.unlink()
             return {
                 'success': True,
-                'message': _("Time off request deleted successfully."),
+                'message': _("تم حذف طلب الإجازة بنجاح."),
             }
-        except (UserError, ValidationError) as e:
-            return {
-                'success': False,
-                'message': str(e),
-            }
+        except (AccessError, UserError, ValidationError) as error:
+            return self._portal_error(error)
 
     # ── Employee Info Portal Page ───────────────────────────────────
     @http.route('/my/employee', type='http', auth='user', website=True)
@@ -149,7 +318,7 @@ class PortalTimeOff(CustomerPortal):
         return request.render('thamar_portal_timeoff.portal_employee_page', values)
 
     # ── Employee Info JSON-RPC ──────────────────────────────────────
-    @http.route('/my/employee/data', type='json', auth='user', website=True, readonly=True)
+    @http.route('/my/employee/data', type='jsonrpc', auth='user', website=True, readonly=True, methods=['POST'])
     def portal_employee_data(self, **kw):
         employee = self._get_employee()
         emp = employee.sudo()
@@ -211,15 +380,16 @@ class PortalTimeOff(CustomerPortal):
             'department_id': fmt_many2one(emp.department_id),
             'manager_id': fmt_many2one(emp.parent_id),
             'coach_id': fmt_many2one(emp.coach_id),
-            'address': emp.address_id.name_get()[0][1] if emp.address_id else '',
-            'work_location': emp.work_location or '',
+            'address': emp.address_id.display_name if emp.address_id else '',
+            'work_location': emp.work_location_id.name if emp.work_location_id else '',
             'tz': tz,
             'employee_type': selection_label('employee_type', emp.employee_type),
             'resource_calendar': calendar.name if calendar else '',
             'schedule_lines': schedule_lines,
             'identification_id': emp.identification_id or '',
             'passport_id': emp.passport_id or '',
-            'gender': selection_label('gender', emp.gender),
+            # Odoo 19 renamed the employee field from ``gender`` to ``sex``.
+            'gender': selection_label('sex', emp.sex),
             'marital': selection_label('marital', emp.marital),
             'birthday': fmt_date(emp.birthday),
             'country_id': emp.country_id.name if emp.country_id else '',
@@ -230,6 +400,6 @@ class PortalTimeOff(CustomerPortal):
             'emergency_phone': emp.emergency_phone or '',
             'hire_date': fmt_dt(emp.hire_date),
             'admin_type': selection_label('admin_type', emp.admin_type),
-            'supervisor_id': fmt_many2one(emp.supervisor_id),
+            'supervisor_id': fmt_many2one(emp.department_id.supervisor_id) if emp.department_id else '',
         }
         return data

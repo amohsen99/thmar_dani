@@ -40,3 +40,23 @@ class HrEmployee(models.Model):
                 raise ValidationError(_(
                     'لا يمكن تسكين الموظف بالوردية الأولى؛ لا توجد مقاعد شاغرة في الوردية الأولى للمركبة %(vehicle)s.'
                 ) % {'vehicle': vehicle.display_name})
+
+
+class HrEmployeePublic(models.Model):
+    """Expose transportation fields to department-level HR views.
+
+    Odoo uses ``hr.employee.public`` in views available to users who do not
+    have access to private employee records, including department time-off.
+    """
+
+    _inherit = 'hr.employee.public'
+
+    transport_route_id = fields.Many2one(
+        related='employee_id.transport_route_id', string='خط السير', readonly=True,
+    )
+    transport_vehicle_id = fields.Many2one(
+        related='employee_id.transport_vehicle_id', string='المركبة', readonly=True,
+    )
+    transport_fixed_first_shift = fields.Boolean(
+        related='employee_id.transport_fixed_first_shift', string='ثابت بالوردية الأولى', readonly=True,
+    )

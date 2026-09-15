@@ -10,6 +10,7 @@
     # supplied by hr_skills, so load its model fields before inheriting it.
     'depends': ['hr', 'hr_skills'],
     'data': [
+        'security/transport_security.xml',
         'security/ir.model.access.csv',
         'views/transport_route_views.xml',
         'views/transport_vehicle_views.xml',

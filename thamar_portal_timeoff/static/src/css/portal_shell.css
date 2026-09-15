@@ -1,0 +1,266 @@
+/* Al-Omar employee portal shell. Deliberately scoped to portal pages only. */
+#wrapwrap.o_portal {
+    --thamar-ink: #20282b;
+    --thamar-ink-soft: #334044;
+    --thamar-gold: #a58b64;
+    --thamar-gold-dark: #826b49;
+    --thamar-paper: #f4f3f0;
+    --thamar-line: #ddd9d1;
+    --thamar-white: #fff;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 92% 5%, rgba(165, 139, 100, 0.13), transparent 24rem),
+        var(--thamar-paper);
+    color: var(--thamar-ink);
+}
+
+#wrapwrap.o_portal > header {
+    position: relative;
+    z-index: 20;
+}
+
+#wrapwrap.o_portal .thamar-portal-navbar {
+    min-height: 132px;
+    padding: 0;
+    border: 0;
+    border-bottom: 4px solid var(--thamar-gold);
+    background: linear-gradient(118deg, #1d2427 0%, #2c373b 72%, #374448 100%) !important;
+    box-shadow: 0 12px 30px rgba(20, 27, 29, 0.16);
+}
+
+#wrapwrap.o_portal .thamar-portal-navbar-inner,
+#wrapwrap.o_portal .o_portal_wrap > .container,
+#wrapwrap.o_portal > main > .o_portal.container {
+    width: min(100% - 64px, 1480px);
+    max-width: 1480px;
+}
+
+#wrapwrap.o_portal .thamar-portal-brand {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 8px;
+    border-radius: 14px;
+    background: #cfd0d1;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+#wrapwrap.o_portal .thamar-portal-brand:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+#wrapwrap.o_portal .thamar-portal-logo {
+    display: block;
+    width: 170px;
+    height: 104px;
+    object-fit: contain;
+}
+
+#wrapwrap.o_portal #top_menu {
+    align-items: center;
+    gap: 10px;
+}
+
+#wrapwrap.o_portal .thamar-portal-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 46px;
+    padding: 10px 17px;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.82) !important;
+    font-size: 0.94rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: color 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+#wrapwrap.o_portal .thamar-portal-nav-link:hover,
+#wrapwrap.o_portal .thamar-portal-nav-link:focus-visible {
+    border-color: rgba(255, 255, 255, 0.24);
+    background: rgba(255, 255, 255, 0.09);
+    color: #fff !important;
+}
+
+#wrapwrap.o_portal .thamar-portal-nav-link .fa {
+    color: #c8ad82;
+    font-size: 1rem;
+}
+
+#wrapwrap.o_portal #top_menu > .o_no_autohide_item > .nav-link:not(.thamar-portal-nav-link) {
+    color: #fff;
+    font-weight: 600;
+}
+
+#wrapwrap.o_portal .o_portal_wrap > .container {
+    padding-top: 36px !important;
+    padding-bottom: 64px !important;
+}
+
+#wrapwrap.o_portal .thamar-portal-welcome {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 48px;
+    margin: 0 0 28px;
+    padding: 34px 38px;
+    overflow: hidden;
+    border: 1px solid rgba(165, 139, 100, 0.28);
+    border-radius: 18px;
+    background: linear-gradient(108deg, rgba(255, 255, 255, 0.98), rgba(250, 248, 244, 0.92));
+    box-shadow: 0 18px 50px rgba(32, 40, 43, 0.08);
+}
+
+#wrapwrap.o_portal .thamar-portal-eyebrow {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--thamar-gold-dark);
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+#wrapwrap.o_portal .thamar-portal-welcome h1 {
+    margin: 0;
+    color: var(--thamar-ink);
+    font-size: clamp(2rem, 3vw, 3rem);
+    font-weight: 750;
+    letter-spacing: -0.035em;
+}
+
+#wrapwrap.o_portal .thamar-portal-welcome p {
+    max-width: 720px;
+    margin: 12px 0 0;
+    color: #667174;
+    font-size: 1.02rem;
+}
+
+#wrapwrap.o_portal .thamar-portal-primary-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+    padding: 13px 20px;
+    border: 1px solid var(--thamar-ink);
+    border-radius: 10px;
+    background: var(--thamar-ink);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 10px 22px rgba(32, 40, 43, 0.16);
+}
+
+#wrapwrap.o_portal .thamar-portal-primary-action:hover {
+    border-color: var(--thamar-gold-dark);
+    background: var(--thamar-gold-dark);
+    color: #fff;
+}
+
+#wrapwrap.o_portal .o_portal_my_home .o_portal_docs {
+    gap: 16px 0;
+}
+
+#wrapwrap.o_portal .o_portal_my_home .o_portal_category {
+    margin-top: 0 !important;
+    row-gap: 16px;
+}
+
+#wrapwrap.o_portal .o_portal_index_card > a {
+    min-height: 118px;
+    align-items: center;
+    padding: 22px 24px !important;
+    border: 1px solid var(--thamar-line);
+    border-radius: 14px !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    color: var(--thamar-ink);
+    box-shadow: 0 10px 28px rgba(32, 40, 43, 0.055);
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+#wrapwrap.o_portal .o_portal_index_card > a:hover {
+    transform: translateY(-3px);
+    border-color: rgba(165, 139, 100, 0.62);
+    box-shadow: 0 16px 34px rgba(32, 40, 43, 0.1);
+}
+
+#wrapwrap.o_portal .o_portal_index_card .o_portal_icon {
+    width: 54px;
+    height: 54px;
+    padding: 10px;
+    border-radius: 12px;
+    background: #eeeae2;
+}
+
+#wrapwrap.o_portal .o_portal_index_card .o_portal_icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#wrapwrap.o_portal .o_portal_index_card .fs-5 {
+    color: var(--thamar-ink);
+    font-weight: 700 !important;
+}
+
+#wrapwrap.o_portal .o_portal_index_card .opacity-75 {
+    color: #697477;
+    opacity: 1 !important;
+}
+
+#wrapwrap.o_portal .o_portal_submenu {
+    padding: 12px 18px !important;
+    border: 1px solid var(--thamar-line);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.82);
+}
+
+@media (max-width: 991.98px) {
+    #wrapwrap.o_portal .thamar-portal-navbar-inner,
+    #wrapwrap.o_portal .o_portal_wrap > .container,
+    #wrapwrap.o_portal > main > .o_portal.container {
+        width: min(100% - 32px, 1480px);
+    }
+
+    #wrapwrap.o_portal .thamar-portal-nav-link {
+        padding-inline: 12px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    #wrapwrap.o_portal .thamar-portal-navbar {
+        min-height: 86px;
+    }
+
+    #wrapwrap.o_portal .thamar-portal-logo {
+        width: 92px;
+        height: 65px;
+    }
+
+    #wrapwrap.o_portal #top_menu {
+        gap: 4px;
+    }
+
+    #wrapwrap.o_portal .thamar-portal-nav-link {
+        min-height: 40px;
+        padding: 8px 10px;
+    }
+
+    #wrapwrap.o_portal .thamar-portal-nav-link span {
+        display: none;
+    }
+
+    #wrapwrap.o_portal .thamar-portal-welcome {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 20px;
+        padding: 26px 24px;
+    }
+
+    #wrapwrap.o_portal .thamar-portal-primary-action {
+        width: 100%;
+        justify-content: center;
+    }
+}

@@ -39,19 +39,23 @@ export class TimeOffForm extends Component {
 
         // Validation
         if (!leave_type_id) {
-            this.state.error = 'Please select a leave type.';
+            this.state.error = 'يرجى اختيار نوع الإجازة.';
             return;
         }
         if (!date_from) {
-            this.state.error = 'Please select a start date.';
+            this.state.error = 'يرجى اختيار تاريخ البداية.';
             return;
         }
         if (!date_to) {
-            this.state.error = 'Please select an end date.';
+            this.state.error = 'يرجى اختيار تاريخ النهاية.';
             return;
         }
         if (date_from > date_to) {
-            this.state.error = 'End date must be after start date.';
+            this.state.error = 'يجب أن يكون تاريخ النهاية بعد تاريخ البداية.';
+            return;
+        }
+        if (description.length > 500) {
+            this.state.error = 'لا يمكن أن يتجاوز الوصف 500 حرف.';
             return;
         }
 
@@ -65,7 +69,7 @@ export class TimeOffForm extends Component {
                 description,
             });
         } catch (e) {
-            this.state.error = e.message || 'An unexpected error occurred.';
+            this.state.error = e.message || 'حدث خطأ غير متوقع.';
         } finally {
             this.state.submitting = false;
         }

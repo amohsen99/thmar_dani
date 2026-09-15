@@ -1,51 +1,51 @@
 /* ============================================================
-   Portal Time Off – Premium Design System
+   Portal Time Off – Al-Omar Corporate Design System
    ============================================================ */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ── Variables ─────────────────────────────────────────────── */
 .o_portal_timeoff_app {
-    --pto-primary: #6366f1;
-    --pto-primary-light: #818cf8;
-    --pto-primary-dark: #4f46e5;
-    --pto-accent: #06b6d4;
-    --pto-success: #10b981;
-    --pto-warning: #f59e0b;
-    --pto-danger: #ef4444;
-    --pto-info: #3b82f6;
+    --pto-primary: #a58b64;
+    --pto-primary-light: #c8ad82;
+    --pto-primary-dark: #826b49;
+    --pto-accent: #d4b57f;
+    --pto-success: #287a5b;
+    --pto-warning: #a66a17;
+    --pto-danger: #b33c3c;
+    --pto-info: #426b7a;
 
-    --pto-bg-start: #0f172a;
-    --pto-bg-end: #1e293b;
-    --pto-card-bg: rgba(255, 255, 255, 0.06);
-    --pto-card-border: rgba(255, 255, 255, 0.1);
-    --pto-card-bg-hover: rgba(255, 255, 255, 0.1);
-    --pto-text: #f1f5f9;
-    --pto-text-muted: #94a3b8;
-    --pto-text-dim: #64748b;
+    --pto-bg-start: #ffffff;
+    --pto-bg-end: #faf8f4;
+    --pto-card-bg: rgba(255, 255, 255, 0.94);
+    --pto-card-border: #ddd9d1;
+    --pto-card-bg-hover: #fffdf9;
+    --pto-text: #20282b;
+    --pto-text-muted: #667174;
+    --pto-text-dim: #879093;
 
     --pto-radius: 16px;
     --pto-radius-sm: 10px;
     --pto-radius-pill: 50px;
-    --pto-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    --pto-blur: 20px;
-    --pto-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --pto-shadow: 0 16px 38px rgba(32, 40, 43, 0.1);
+    --pto-blur: 12px;
+    --pto-transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ── Base Container ────────────────────────────────────────── */
 .o_portal_timeoff_app {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     min-height: 60vh;
     position: relative;
 }
 
 .pto-wrapper {
     background: linear-gradient(135deg, var(--pto-bg-start) 0%, var(--pto-bg-end) 100%);
+    border: 1px solid rgba(165, 139, 100, 0.28);
     border-radius: var(--pto-radius);
     padding: 2rem;
     position: relative;
     overflow: hidden;
     min-height: 60vh;
+    box-shadow: 0 18px 50px rgba(32, 40, 43, 0.08);
 }
 
 .pto-wrapper::before {
@@ -55,7 +55,7 @@
     right: -20%;
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(165, 139, 100, 0.13) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
 }
@@ -67,7 +67,7 @@
     left: -10%;
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(32, 40, 43, 0.045) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
 }
@@ -93,18 +93,30 @@
 }
 
 .pto-header h2 span {
-    background: linear-gradient(135deg, var(--pto-primary-light), var(--pto-accent));
+    background: linear-gradient(135deg, var(--pto-primary-dark), var(--pto-primary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
+.pto-policy-note {
+    position: relative;
+    z-index: 1;
+    margin: -1rem 0 1.5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(165, 139, 100, 0.34);
+    border-radius: var(--pto-radius-sm);
+    background: rgba(165, 139, 100, 0.09);
+    color: #68583f;
+    font-size: 0.85rem;
+}
+
 .pto-btn-primary {
-    background: linear-gradient(135deg, var(--pto-primary) 0%, var(--pto-primary-dark) 100%);
+    background: linear-gradient(135deg, #20282b 0%, #334044 100%);
     color: white;
     border: none;
     padding: 0.7rem 1.5rem;
-    border-radius: var(--pto-radius-pill);
+    border-radius: var(--pto-radius-sm);
     font-weight: 600;
     font-size: 0.9rem;
     cursor: pointer;
@@ -112,13 +124,14 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 8px 18px rgba(32, 40, 43, 0.18);
     font-family: inherit;
 }
 
 .pto-btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(99, 102, 241, 0.5);
+    background: linear-gradient(135deg, var(--pto-primary-dark), var(--pto-primary));
+    box-shadow: 0 10px 24px rgba(130, 107, 73, 0.24);
 }
 
 .pto-btn-primary:active {
@@ -130,7 +143,7 @@
     color: var(--pto-text);
     border: 1px solid var(--pto-card-border);
     padding: 0.6rem 1.2rem;
-    border-radius: var(--pto-radius-pill);
+    border-radius: var(--pto-radius-sm);
     font-weight: 500;
     font-size: 0.85rem;
     cursor: pointer;
@@ -141,7 +154,7 @@
 
 .pto-btn-secondary:hover {
     background: var(--pto-card-bg-hover);
-    border-color: var(--pto-primary-light);
+    border-color: var(--pto-primary);
 }
 
 .pto-btn-danger {
@@ -165,7 +178,7 @@
 .pto-btn-icon {
     width: 36px;
     height: 36px;
-    border-radius: 50%;
+    border-radius: 9px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -189,6 +202,104 @@
     background: rgba(239, 68, 68, 0.15);
     color: var(--pto-danger);
     border-color: var(--pto-danger);
+}
+
+/* ── Team management ───────────────────────────────────────── */
+.pto-team-loading {
+    position: relative;
+    z-index: 1;
+    padding: 3rem 1rem;
+    text-align: center;
+    color: var(--pto-text-muted);
+}
+
+.pto-team-employee {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 0.35rem;
+    color: var(--pto-text);
+}
+
+.pto-team-employee > i {
+    color: var(--pto-primary);
+}
+
+.pto-team-employee > span {
+    padding: 0.15rem 0.55rem;
+    border-radius: var(--pto-radius-pill);
+    background: rgba(165, 139, 100, 0.12);
+    color: var(--pto-primary-dark);
+    font-size: 0.75rem;
+}
+
+.pto-kind-badge {
+    display: inline-flex;
+    margin-inline-start: 0.4rem;
+    padding: 0.12rem 0.5rem;
+    border-radius: var(--pto-radius-pill);
+    font-size: 0.7rem;
+    font-weight: 700;
+    vertical-align: middle;
+}
+
+.pto-kind-badge.assignment {
+    background: rgba(66, 107, 122, 0.12);
+    color: var(--pto-info);
+}
+
+.pto-kind-badge.leave {
+    background: rgba(165, 139, 100, 0.12);
+    color: var(--pto-primary-dark);
+}
+
+.pto-team-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.35rem;
+}
+
+.pto-team-actions small {
+    width: 100%;
+    color: var(--pto-text-muted);
+    text-align: end;
+}
+
+.pto-team-approve,
+.pto-team-refuse {
+    border: 0;
+    border-radius: var(--pto-radius-sm);
+    padding: 0.5rem 0.8rem;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--pto-transition);
+}
+
+.pto-team-approve {
+    background: var(--pto-success);
+}
+
+.pto-team-refuse {
+    background: var(--pto-danger);
+}
+
+.pto-team-approve:hover,
+.pto-team-refuse:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+}
+
+.pto-team-approve:disabled,
+.pto-team-refuse:disabled {
+    cursor: wait;
+    opacity: 0.55;
 }
 
 /* ── Stats Cards ───────────────────────────────────────────── */
@@ -230,7 +341,7 @@
 
 .pto-stat-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(165, 139, 100, 0.62);
     box-shadow: var(--pto-shadow);
 }
 
@@ -295,13 +406,13 @@
 
 .pto-progress-ring__bg {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.08);
+    stroke: #ece8e0;
     stroke-width: 4;
 }
 
 .pto-progress-ring__fill {
     fill: none;
-    stroke: var(--pto-primary-light);
+    stroke: var(--pto-primary);
     stroke-width: 4;
     stroke-linecap: round;
     transform: rotate(-90deg);
@@ -315,7 +426,7 @@
     font-weight: 700;
     text-anchor: middle;
     dominant-baseline: central;
-    font-family: 'Inter', sans-serif;
+    font-family: inherit;
 }
 
 /* ── Filter Tabs ───────────────────────────────────────────── */
@@ -348,8 +459,8 @@
 
 .pto-filter-btn.active {
     background: var(--pto-card-bg);
-    color: var(--pto-primary-light);
-    border-color: var(--pto-card-border);
+    color: var(--pto-primary-dark);
+    border-color: rgba(165, 139, 100, 0.5);
     backdrop-filter: blur(10px);
 }
 
@@ -378,9 +489,10 @@
 }
 
 .pto-leave-card:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(165, 139, 100, 0.55);
     background: var(--pto-card-bg-hover);
-    transform: translateX(4px);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(32, 40, 43, 0.08);
 }
 
 .pto-leave-info {
@@ -443,6 +555,69 @@
     max-width: 300px;
 }
 
+.pto-approval-current {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.65rem;
+    color: var(--pto-primary-dark);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.pto-approval-current.approved {
+    color: var(--pto-success);
+}
+
+.pto-approval-current.refused,
+.pto-approval-current.cancelled {
+    color: var(--pto-danger);
+}
+
+.pto-approval-current small {
+    color: var(--pto-text-muted);
+    font-size: 0.76rem;
+    font-weight: 500;
+}
+
+.pto-approval-flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.55rem;
+}
+
+.pto-approval-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.24rem 0.55rem;
+    border: 1px solid var(--pto-card-border);
+    border-radius: 7px;
+    background: #f3f1ed;
+    color: var(--pto-text-muted);
+    font-size: 0.71rem;
+    font-weight: 650;
+}
+
+.pto-approval-step.approved {
+    border-color: rgba(40, 122, 91, 0.25);
+    background: rgba(40, 122, 91, 0.08);
+    color: var(--pto-success);
+}
+
+.pto-approval-step.pending {
+    border-color: rgba(165, 139, 100, 0.42);
+    background: rgba(165, 139, 100, 0.12);
+    color: var(--pto-primary-dark);
+}
+
+.pto-approval-step.stopped {
+    border-color: rgba(179, 60, 60, 0.22);
+    background: rgba(179, 60, 60, 0.07);
+    color: var(--pto-danger);
+}
+
 .pto-leave-meta {
     display: flex;
     align-items: center;
@@ -470,31 +645,31 @@
 
 .pto-status.confirm {
     background: rgba(245, 158, 11, 0.15);
-    color: #fbbf24;
+    color: #8a5712;
     border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .pto-status.validate1 {
     background: rgba(59, 130, 246, 0.15);
-    color: #60a5fa;
+    color: #315f78;
     border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .pto-status.validate {
     background: rgba(16, 185, 129, 0.15);
-    color: #34d399;
+    color: #216b4e;
     border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .pto-status.refuse {
     background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
+    color: #a73232;
     border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .pto-status.cancel {
     background: rgba(100, 116, 139, 0.15);
-    color: #94a3b8;
+    color: #647077;
     border: 1px solid rgba(100, 116, 139, 0.3);
 }
 
@@ -511,7 +686,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(20, 27, 29, 0.58);
     backdrop-filter: blur(4px);
     z-index: 1050;
     display: flex;
@@ -522,7 +697,7 @@
 }
 
 .pto-form-panel {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #faf8f4 100%);
     border: 1px solid var(--pto-card-border);
     border-radius: var(--pto-radius);
     padding: 2rem;
@@ -530,7 +705,7 @@
     max-width: 520px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 28px 70px rgba(20, 27, 29, 0.3);
     animation: pto-slide-up 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 }
@@ -542,7 +717,7 @@
     left: 20%;
     right: 20%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, var(--pto-primary-light), transparent);
+    background: linear-gradient(90deg, transparent, var(--pto-primary), transparent);
     border-radius: 2px;
 }
 
@@ -589,7 +764,7 @@
 .pto-form-select,
 .pto-form-textarea {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
+    background: #fff;
     border: 1px solid var(--pto-card-border);
     border-radius: var(--pto-radius-sm);
     color: var(--pto-text);
@@ -604,9 +779,9 @@
 .pto-form-input:focus,
 .pto-form-select:focus,
 .pto-form-textarea:focus {
-    border-color: var(--pto-primary-light);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--pto-primary);
+    box-shadow: 0 0 0 3px rgba(165, 139, 100, 0.16);
+    background: #fff;
 }
 
 .pto-form-select {
@@ -618,8 +793,14 @@
 }
 
 .pto-form-select option {
-    background: #1e293b;
+    background: #fff;
     color: var(--pto-text);
+}
+
+.pto-wrapper[dir="rtl"] .pto-form-select {
+    background-position: left 1rem center;
+    padding-right: 1rem;
+    padding-left: 2.5rem;
 }
 
 .pto-form-textarea {
@@ -645,7 +826,7 @@
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: var(--pto-radius-sm);
     padding: 0.75rem 1rem;
-    color: #f87171;
+    color: #a73232;
     font-size: 0.85rem;
     margin-bottom: 1rem;
     animation: pto-shake 0.3s ease;
@@ -683,24 +864,40 @@
     top: 1.5rem;
     right: 1.5rem;
     z-index: 2000;
-    background: #1e293b;
+    background: #fff;
     border: 1px solid var(--pto-card-border);
     border-radius: var(--pto-radius-sm);
     padding: 1rem 1.5rem;
     color: var(--pto-text);
     font-size: 0.9rem;
     font-weight: 500;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 14px 42px rgba(32, 40, 43, 0.18);
     animation: pto-slide-in-right 0.3s ease, pto-fade-out 0.3s ease 2.5s forwards;
     display: flex;
     align-items: center;
     gap: 0.75rem;
     max-width: 400px;
-    font-family: 'Inter', sans-serif;
+    font-family: inherit;
 }
 
 .pto-toast.success { border-left: 3px solid var(--pto-success); }
 .pto-toast.error { border-left: 3px solid var(--pto-danger); }
+
+.pto-wrapper[dir="rtl"] .pto-toast {
+    right: auto;
+    left: 1.5rem;
+    animation-name: pto-slide-in-left, pto-fade-out;
+}
+
+.pto-wrapper[dir="rtl"] .pto-toast.success {
+    border-left-width: 1px;
+    border-right: 3px solid var(--pto-success);
+}
+
+.pto-wrapper[dir="rtl"] .pto-toast.error {
+    border-left-width: 1px;
+    border-right: 3px solid var(--pto-danger);
+}
 
 .pto-toast i.success { color: var(--pto-success); }
 .pto-toast i.error { color: var(--pto-danger); }
@@ -738,6 +935,17 @@
     }
 }
 
+@keyframes pto-slide-in-left {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 @keyframes pto-slide-in-right {
     from {
         opacity: 0;
@@ -766,7 +974,7 @@
 .pto-skeleton {
     background: linear-gradient(90deg,
         var(--pto-card-bg) 25%,
-        rgba(255,255,255,0.08) 50%,
+        rgba(165, 139, 100, 0.12) 50%,
         var(--pto-card-bg) 75%);
     background-size: 200% 100%;
     animation: pto-pulse 1.5s ease-in-out infinite;
@@ -774,6 +982,18 @@
 }
 
 /* ── Responsive ────────────────────────────────────────────── */
+@media (min-width: 769px) {
+    .pto-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        overflow: visible;
+    }
+
+    .pto-stat-card {
+        min-width: 0;
+    }
+}
+
 @media (max-width: 768px) {
     .pto-wrapper {
         padding: 1.25rem;
@@ -801,6 +1021,15 @@
     .pto-leave-meta {
         width: 100%;
         justify-content: space-between;
+    }
+
+    .pto-team-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .pto-team-actions small {
+        text-align: start;
     }
 
     .pto-form-row {
