@@ -217,6 +217,10 @@
     background: rgba(255, 255, 255, 0.82);
 }
 
+#wrapwrap.o_portal .thamar-mobile-nav {
+    display: none;
+}
+
 @media (max-width: 991.98px) {
     #wrapwrap.o_portal .thamar-portal-navbar-inner,
     #wrapwrap.o_portal .o_portal_wrap > .container,
@@ -230,6 +234,10 @@
 }
 
 @media (max-width: 767.98px) {
+    #wrapwrap.o_portal {
+        padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    }
+
     #wrapwrap.o_portal .thamar-portal-navbar {
         min-height: 86px;
     }
@@ -239,8 +247,8 @@
         height: 65px;
     }
 
-    #wrapwrap.o_portal #top_menu {
-        gap: 4px;
+    #wrapwrap.o_portal #top_menu .thamar-portal-nav-item {
+        display: none;
     }
 
     #wrapwrap.o_portal .thamar-portal-nav-link {
@@ -248,8 +256,51 @@
         padding: 8px 10px;
     }
 
-    #wrapwrap.o_portal .thamar-portal-nav-link span {
-        display: none;
+    #wrapwrap.o_portal .thamar-mobile-nav {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1050;
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        gap: 2px;
+        min-height: 66px;
+        padding: 6px 5px calc(6px + env(safe-area-inset-bottom, 0px));
+        border-top: 2px solid var(--thamar-gold);
+        background: rgba(29, 36, 39, 0.98);
+        box-shadow: 0 -8px 24px rgba(20, 27, 29, 0.22);
+        backdrop-filter: blur(12px);
+    }
+
+    #wrapwrap.o_portal .thamar-mobile-nav > a {
+        display: flex;
+        flex: 1 1 0;
+        min-width: 0;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        padding: 5px 2px;
+        border-radius: 9px;
+        color: rgba(255, 255, 255, 0.76);
+        font-size: 0.68rem;
+        font-weight: 700;
+        line-height: 1.1;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    #wrapwrap.o_portal .thamar-mobile-nav > a i {
+        color: #c8ad82;
+        font-size: 1.15rem;
+    }
+
+    #wrapwrap.o_portal .thamar-mobile-nav > a.active,
+    #wrapwrap.o_portal .thamar-mobile-nav > a:active {
+        background: rgba(200, 173, 130, 0.17);
+        color: #fff;
     }
 
     #wrapwrap.o_portal .thamar-portal-welcome {

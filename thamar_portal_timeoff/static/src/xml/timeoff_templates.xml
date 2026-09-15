@@ -273,7 +273,7 @@
             <div class="pto-header">
                 <h2>
                     <i class="fa fa-users me-2" style="color: var(--pto-primary);"/>
-                    <span>إدارة إجازات الفريق</span>
+                    <span>إدارة إجازات وتكليفات الفريق</span>
                 </h2>
                 <button t-if="state.canCreateAssignments" class="pto-btn-primary"
                         t-on-click="openAssignmentForm">

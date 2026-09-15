@@ -283,11 +283,16 @@
 }
 
 .pto-team-approve {
-    background: var(--pto-success);
+    border: 1px solid var(--pto-primary-dark);
+    background: linear-gradient(135deg, var(--pto-primary-light), var(--pto-primary));
+    color: var(--pto-text);
+    box-shadow: 0 5px 12px rgba(130, 107, 73, 0.2);
 }
 
 .pto-team-refuse {
-    background: var(--pto-danger);
+    border: 1px solid rgba(179, 60, 60, 0.45);
+    background: #fff5f5;
+    color: #a73232;
 }
 
 .pto-team-approve:hover,
@@ -1018,9 +1023,65 @@
         align-items: flex-start;
     }
 
+    .pto-team-wrapper .pto-leave-card {
+        gap: 0.8rem;
+        width: 100%;
+        padding: 1rem;
+        overflow: hidden;
+    }
+
+    .pto-team-wrapper .pto-leave-info {
+        width: 100%;
+        align-items: flex-start;
+        gap: 0.7rem;
+    }
+
+    .pto-team-wrapper .pto-leave-type-dot {
+        margin-top: 0.45rem;
+    }
+
+    .pto-team-wrapper .pto-leave-details {
+        flex: 1 1 auto;
+        width: calc(100% - 18px);
+        overflow: hidden;
+    }
+
+    .pto-team-wrapper .pto-team-employee {
+        align-items: flex-start;
+    }
+
+    .pto-team-wrapper .pto-team-employee strong {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    .pto-team-wrapper .pto-leave-description {
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .pto-team-wrapper .pto-approval-current {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        line-height: 1.5;
+    }
+
+    .pto-team-wrapper .pto-approval-current small {
+        width: 100%;
+        padding-inline-start: 1.25rem;
+    }
+
     .pto-leave-meta {
         width: 100%;
         justify-content: space-between;
+    }
+
+    .pto-team-wrapper .pto-leave-meta {
+        flex-wrap: wrap;
+        gap: 0.65rem;
+        padding-top: 0.8rem;
+        border-top: 1px solid var(--pto-card-border);
     }
 
     .pto-team-actions {
@@ -1030,6 +1091,12 @@
 
     .pto-team-actions small {
         text-align: start;
+    }
+
+    .pto-team-actions .pto-team-approve,
+    .pto-team-actions .pto-team-refuse {
+        flex: 1 1 calc(50% - 0.25rem);
+        min-height: 42px;
     }
 
     .pto-form-row {
@@ -1044,5 +1111,51 @@
         left: 1rem;
         right: 1rem;
         max-width: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .pto-team-wrapper {
+        padding: 0.75rem;
+        border-radius: 12px;
+    }
+
+    .pto-team-wrapper .pto-header {
+        margin-bottom: 1.25rem;
+    }
+
+    .pto-team-wrapper .pto-header h2 {
+        font-size: 1.18rem;
+        line-height: 1.45;
+    }
+
+    .pto-team-wrapper .pto-header .pto-btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .pto-team-wrapper .pto-policy-note {
+        margin-top: -0.4rem;
+        font-size: 0.78rem;
+        line-height: 1.65;
+    }
+
+    .pto-team-wrapper .pto-filters {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pto-team-wrapper .pto-filter-btn {
+        width: 100%;
+        padding-inline: 0.5rem;
+    }
+
+    .pto-team-wrapper .pto-leave-dates {
+        gap: 0.35rem;
+        font-size: 0.76rem;
+    }
+
+    .pto-team-wrapper .pto-approval-step {
+        font-size: 0.68rem;
     }
 }

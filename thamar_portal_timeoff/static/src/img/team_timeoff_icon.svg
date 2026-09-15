@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
-  <title id="title">إدارة إجازات الفريق</title>
+  <title id="title">إدارة إجازات وتكليفات الفريق</title>
   <circle cx="24" cy="22" r="9" fill="#a58b64"/>
   <circle cx="45" cy="25" r="7" fill="#c8ad82"/>
   <path d="M7 52c1-11 8-17 17-17s16 6 17 17" fill="#fffdf9" stroke="#826b49" stroke-width="3" stroke-linecap="round"/>

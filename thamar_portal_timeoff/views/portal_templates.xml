@@ -53,9 +53,30 @@
                 class="nav-item thamar-portal-nav-item">
                 <a href="/my/team/timeoff" class="nav-link thamar-portal-nav-link">
                     <i class="fa fa-users" aria-hidden="true"/>
-                    <span>إدارة إجازات الفريق</span>
+                    <span>إدارة إجازات وتكليفات الفريق</span>
                 </a>
             </li>
+        </xpath>
+        <xpath expr="//nav[hasclass('navbar')]" position="after">
+            <nav t-if="not request.env.user._is_public()" class="thamar-mobile-nav"
+                 aria-label="قائمة بوابة الموظف">
+                <a href="/my/home" t-attf-class="#{'active' if page_name == 'home' else ''}">
+                    <i class="fa fa-home" aria-hidden="true"/><span>الرئيسية</span>
+                </a>
+                <a href="/my/employee" t-attf-class="#{'active' if page_name == 'employee' else ''}">
+                    <i class="fa fa-user" aria-hidden="true"/><span>ملفي</span>
+                </a>
+                <a href="/my/timeoff" t-attf-class="#{'active' if page_name == 'timeoff' else ''}">
+                    <i class="fa fa-calendar-check-o" aria-hidden="true"/><span>الإجازات</span>
+                </a>
+                <a href="/my/assignments" t-attf-class="#{'active' if page_name == 'assignments' else ''}">
+                    <i class="fa fa-clipboard" aria-hidden="true"/><span>التكليفات</span>
+                </a>
+                <a t-if="request.env['hr.leave']._portal_can_manage_team()" href="/my/team/timeoff"
+                   t-attf-class="#{'active' if page_name == 'team_timeoff' else ''}">
+                    <i class="fa fa-users" aria-hidden="true"/><span>الفريق</span>
+                </a>
+            </nav>
         </xpath>
     </template>
 
@@ -129,7 +150,7 @@
         <div id="portal_client_category" position="inside">
             <t t-if="can_manage_team" t-call="portal.portal_docs_entry">
                 <t t-set="icon" t-value="'/thamar_portal_timeoff/static/src/img/team_timeoff_icon.svg'"/>
-                <t t-set="title">إدارة إجازات الفريق</t>
+                <t t-set="title">إدارة إجازات وتكليفات الفريق</t>
                 <t t-set="url" t-value="'/my/team/timeoff'"/>
                 <t t-set="text">متابعة واعتماد طلبات موظفي الأقسام المسؤول عنها</t>
                 <t t-set="placeholder_count" t-value="'team_leave_count'"/>
@@ -195,7 +216,7 @@
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
 
             <t t-call="portal.portal_searchbar">
-                <t t-set="title">إدارة إجازات الفريق</t>
+                <t t-set="title">إدارة إجازات وتكليفات الفريق</t>
             </t>
 
             <div class="o_portal_team_timeoff_app" t-att-data-manager-name="employee_name">
@@ -220,7 +241,7 @@
                 التكليفات
             </li>
             <li t-if="page_name == 'team_timeoff'" class="breadcrumb-item active">
-                إدارة إجازات الفريق
+                إدارة إجازات وتكليفات الفريق
             </li>
         </xpath>
     </template>
