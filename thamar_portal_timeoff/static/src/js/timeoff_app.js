@@ -17,7 +17,6 @@ export class TimeOffApp extends Component {
     static props = {
         employeeId: { type: Number, optional: true },
         employeeName: { type: String, optional: true },
-        requestKind: { type: String, optional: true },
     };
 
     setup() {
@@ -38,13 +37,12 @@ export class TimeOffApp extends Component {
 
     async loadData() {
         try {
-            const data = await timeoffService.fetchData(this.state.filter, this.props.requestKind);
+            const data = await timeoffService.fetchData(this.state.filter);
             this.state.leaves = data.leaves || [];
             this.state.balances = data.balances || [];
             this.state.leaveTypes = data.leave_types || [];
         } catch (e) {
-            const itemName = this.props.requestKind === 'assignment' ? 'التكليفات' : 'الإجازات';
-            this.showToast('error', `تعذر تحميل بيانات ${itemName}.`);
+            this.showToast('error', 'تعذر تحميل بيانات الإجازات.');
             console.error(e);
         }
     }
@@ -152,7 +150,6 @@ export class TimeOffAppInteraction extends Interaction {
         }
 
         const employeeName = this.el.dataset.employeeName || '';
-        const requestKind = this.el.dataset.requestKind || 'timeoff';
         
         // Remove loading state
         const loadingEl = this.el.querySelector(".pto-loading");
@@ -162,7 +159,7 @@ export class TimeOffAppInteraction extends Interaction {
 
         // Mount the OWL component
         this.env.config = { ...this.env.config, isPortal: true };
-        this.mountComponent(this.el, TimeOffApp, { employeeId, employeeName, requestKind });
+        this.mountComponent(this.el, TimeOffApp, { employeeId, employeeName });
     }
 }
 

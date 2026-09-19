@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+a_overtime_user,Overtime user,model_thamar_overtime_request,group_overtime_user,1,0,0,0
+a_overtime_manager,Overtime manager,model_thamar_overtime_request,group_overtime_manager,1,1,1,1
+a_overtime_hr_admin,Overtime HR administrator,model_thamar_overtime_request,group_overtime_hr_admin,1,1,1,1
+a_overtime_portal,Overtime portal read,model_thamar_overtime_request,base.group_portal,1,0,0,0

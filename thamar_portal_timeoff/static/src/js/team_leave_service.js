@@ -14,7 +14,7 @@ export const teamLeaveService = {
         });
     },
 
-    createAssignment(values) {
-        return rpc("/my/team/assignments/create", values);
+    createLeave(values) {
+        return rpc("/my/team/timeoff/create", values);
     },
 };

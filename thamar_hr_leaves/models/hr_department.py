@@ -26,6 +26,6 @@ class HrDepartment(models.Model):
             old_employee = department._origin[field_name]
             new_employee = department[field_name]
             if old_employee and old_employee.user_id:
-                old_employee.user_id.write({'groups_id': [(3, approver_group.id)] + [(3, group.id) for group in time_off_groups]})
+                old_employee.user_id.write({'group_ids': [(3, approver_group.id)] + [(3, group.id) for group in time_off_groups]})
             if new_employee and new_employee.user_id:
-                new_employee.user_id.write({'groups_id': [(4, approver_group.id)] + [(3, group.id) for group in time_off_groups]})
+                new_employee.user_id.write({'group_ids': [(4, approver_group.id)] + [(3, group.id) for group in time_off_groups]})

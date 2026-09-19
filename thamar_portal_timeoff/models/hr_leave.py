@@ -155,7 +155,6 @@ class HrLeave(models.Model):
             'leave_type': self.holiday_status_id.name,
             'leave_type_id': self.holiday_status_id.id,
             'leave_type_color': self.holiday_status_id.color,
-            'is_assignment': self.holiday_status_id.manager_only_requests,
             'date_from': fields.Date.to_string(self.request_date_from) if self.request_date_from else '',
             'date_to': fields.Date.to_string(self.request_date_to) if self.request_date_to else '',
             'duration': self.number_of_days,
@@ -170,14 +169,10 @@ class HrLeave(models.Model):
         return payload
 
     @api.model
-    def _portal_get_leaves(self, employee_id, status_filter='all', request_kind='timeoff'):
+    def _portal_get_leaves(self, employee_id, status_filter='all'):
         """Return formatted leave data for the portal interface."""
         employee = self._portal_employee(employee_id)
-        is_assignment = request_kind == 'assignment'
-        domain = [
-            ('employee_id', '=', employee.id),
-            ('holiday_status_id.manager_only_requests', '=', is_assignment),
-        ]
+        domain = [('employee_id', '=', employee.id)]
         if status_filter == 'pending':
             domain.append(('state', 'in', ['confirm', 'validate1']))
         elif status_filter == 'approved':
@@ -249,8 +244,9 @@ class HrLeave(models.Model):
         return result
 
     @api.model
-    def _portal_get_assignment_employees(self):
-        departments = self._portal_managed_departments(manager_only=True)
+    def _portal_get_team_leave_employees(self):
+        """Employees for whom the current department approver may create leave."""
+        departments = self._portal_managed_departments()
         if not departments:
             return []
         employees = self.env['hr.employee'].sudo().search([
@@ -258,23 +254,28 @@ class HrLeave(models.Model):
             ('department_id', 'in', departments.ids),
             ('user_id', '!=', self.env.user.id),
         ], order='name, id')
-        return [{
-            'id': employee.id,
-            'name': employee.name,
-            'department': employee.department_id.name or '',
-        } for employee in employees]
+        result = []
+        for employee in employees:
+            leave_types = self._portal_available_leave_types(employee)
+            result.append({
+                'id': employee.id,
+                'name': employee.name,
+                'department': employee.department_id.name or '',
+                'leave_type_ids': leave_types.ids,
+            })
+        return result
 
     @api.model
-    def _portal_get_assignment_types(self):
-        departments = self._portal_managed_departments(manager_only=True)
-        company_ids = departments.mapped('company_id').ids
-        if not departments:
-            return []
-        leave_types = self.env['hr.leave.type'].sudo().search([
-            ('active', '=', True),
-            ('manager_only_requests', '=', True),
-            ('company_id', 'in', [False, *company_ids]),
-        ], order='sequence, id')
+    def _portal_get_team_leave_types(self, employees):
+        """Return the employee-requestable leave types used by the team form."""
+        type_ids = {
+            leave_type_id
+            for employee in employees
+            for leave_type_id in employee.get('leave_type_ids', [])
+        }
+        leave_types = self.env['hr.leave.type'].sudo().browse(list(type_ids)).exists().sorted(
+            key=lambda leave_type: (leave_type.sequence, leave_type.id)
+        )
         return [{'id': leave_type.id, 'name': leave_type.name} for leave_type in leave_types]
 
     def _portal_apply_team_action(self, action):

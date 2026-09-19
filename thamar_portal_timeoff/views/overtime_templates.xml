@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <template id="overtime_navigation" inherit_id="thamar_portal_timeoff.portal_parent_branding" name="Portal overtime navigation">
+    <xpath expr="//li[a[@href='/my/timeoff']]" position="after">
+      <li t-if="not request.env.user._is_public()" class="nav-item thamar-portal-nav-item">
+        <a href="/my/overtime" class="nav-link thamar-portal-nav-link">
+          <i class="fa fa-clock-o"/>
+          <span>العمل الإضافي</span>
+        </a>
+      </li>
+      <li t-if="not request.env.user._is_public()" class="nav-item thamar-portal-nav-item">
+        <a href="/my/missions" class="nav-link thamar-portal-nav-link">
+          <i class="fa fa-map-marker"/>
+          <span>المأموريات</span>
+        </a>
+      </li>
+    </xpath>
+    <xpath expr="//nav[hasclass('thamar-mobile-nav')]/a[@href='/my/timeoff']" position="after">
+      <a href="/my/overtime" t-attf-class="#{'active' if page_name == 'overtime' else ''}">
+        <i class="fa fa-clock-o"/>
+        <span>الإضافي</span>
+      </a>
+      <a href="/my/missions" t-attf-class="#{'active' if page_name == 'missions' else ''}">
+        <i class="fa fa-map-marker"/>
+        <span>المأموريات</span>
+      </a>
+    </xpath>
+  </template>
+  <template id="overtime_home" inherit_id="portal.portal_my_home" name="Portal overtime card">
+    <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+      <div class="card my-3">
+        <a href="/my/overtime" class="card-body text-decoration-none">
+          <h5><i class="fa fa-clock-o me-2"/>العمل الإضافي</h5>
+          <p class="mb-0">عرض طلبات العمل الإضافي وحالة موافقاتها</p>
+        </a>
+      </div>
+    </xpath>
+  </template>
+  <template id="missions_home" inherit_id="portal.portal_my_home" name="Portal missions card">
+    <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+      <div class="card my-3">
+        <a href="/my/missions" class="card-body text-decoration-none">
+          <h5><i class="fa fa-map-marker me-2"/>المأموريات</h5>
+          <p class="mb-0">عرض المأموريات وساعاتها وحالة موافقاتها</p>
+        </a>
+      </div>
+    </xpath>
+  </template>
+  <template id="portal_overtime" name="طلبات العمل الإضافي">
+    <t t-call="portal.portal_layout">
+      <div class="container py-4 o_portal_overtime_app pto-team-wrapper" dir="rtl">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+          <h2 t-out="portal_title"/>
+          <div class="d-flex align-items-center flex-wrap gap-2">
+            <a t-att-href="portal_base_url" t-attf-class="btn #{'btn-outline-primary' if overtime_team else 'btn-primary'}">طلباتي</a>
+            <a t-if="can_create_overtime" t-att-href="portal_base_url + '?scope=team'" t-attf-class="btn #{'btn-primary' if overtime_team else 'btn-outline-primary'}">طلبات القسم</a>
+            <button t-if="overtime_team and can_create_overtime" type="button"
+                    class="btn btn-success" data-bs-toggle="collapse"
+                    t-att-data-bs-target="'#create-' + request_category"
+                    t-att-aria-controls="'create-' + request_category"
+                    t-att-aria-expanded="'true' if overtime_error else 'false'">
+              <i class="fa fa-plus me-1"/>
+              إنشاء <t t-out="portal_singular"/>
+            </button>
+          </div>
+        </div>
+        <div t-if="overtime_error" class="alert alert-danger" role="alert">
+          <t t-out="overtime_error"/>
+        </div>
+        <div t-if="overtime_team and can_create_overtime"
+             t-att-id="'create-' + request_category"
+             t-attf-class="collapse #{'show' if overtime_error else ''}">
+          <div class="card mb-4">
+            <div class="card-body">
+            <h4>إنشاء <t t-out="portal_singular"/></h4>
+            <p t-if="request_category == 'mission'" class="text-muted">يمر الطلب بموافقة مشرف القسم ثم رئيس القسم. أول 8 ساعات بسعر الساعة العادي، وما يزيد يُحسب كعمل إضافي. كل الأوقات بتوقيت تقويم الموظف المحدد.</p>
+            <p t-else="" class="text-muted">يمر الطلب بموافقة مشرف القسم ثم رئيس القسم. كل الأوقات بتوقيت تقويم الموظف المحدد.</p>
+            <form action="/my/overtime/create" method="post" class="row g-3">
+              <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+              <input type="hidden" name="request_category" t-att-value="request_category"/>
+              <div class="col-md-6">
+                <label for="ot_employee" class="form-label">الموظف وتوقيته</label>
+                <select id="ot_employee" name="employee_id" class="form-select" required="required">
+                  <option value="">اختر الموظف</option>
+                  <option t-foreach="overtime_employees" t-as="employee" t-att-value="employee.id" t-att-selected="str(employee.id) == overtime_form.get('employee_id')"><t t-out="employee.name"/> — <t t-out="employee.resource_calendar_id.tz or employee.company_id.resource_calendar_id.tz or 'UTC'"/></option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="ot_kind" class="form-label">نوع <t t-out="portal_singular"/></label>
+                <select id="ot_kind" name="kind" class="form-select" required="required">
+                  <option t-foreach="overtime_kinds.items()" t-as="item" t-att-value="item[0]" t-att-selected="item[0] == overtime_form.get('kind')">
+                    <t t-out="item[1]"/>
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="ot_start" class="form-label">البداية</label>
+                <div class="input-group">
+                  <input id="ot_start" type="date" name="date_start_date" t-att-value="overtime_start_date" class="form-control" required="required"/>
+                  <select name="date_start_hour" class="form-select" required="required" aria-label="ساعة البداية">
+                    <option value="">الساعة</option>
+                    <option t-foreach="range(24)" t-as="hour" t-att-value="'%02d' % hour" t-att-selected="'%02d' % hour == overtime_start_hour"><t t-out="'%02d' % hour"/></option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="ot_stop" class="form-label">النهاية</label>
+                <div class="input-group">
+                  <input id="ot_stop" type="date" name="date_stop_date" t-att-value="overtime_stop_date" class="form-control" required="required"/>
+                  <select name="date_stop_hour" class="form-select" required="required" aria-label="ساعة النهاية">
+                    <option value="">الساعة</option>
+                    <option t-foreach="range(24)" t-as="hour" t-att-value="'%02d' % hour" t-att-selected="'%02d' % hour == overtime_stop_hour"><t t-out="'%02d' % hour"/></option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-12">
+                <label for="ot_reason" class="form-label">سبب <t t-out="portal_singular"/></label>
+                <textarea id="ot_reason" name="reason" t-out="overtime_form.get('reason', '')" class="form-control" required="required" maxlength="2000"/>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">إنشاء وإرسال للمشرف</button>
+              </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div t-if="not overtime_records" class="pto-empty">
+          <div class="pto-empty-icon">
+            <i t-attf-class="fa #{'fa-map-marker' if request_category == 'mission' else 'fa-clock-o'}"/>
+          </div>
+          <h3>لا توجد طلبات</h3>
+          <p>لا توجد <t t-out="portal_title"/> ضمن هذا التصنيف.</p>
+        </div>
+        <div t-else="" class="pto-leaves-grid">
+          <div t-foreach="overtime_records" t-as="rec" class="pto-leave-card">
+            <div class="pto-leave-info">
+              <div class="pto-leave-type-dot" t-att-data-color="rec.id % 8"/>
+              <div class="pto-leave-details">
+                <div class="pto-team-employee">
+                  <i class="fa fa-user-circle" aria-hidden="true"/>
+                  <strong t-out="rec.employee_id.name"/>
+                  <span t-out="rec.department_id.name"/>
+                </div>
+                <div class="pto-leave-type-name">
+                  <t t-out="overtime_kinds[rec.kind]"/>
+                  <span class="pto-kind-badge leave" t-out="rec.name"/>
+                </div>
+                <div class="pto-leave-description" t-out="rec.reason"/>
+                <div class="pto-leave-dates">
+                  <i class="fa fa-calendar" aria-hidden="true"/>
+                  <span t-out="overtime_datetime(rec.date_start)"/>
+                  <i class="fa fa-arrow-left" aria-hidden="true"/>
+                  <span t-out="overtime_datetime(rec.date_stop)"/>
+                </div>
+                <div class="pto-overtime-timezone">
+                  <i class="fa fa-globe" aria-hidden="true"/>
+                  توقيت العرض: <t t-out="request.env.user.tz or 'UTC'"/>
+                </div>
+              </div>
+            </div>
+            <div class="pto-leave-meta">
+              <span class="pto-leave-duration"><t t-out="'%.2f' % rec.duration"/> ساعة</span>
+              <span t-attf-class="pto-status #{'validate' if rec.state == 'approved' else 'refuse' if rec.state == 'refused' else 'cancel' if rec.state == 'cancel' else 'confirm'}"
+                    t-out="overtime_states[rec.state]"/>
+              <form t-if="overtime_team and rec._is_department_approver()"
+                    action="/my/overtime/action" method="post" class="pto-team-actions">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="request_category" t-att-value="request_category"/>
+                <input type="hidden" name="overtime_id" t-att-value="rec.id"/>
+                <t t-if="rec._approval_role()">
+                  <button name="action" value="approve" class="pto-team-approve">
+                    <i class="fa fa-check"/> موافقة
+                  </button>
+                  <button name="action" value="refuse" class="pto-team-refuse">
+                    <i class="fa fa-times"/> رفض
+                  </button>
+                </t>
+                <button t-if="rec.state in ['draft', 'supervisor', 'manager', 'approved']"
+                        name="action" value="cancel" class="pto-btn-secondary pto-overtime-cancel">
+                  إلغاء
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <t t-call="portal.pager"/>
+      </div>
+    </t>
+  </template>
+</odoo>

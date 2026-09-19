@@ -15,7 +15,7 @@ class ResCompany(models.Model):
                 old_manager = company._origin.clinical_manager_id
                 new_manager = company.clinical_manager_id
                 if old_manager and old_manager.user_id:
-                    old_manager.user_id.write({'groups_id': [(3, clinical_group.id)]})
+                    old_manager.user_id.write({'group_ids': [(3, clinical_group.id)]})
                 if new_manager and new_manager.user_id:
-                    new_manager.user_id.write({'groups_id': [(4, clinical_group.id)]})
+                    new_manager.user_id.write({'group_ids': [(4, clinical_group.id)]})
         return res

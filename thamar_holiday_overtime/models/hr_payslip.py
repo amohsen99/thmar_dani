@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, time, timedelta
+from calendar import monthrange
 
 import pytz
 
@@ -135,12 +136,12 @@ class HrPayslip(models.Model):
 
         while current_date <= last_date:
             day_begin = tz.localize(datetime.combine(current_date, time.min))
-            day_end = tz.localize(
+            next_day = tz.localize(
                 datetime.combine(current_date + timedelta(days=1), time.min))
 
             # Clip this day's segment to the actual leave period
             seg_start = max(start_local, day_begin)
-            seg_end = min(end_local, day_end)
+            seg_end = min(end_local, next_day)
 
             if seg_start >= seg_end:
                 current_date += timedelta(days=1)
@@ -166,3 +167,36 @@ class HrPayslip(models.Model):
             current_date += timedelta(days=1)
 
         return round(total_day, 4), round(total_night, 4)
+
+    def _get_thamar_overtime_amount(self, category, salary):
+        """Only approved requests with live work entries feed the new salary rules.
+
+        Work entry rates are zero: this allowance is the single monetary source.
+        Legacy leave-based overtime remains on its original, separate rules.
+        """
+        self.ensure_one()
+        entries = self.env['hr.work.entry'].search([
+            ('employee_id', '=', self.employee_id.id),
+            ('company_id', '=', self.company_id.id),
+            ('date', '>=', self.date_from), ('date', '<=', self.date_to),
+            ('state', 'in', ['draft', 'validated']),
+            ('overtime_request_id.state', '=', 'approved'),
+            ('overtime_category', '=', category),
+        ])
+        result = 0.0
+        for entry in entries:
+            hours_per_day = entry.version_id.resource_calendar_id.hours_per_day
+            if hours_per_day <= 0:
+                from odoo.exceptions import UserError
+                raise UserError(self.env._('يجب تحديد ساعات يوم العمل في تقويم الموظف.'))
+            # Keep BASIC + BASICALW as the established salary basis, using actual
+            # calendar-month days so partial payslips do not inflate the rate.
+            daily = salary / monthrange(entry.date.year, entry.date.month)[1]
+            hourly = daily / hours_per_day
+            if entry.version_id.wage_type == 'hourly':
+                hourly = entry.version_id.hourly_wage
+                daily = hourly * hours_per_day
+            quantity = 1 if category == 'holiday_day' else entry.duration
+            rate = daily if category == 'holiday_day' else hourly
+            result += quantity * rate * entry.overtime_multiplier
+        return result

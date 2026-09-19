@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <record id="overtime_privilege" model="res.groups.privilege">
+    <field name="name">العمل الإضافي والمأموريات</field>
+    <field name="sequence">17</field>
+    <field name="category_id" ref="base.module_category_human_resources"/>
+  </record>
+  <record id="group_overtime_user" model="res.groups">
+    <field name="name">مستخدم</field>
+    <field name="sequence">10</field>
+    <field name="privilege_id" ref="overtime_privilege"/>
+    <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    <field name="comment">يرى طلبات العمل الإضافي والمأموريات الخاصة به فقط.</field>
+  </record>
+  <record id="group_overtime_manager" model="res.groups">
+    <field name="name">مدير</field>
+    <field name="sequence">20</field>
+    <field name="privilege_id" ref="overtime_privilege"/>
+    <field name="implied_ids" eval="[(4, ref('thamar_holiday_overtime.group_overtime_user'))]"/>
+    <field name="comment">يرى طلبات موظفي الأقسام التي يشرف عليها أو يديرها، وينشئ الطلبات ويعتمد مرحلته.</field>
+  </record>
+  <record id="group_overtime_hr_admin" model="res.groups">
+    <field name="name">مسؤول الموارد البشرية</field>
+    <field name="sequence">30</field>
+    <field name="privilege_id" ref="overtime_privilege"/>
+    <field name="implied_ids" eval="[(4, ref('thamar_holiday_overtime.group_overtime_manager')), (4, ref('hr.group_hr_manager'))]"/>
+    <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    <field name="comment">يرى جميع الطلبات ويعتمدها نهائياً بعد موافقة المشرف ورئيس القسم.</field>
+  </record>
+  <record id="overtime_company_rule" model="ir.rule">
+    <field name="name">Overtime: allowed companies</field>
+    <field name="model_id" ref="model_thamar_overtime_request"/>
+    <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+  </record>
+  <record id="overtime_internal_rule" model="ir.rule">
+    <field name="name">Overtime: own requests</field>
+    <field name="model_id" ref="model_thamar_overtime_request"/>
+    <field name="groups" eval="[(4, ref('group_overtime_user'))]"/>
+    <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+  </record>
+  <record id="overtime_manager_rule" model="ir.rule">
+    <field name="name">Overtime: managed departments</field>
+    <field name="model_id" ref="model_thamar_overtime_request"/>
+    <field name="groups" eval="[(4, ref('group_overtime_manager'))]"/>
+    <field name="domain_force">['|', ('department_id.supervisor_id.user_id', '=', user.id), ('department_id.manager_id.user_id', '=', user.id)]</field>
+  </record>
+  <record id="overtime_hr_admin_rule" model="ir.rule">
+    <field name="name">Overtime: all requests for HR administrator</field>
+    <field name="model_id" ref="model_thamar_overtime_request"/>
+    <field name="groups" eval="[(4, ref('group_overtime_hr_admin'))]"/>
+    <field name="domain_force">[(1, '=', 1)]</field>
+  </record>
+  <record id="overtime_portal_rule" model="ir.rule">
+    <field name="name">Overtime: portal own requests</field>
+    <field name="model_id" ref="model_thamar_overtime_request"/>
+    <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+    <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+  </record>
+  <record id="overtime_payroll_rule" model="ir.rule">
+    <field name="name">Overtime: HR administrator review</field>
+    <field name="model_id" ref="model_thamar_overtime_request"/>
+    <field name="groups" eval="[(4, ref('group_overtime_hr_admin'))]"/>
+    <field name="domain_force">[(1, '=', 1)]</field>
+  </record>
+</odoo>

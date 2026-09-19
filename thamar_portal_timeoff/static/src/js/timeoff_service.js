@@ -9,9 +9,8 @@ export const timeoffService = {
     /**
      * Fetch all data: leaves, balances, leave types.
      */
-    async fetchData(statusFilter = 'all', requestKind = 'timeoff') {
-        const route = requestKind === 'assignment' ? '/my/assignments/data' : '/my/timeoff/data';
-        return rpc(route, { status_filter: statusFilter });
+    async fetchData(statusFilter = 'all') {
+        return rpc('/my/timeoff/data', { status_filter: statusFilter });
     },
 
     /**

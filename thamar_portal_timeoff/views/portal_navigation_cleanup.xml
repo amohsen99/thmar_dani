@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_navigation_remove_legacy_assignments"
+              name="Portal: Remove Legacy Assignments Navigation Hook"
+              inherit_id="thamar_portal_timeoff.portal_parent_branding"
+              priority="999">
+        <xpath expr="//li[hasclass('thamar-legacy-assignments-hook')]" position="replace"/>
+        <xpath expr="//nav[hasclass('thamar-mobile-nav')]/a[hasclass('thamar-legacy-assignments-hook')]"
+               position="replace"/>
+    </template>
+
+    <!-- Explicit record updates are required on existing databases: the
+         template shorthand's active flag is not reapplied consistently when
+         a previously active inherited QWeb view is upgraded. -->
+    <record id="portal_my_home_assignments" model="ir.ui.view">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="portal_assignments_page" model="ir.ui.view">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="portal_my_home_team_timeoff" model="ir.ui.view">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="portal_team_timeoff_page" model="ir.ui.view">
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

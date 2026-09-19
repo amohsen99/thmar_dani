@@ -9,12 +9,10 @@
             <!-- Header -->
             <div class="pto-header">
                 <h2>
-                    <i t-attf-class="fa {{ props.requestKind === 'assignment' ? 'fa-clipboard' : 'fa-sun-o' }} me-2"
-                       style="color: var(--pto-primary);"/>
-                    <span t-if="props.requestKind === 'assignment'">تكليفاتي</span>
-                    <span t-else="">إجازاتي</span>
+                    <i class="fa fa-sun-o me-2" style="color: var(--pto-primary);"/>
+                    <span>إجازاتي</span>
                 </h2>
-                <button t-if="props.requestKind !== 'assignment'" class="pto-btn-primary" t-on-click="onNewRequest">
+                <button class="pto-btn-primary" t-on-click="onNewRequest">
                     <i class="fa fa-plus"/>
                     طلب إجازة
                 </button>
@@ -22,22 +20,16 @@
 
             <div class="pto-policy-note">
                 <i class="fa fa-shield me-2"/>
-                <t t-if="props.requestKind === 'assignment'">
-                    هذه التكليفات ينشئها المدير لتسجيل العمل الإضافي، ويمكنك متابعتها وحالتها من هنا.
-                </t>
-                <t t-else="">
-                    بعض أنواع الإجازات لا يمكن تقديمها إلا بواسطة مديرك أو إدارة الموارد البشرية.
-                </t>
+                تعرض هذه الشاشة جميع طلباتك، وبعض الأنواع لا يمكن إنشاؤها إلا بواسطة مديرك أو إدارة الموارد البشرية.
             </div>
 
             <!-- Stats -->
-            <TimeOffStats t-if="props.requestKind !== 'assignment'" balances="state.balances"/>
+            <TimeOffStats balances="state.balances"/>
 
             <!-- Filters -->
             <TimeOffList
                 leaves="state.leaves"
                 filter="state.filter"
-                requestKind="props.requestKind || 'timeoff'"
                 onFilterChange.bind="onFilterChange"
                 onEdit.bind="onEdit"
                 onDelete.bind="onDelete"/>
@@ -174,16 +166,9 @@
 
         <!-- Empty State -->
         <div class="pto-empty" t-if="!props.leaves.length">
-            <t t-if="props.requestKind === 'assignment'">
-                <div class="pto-empty-icon"><i class="fa fa-clipboard"/></div>
-                <h3>لا توجد تكليفات</h3>
-                <p>لم يسجل مديرك أي تكليف عمل إضافي لك حتى الآن.</p>
-            </t>
-            <t t-else="">
-                <div class="pto-empty-icon">🏖️</div>
-                <h3>لا توجد طلبات إجازة</h3>
-                <p>لم تقدم أي طلب إجازة حتى الآن.<br/>اضغط على «طلب إجازة» للبدء.</p>
-            </t>
+            <div class="pto-empty-icon">🏖️</div>
+            <h3>لا توجد طلبات</h3>
+            <p>لا توجد طلبات إجازة أو أنواع أخرى مسجلة لك حتى الآن.<br/>اضغط على «طلب إجازة» للبدء.</p>
         </div>
     </t>
 
@@ -273,12 +258,12 @@
             <div class="pto-header">
                 <h2>
                     <i class="fa fa-users me-2" style="color: var(--pto-primary);"/>
-                    <span>إدارة إجازات وتكليفات الفريق</span>
+                    <span>إجازات الفريق</span>
                 </h2>
-                <button t-if="state.canCreateAssignments" class="pto-btn-primary"
-                        t-on-click="openAssignmentForm">
-                    <i class="fa fa-clipboard"/>
-                    إنشاء تكليف
+                <button t-if="state.canCreateLeaves" class="pto-btn-primary"
+                        t-on-click="openLeaveForm">
+                    <i class="fa fa-calendar-plus-o"/>
+                    إنشاء إجازة
                 </button>
             </div>
 
@@ -324,8 +309,7 @@
                                 </div>
                                 <div class="pto-leave-type-name">
                                     <t t-esc="leave.leave_type"/>
-                                    <span t-if="leave.is_assignment" class="pto-kind-badge assignment">تكليف</span>
-                                    <span t-else="" class="pto-kind-badge leave">إجازة</span>
+                                    <span class="pto-kind-badge leave">إجازة</span>
                                 </div>
                                 <div class="pto-leave-dates">
                                     <i class="fa fa-calendar"/>
@@ -374,11 +358,11 @@
                 <p>ستظهر هنا طلبات موظفي الأقسام التي تديرها أو تشرف عليها.</p>
             </div>
 
-            <div class="pto-form-overlay" t-if="state.showAssignmentForm" t-on-click.self="closeAssignmentForm">
+            <div class="pto-form-overlay" t-if="state.showLeaveForm" t-on-click.self="closeLeaveForm">
                 <div class="pto-form-panel">
                     <div class="pto-form-title">
-                        <span><i class="fa fa-clipboard me-2"/>إنشاء تكليف عمل إضافي</span>
-                        <button class="pto-form-close" t-on-click="closeAssignmentForm"><i class="fa fa-times"/></button>
+                        <span><i class="fa fa-calendar-plus-o me-2"/>إنشاء إجازة لموظف</span>
+                        <button class="pto-form-close" t-on-click="closeLeaveForm"><i class="fa fa-times"/></button>
                     </div>
                     <div class="pto-form-error" t-if="state.error">
                         <i class="fa fa-exclamation-triangle me-2"/><t t-esc="state.error"/>
@@ -396,12 +380,12 @@
                         </select>
                     </div>
                     <div class="pto-form-group">
-                        <label class="pto-form-label">نوع التكليف</label>
+                        <label class="pto-form-label">نوع الإجازة</label>
                         <select class="pto-form-select" t-att-value="state.form.leave_type_id"
                                 t-on-change="(ev) => this.onFormField('leave_type_id', ev)">
-                            <option value="">-- اختر نوع التكليف --</option>
-                            <t t-foreach="state.assignmentTypes" t-as="assignmentType" t-key="assignmentType.id">
-                                <option t-att-value="assignmentType.id" t-esc="assignmentType.name"/>
+                            <option value="">-- اختر نوع الإجازة --</option>
+                            <t t-foreach="availableLeaveTypes" t-as="leaveType" t-key="leaveType.id">
+                                <option t-att-value="leaveType.id" t-esc="leaveType.name"/>
                             </t>
                         </select>
                     </div>
@@ -418,16 +402,16 @@
                         </div>
                     </div>
                     <div class="pto-form-group">
-                        <label class="pto-form-label">تفاصيل التكليف (اختياري)</label>
+                        <label class="pto-form-label">سبب الإجازة (اختياري)</label>
                         <textarea class="pto-form-textarea" maxlength="500" placeholder="وصف العمل الإضافي..."
                                   t-att-value="state.form.description"
                                   t-on-input="(ev) => this.onFormField('description', ev)"/>
                     </div>
                     <div class="pto-form-actions">
-                        <button class="pto-btn-secondary" t-on-click="closeAssignmentForm">إلغاء</button>
-                        <button class="pto-btn-primary" t-on-click="createAssignment" t-att-disabled="state.submitting">
+                        <button class="pto-btn-secondary" t-on-click="closeLeaveForm">إلغاء</button>
+                        <button class="pto-btn-primary" t-on-click="createLeave" t-att-disabled="state.submitting">
                             <i t-attf-class="fa {{ state.submitting ? 'fa-spinner fa-spin' : 'fa-check' }}"/>
-                            حفظ التكليف
+                            إنشاء الإجازة
                         </button>
                     </div>
                 </div>
