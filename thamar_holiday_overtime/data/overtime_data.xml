@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <data noupdate="1">
+    <record id="sequence_overtime" model="ir.sequence">
+      <field name="name">Overtime Request</field>
+      <field name="code">thamar.overtime.request</field>
+      <field name="prefix">OT/%(year)s/</field>
+      <field name="padding">5</field>
+    </record>
+    <record id="work_entry_mission_regular" model="hr.work.entry.type">
+      <field name="name">مأمورية — ساعات عادية</field>
+      <field name="code">TH_MISSION_REGULAR</field>
+      <field name="is_extra_hours" eval="True"/>
+      <field name="amount_rate">0</field>
+      <field name="color">4</field>
+    </record>
+    <record id="salary_rule_mission_regular" model="hr.salary.rule">
+      <field name="name">مأمورية — ساعات عادية</field>
+      <field name="code">TH_MISSION_REGULAR</field>
+      <field name="category_id" ref="hr_payroll.ALW"/>
+      <field name="sequence">54</field>
+      <field name="struct_id" ref="hr_payroll.structure_002"/>
+      <field name="condition_select">none</field>
+      <field name="amount_select">code</field>
+      <field name="amount_python_compute">result = payslip._get_thamar_overtime_amount('mission_regular', categories['BASIC'] + categories['BASICALW'])</field>
+    </record>
+    <record id="work_entry_day" model="hr.work.entry.type">
+      <field name="name">إضافي نهاري</field>
+      <field name="code">TH_OT_DAY</field>
+      <field name="is_extra_hours" eval="True"/>
+      <field name="amount_rate">0</field>
+      <field name="color">8</field>
+    </record>
+    <record id="salary_rule_request_day" model="hr.salary.rule">
+      <field name="name">إضافي نهاري — طلبات معتمدة</field>
+      <field name="code">TH_OT_DAY</field>
+      <field name="category_id" ref="hr_payroll.ALW"/>
+      <field name="sequence">55</field>
+      <field name="struct_id" ref="hr_payroll.structure_002"/>
+      <field name="condition_select">none</field>
+      <field name="amount_select">code</field>
+      <field name="amount_python_compute">result = payslip._get_thamar_overtime_amount('day', categories['BASIC'] + categories['BASICALW'])</field>
+    </record>
+    <record id="work_entry_night" model="hr.work.entry.type">
+      <field name="name">إضافي مسائي</field>
+      <field name="code">TH_OT_NIGHT</field>
+      <field name="is_extra_hours" eval="True"/>
+      <field name="amount_rate">0</field>
+      <field name="color">8</field>
+    </record>
+    <record id="salary_rule_request_night" model="hr.salary.rule">
+      <field name="name">إضافي مسائي — طلبات معتمدة</field>
+      <field name="code">TH_OT_NIGHT</field>
+      <field name="category_id" ref="hr_payroll.ALW"/>
+      <field name="sequence">56</field>
+      <field name="struct_id" ref="hr_payroll.structure_002"/>
+      <field name="condition_select">none</field>
+      <field name="amount_select">code</field>
+      <field name="amount_python_compute">result = payslip._get_thamar_overtime_amount('night', categories['BASIC'] + categories['BASICALW'])</field>
+    </record>
+    <record id="work_entry_holiday_hours" model="hr.work.entry.type">
+      <field name="name">إضافي ساعات عطلات</field>
+      <field name="code">TH_OT_HOLIDAY_HOURS</field>
+      <field name="is_extra_hours" eval="True"/>
+      <field name="amount_rate">0</field>
+      <field name="color">8</field>
+    </record>
+    <record id="salary_rule_request_holiday_hours" model="hr.salary.rule">
+      <field name="name">إضافي ساعات عطلات — طلبات معتمدة</field>
+      <field name="code">TH_OT_HOLIDAY_HOURS</field>
+      <field name="category_id" ref="hr_payroll.ALW"/>
+      <field name="sequence">57</field>
+      <field name="struct_id" ref="hr_payroll.structure_002"/>
+      <field name="condition_select">none</field>
+      <field name="amount_select">code</field>
+      <field name="amount_python_compute">result = payslip._get_thamar_overtime_amount('holiday_hours', categories['BASIC'] + categories['BASICALW'])</field>
+    </record>
+    <record id="work_entry_holiday_day" model="hr.work.entry.type">
+      <field name="name">تشغيل يوم عطلة</field>
+      <field name="code">TH_OT_HOLIDAY_DAY</field>
+      <field name="is_extra_hours" eval="True"/>
+      <field name="amount_rate">0</field>
+      <field name="color">8</field>
+    </record>
+    <record id="salary_rule_request_holiday_day" model="hr.salary.rule">
+      <field name="name">تشغيل يوم عطلة — طلبات معتمدة</field>
+      <field name="code">TH_OT_HOLIDAY_DAY</field>
+      <field name="category_id" ref="hr_payroll.ALW"/>
+      <field name="sequence">58</field>
+      <field name="struct_id" ref="hr_payroll.structure_002"/>
+      <field name="condition_select">none</field>
+      <field name="amount_select">code</field>
+      <field name="amount_python_compute">result = payslip._get_thamar_overtime_amount('holiday_day', categories['BASIC'] + categories['BASICALW'])</field>
+    </record>
+  </data>
+</odoo>

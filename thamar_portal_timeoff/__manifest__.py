@@ -18,27 +18,25 @@ Features:
     """,
     'author': 'Thamar',
     'category': 'Human Resources',
-    'version': '19.0.2.6.2',
+    'version': '19.0.2.12.0',
     'license': 'Other proprietary',
     'depends': [
         'portal',
         'thamar_hr_leaves',
+        'thamar_holiday_overtime',
     ],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
         'views/portal_templates.xml',
+        'views/overtime_templates.xml',
+        'views/portal_navigation_cleanup.xml',
     ],
     'assets': {
         # Shared portal chrome. Every selector is scoped below #wrapwrap.o_portal
         # so public website and login pages keep their original appearance.
         'web.assets_frontend': [
             'thamar_portal_timeoff/static/src/css/portal_shell.css',
-        ],
-        # Loaded only by the Time Off portal page. Keeping these assets out of
-        # web.assets_frontend prevents this optional application from affecting
-        # the login page or other portal pages.
-        'thamar_portal_timeoff.assets_timeoff': [
             'thamar_portal_timeoff/static/src/css/timeoff_portal.css',
             'thamar_portal_timeoff/static/src/xml/timeoff_templates.xml',
             'thamar_portal_timeoff/static/src/js/timeoff_service.js',

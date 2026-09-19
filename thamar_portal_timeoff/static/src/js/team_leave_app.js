@@ -7,26 +7,27 @@ import { teamLeaveService } from "./team_leave_service";
 
 export class TeamLeaveApp extends Component {
     static template = "thamar_portal_timeoff.TeamLeaveApp";
+    static props = {};
 
     setup() {
         this.state = useState({
             leaves: [],
             employees: [],
-            assignmentTypes: [],
-            canCreateAssignments: false,
+            leaveTypes: [],
+            canCreateLeaves: false,
             filter: "all",
             loading: true,
             processingId: null,
-            showAssignmentForm: false,
+            showLeaveForm: false,
             submitting: false,
             error: "",
             toast: null,
-            form: this.emptyAssignmentForm(),
+            form: this.emptyLeaveForm(),
         });
         onWillStart(() => this.loadData());
     }
 
-    emptyAssignmentForm() {
+    emptyLeaveForm() {
         return {
             employee_id: "",
             leave_type_id: "",
@@ -42,8 +43,8 @@ export class TeamLeaveApp extends Component {
             const data = await teamLeaveService.fetchData(this.state.filter);
             this.state.leaves = data.leaves || [];
             this.state.employees = data.employees || [];
-            this.state.assignmentTypes = data.assignment_types || [];
-            this.state.canCreateAssignments = Boolean(data.can_create_assignments);
+            this.state.leaveTypes = data.leave_types || [];
+            this.state.canCreateLeaves = Boolean(data.can_create_leaves);
         } catch (error) {
             this.showToast("error", "تعذر تحميل طلبات إجازات الفريق.");
             console.error(error);
@@ -77,28 +78,42 @@ export class TeamLeaveApp extends Component {
         }
     }
 
-    openAssignmentForm() {
-        this.state.form = this.emptyAssignmentForm();
-        this.state.error = "";
-        this.state.showAssignmentForm = true;
+    get availableLeaveTypes() {
+        const employee = this.state.employees.find(
+            (item) => String(item.id) === String(this.state.form.employee_id)
+        );
+        if (!employee) {
+            return [];
+        }
+        const availableIds = new Set(employee.leave_type_ids || []);
+        return this.state.leaveTypes.filter((item) => availableIds.has(item.id));
     }
 
-    closeAssignmentForm() {
+    openLeaveForm() {
+        this.state.form = this.emptyLeaveForm();
+        this.state.error = "";
+        this.state.showLeaveForm = true;
+    }
+
+    closeLeaveForm() {
         if (!this.state.submitting) {
-            this.state.showAssignmentForm = false;
+            this.state.showLeaveForm = false;
             this.state.error = "";
         }
     }
 
     onFormField(field, event) {
         this.state.form[field] = event.target.value;
+        if (field === "employee_id") {
+            this.state.form.leave_type_id = "";
+        }
         this.state.error = "";
     }
 
-    async createAssignment() {
+    async createLeave() {
         const form = this.state.form;
         if (!form.employee_id || !form.leave_type_id || !form.date_from || !form.date_to) {
-            this.state.error = "اختر الموظف ونوع التكليف وحدد تاريخ البداية والنهاية.";
+            this.state.error = "اختر الموظف ونوع الإجازة وحدد تاريخ البداية والنهاية.";
             return;
         }
         if (form.date_from > form.date_to) {
@@ -107,16 +122,16 @@ export class TeamLeaveApp extends Component {
         }
         this.state.submitting = true;
         try {
-            const result = await teamLeaveService.createAssignment({ ...form });
+            const result = await teamLeaveService.createLeave({ ...form });
             if (!result.success) {
                 this.state.error = result.message;
                 return;
             }
-            this.state.showAssignmentForm = false;
+            this.state.showLeaveForm = false;
             this.showToast("success", result.message);
             await this.loadData();
         } catch (error) {
-            this.state.error = "تعذر إنشاء التكليف حاليًا.";
+            this.state.error = "تعذر إنشاء طلب الإجازة حاليًا.";
             console.error(error);
         } finally {
             this.state.submitting = false;

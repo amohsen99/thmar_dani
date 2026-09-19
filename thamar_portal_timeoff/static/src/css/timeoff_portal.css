@@ -3,7 +3,9 @@
    ============================================================ */
 
 /* ── Variables ─────────────────────────────────────────────── */
-.o_portal_timeoff_app {
+.o_portal_timeoff_app,
+.o_portal_team_timeoff_app,
+.o_portal_overtime_app {
     --pto-primary: #a58b64;
     --pto-primary-light: #c8ad82;
     --pto-primary-dark: #826b49;
@@ -244,11 +246,6 @@
     vertical-align: middle;
 }
 
-.pto-kind-badge.assignment {
-    background: rgba(66, 107, 122, 0.12);
-    color: var(--pto-info);
-}
-
 .pto-kind-badge.leave {
     background: rgba(165, 139, 100, 0.12);
     color: var(--pto-primary-dark);
@@ -267,6 +264,20 @@
     width: 100%;
     color: var(--pto-text-muted);
     text-align: end;
+}
+
+.pto-overtime-timezone {
+    margin-top: 0.4rem;
+    color: var(--pto-text-dim);
+    font-size: 0.74rem;
+}
+
+.pto-overtime-timezone i {
+    margin-inline-end: 0.25rem;
+}
+
+.pto-overtime-cancel {
+    padding: 0.45rem 0.8rem;
 }
 
 .pto-team-approve,

@@ -43,18 +43,11 @@
                     <span>الإجازات</span>
                 </a>
             </li>
-            <li t-if="not request.env.user._is_public()" class="nav-item thamar-portal-nav-item">
-                <a href="/my/assignments" class="nav-link thamar-portal-nav-link">
-                    <i class="fa fa-clipboard" aria-hidden="true"/>
-                    <span>التكليفات</span>
-                </a>
-            </li>
-            <li t-if="not request.env.user._is_public() and request.env['hr.leave']._portal_can_manage_team()"
-                class="nav-item thamar-portal-nav-item">
-                <a href="/my/team/timeoff" class="nav-link thamar-portal-nav-link">
-                    <i class="fa fa-users" aria-hidden="true"/>
-                    <span>إدارة إجازات وتكليفات الفريق</span>
-                </a>
+            <!-- Temporary hidden hook: lets databases carrying the previous
+                 overtime navigation view upgrade safely. A later inherited
+                 cleanup view removes it from the final rendered layout. -->
+            <li class="d-none thamar-legacy-assignments-hook" aria-hidden="true">
+                <a href="/my/assignments" tabindex="-1"/>
             </li>
         </xpath>
         <xpath expr="//nav[hasclass('navbar')]" position="after">
@@ -69,13 +62,8 @@
                 <a href="/my/timeoff" t-attf-class="#{'active' if page_name == 'timeoff' else ''}">
                     <i class="fa fa-calendar-check-o" aria-hidden="true"/><span>الإجازات</span>
                 </a>
-                <a href="/my/assignments" t-attf-class="#{'active' if page_name == 'assignments' else ''}">
-                    <i class="fa fa-clipboard" aria-hidden="true"/><span>التكليفات</span>
-                </a>
-                <a t-if="request.env['hr.leave']._portal_can_manage_team()" href="/my/team/timeoff"
-                   t-attf-class="#{'active' if page_name == 'team_timeoff' else ''}">
-                    <i class="fa fa-users" aria-hidden="true"/><span>الفريق</span>
-                </a>
+                <a href="/my/assignments" class="d-none thamar-legacy-assignments-hook"
+                   aria-hidden="true" tabindex="-1"/>
             </nav>
         </xpath>
     </template>
@@ -99,6 +87,23 @@
         </xpath>
     </template>
 
+    <!-- Portal Home: Time Off Counter Badge -->
+    <template id="portal_my_home_timeoff" name="Portal: Time Off Entry"
+              inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_client_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/thamar_portal_timeoff/static/src/img/timeoff_icon.svg'"/>
+                <t t-set="title">الإجازات</t>
+                <t t-set="url" t-value="'/my/timeoff'"/>
+                <t t-set="text">عرض ومتابعة جميع طلبات الإجازات والأنواع المرتبطة بها</t>
+                <t t-set="placeholder_count" t-value="'timeoff_count'"/>
+            </t>
+        </div>
+    </template>
+
     <!-- Portal Home: Employee Profile Entry -->
     <template id="portal_my_home_employee" name="Portal: Employee Profile Entry"
               inherit_id="thamar_portal_timeoff.portal_my_home_timeoff" priority="1">
@@ -113,26 +118,9 @@
         </div>
     </template>
 
-    <!-- Portal Home: Time Off Counter Badge -->
-    <template id="portal_my_home_timeoff" name="Portal: Time Off Entry"
-              inherit_id="portal.portal_my_home" priority="40">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
-            <t t-set="portal_client_category_enable" t-value="True"/>
-        </xpath>
-        <div id="portal_client_category" position="inside">
-            <t t-call="portal.portal_docs_entry">
-                <t t-set="icon" t-value="'/thamar_portal_timeoff/static/src/img/timeoff_icon.svg'"/>
-                <t t-set="title">الإجازات</t>
-                <t t-set="url" t-value="'/my/timeoff'"/>
-                <t t-set="text">إنشاء ومتابعة طلبات الإجازات</t>
-                <t t-set="placeholder_count" t-value="'timeoff_count'"/>
-            </t>
-        </div>
-    </template>
-
     <!-- Portal Home: Manager-created assignments -->
-    <template id="portal_my_home_assignments" name="Portal: Assignments Entry"
-              inherit_id="thamar_portal_timeoff.portal_my_home_timeoff" priority="2">
+    <template id="portal_my_home_assignments" name="Portal: Assignments Entry (Disabled)"
+              inherit_id="thamar_portal_timeoff.portal_my_home_timeoff" priority="2" active="False">
         <div id="portal_client_category" position="inside">
             <t t-call="portal.portal_docs_entry">
                 <t t-set="icon" t-value="'/thamar_portal_timeoff/static/src/img/assignment_icon.svg'"/>
@@ -145,8 +133,8 @@
     </template>
 
     <!-- Portal Home: Team leave management for department approvers -->
-    <template id="portal_my_home_team_timeoff" name="Portal: Team Time Off Entry"
-              inherit_id="thamar_portal_timeoff.portal_my_home_timeoff" priority="3">
+    <template id="portal_my_home_team_timeoff" name="Portal: Team Time Off Entry (Disabled)"
+              inherit_id="thamar_portal_timeoff.portal_my_home_timeoff" priority="3" active="False">
         <div id="portal_client_category" position="inside">
             <t t-if="can_manage_team" t-call="portal.portal_docs_entry">
                 <t t-set="icon" t-value="'/thamar_portal_timeoff/static/src/img/team_timeoff_icon.svg'"/>
@@ -161,18 +149,33 @@
     <!-- Portal Time Off Page -->
     <template id="portal_timeoff_page" name="Portal: Time Off Management">
         <t t-call="portal.portal_layout">
-            <t t-set="head">
-                <t t-call-assets="thamar_portal_timeoff.assets_timeoff" defer_load="True"/>
-            </t>
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
 
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">الإجازات</t>
             </t>
 
-            <div class="o_portal_timeoff_app" data-request-kind="timeoff"
+            <div class="d-flex justify-content-end flex-wrap gap-2 mb-4" dir="rtl">
+                <a href="/my/timeoff"
+                   t-attf-class="btn #{'btn-outline-primary' if timeoff_team else 'btn-primary'}">
+                    إجازاتي
+                </a>
+                <a t-if="can_manage_team" href="/my/timeoff?scope=team"
+                   t-attf-class="btn #{'btn-primary' if timeoff_team else 'btn-outline-primary'}">
+                    إجازات الفريق
+                </a>
+            </div>
+
+            <div t-if="timeoff_team" class="o_portal_team_timeoff_app">
+                <div class="pto-loading text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">جارٍ التحميل...</span>
+                    </div>
+                    <p class="mt-3 text-muted">جارٍ تحميل طلبات الفريق...</p>
+                </div>
+            </div>
+            <div t-else="" class="o_portal_timeoff_app"
                  t-att-data-employee-id="employee_id" t-att-data-employee-name="employee_name">
-                <!-- OWL mounts here -->
                 <div class="pto-loading text-center py-5">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">جارٍ التحميل...</span>
@@ -184,11 +187,8 @@
     </template>
 
     <!-- Portal Assignments Page -->
-    <template id="portal_assignments_page" name="Portal: Work Assignments">
+    <template id="portal_assignments_page" name="Portal: Work Assignments (Disabled)" active="False">
         <t t-call="portal.portal_layout">
-            <t t-set="head">
-                <t t-call-assets="thamar_portal_timeoff.assets_timeoff" defer_load="True"/>
-            </t>
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
 
             <t t-call="portal.portal_searchbar">
@@ -208,11 +208,8 @@
     </template>
 
     <!-- Portal Team Time Off Management Page -->
-    <template id="portal_team_timeoff_page" name="Portal: Team Time Off Management">
+    <template id="portal_team_timeoff_page" name="Portal: Team Time Off Management (Disabled)" active="False">
         <t t-call="portal.portal_layout">
-            <t t-set="head">
-                <t t-call-assets="thamar_portal_timeoff.assets_timeoff" defer_load="True"/>
-            </t>
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
 
             <t t-call="portal.portal_searchbar">
@@ -236,12 +233,6 @@
         <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
             <li t-if="page_name == 'timeoff'" class="breadcrumb-item active">
                 الإجازات
-            </li>
-            <li t-if="page_name == 'assignments'" class="breadcrumb-item active">
-                التكليفات
-            </li>
-            <li t-if="page_name == 'team_timeoff'" class="breadcrumb-item active">
-                إدارة إجازات وتكليفات الفريق
             </li>
         </xpath>
     </template>

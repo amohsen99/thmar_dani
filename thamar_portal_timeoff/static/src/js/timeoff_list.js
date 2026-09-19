@@ -7,7 +7,6 @@ export class TimeOffList extends Component {
     static props = {
         leaves: { type: Array },
         filter: { type: String },
-        requestKind: { type: String },
         onFilterChange: { type: Function },
         onEdit: { type: Function },
         onDelete: { type: Function },

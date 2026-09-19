@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
-  <title id="title">التكليفات</title>
-  <rect x="13" y="9" width="38" height="48" rx="6" fill="#fffdf9" stroke="#826b49" stroke-width="3"/>
-  <path d="M24 9.5A8 8 0 0 1 32 4a8 8 0 0 1 8 5.5V15H24Z" fill="#a58b64"/>
-  <path d="m22 33 6 6 14-15" fill="none" stroke="#287a5b" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
-  <path d="M22 47h20" stroke="#c8ad82" stroke-linecap="round" stroke-width="3"/>
-</svg>
