@@ -5,7 +5,7 @@ Enforces the rule: employees can only take leave up to their
 accrued monthly balance (Total Days / 12 × months elapsed).
 """
 import logging
-from datetime import datetime, date
+from datetime import date
 
 from odoo import api, fields, models, _
 from odoo.exceptions import AccessError, UserError, ValidationError
@@ -191,48 +191,25 @@ class HrLeave(models.Model):
 
             year = leave.date_from.year
 
-            allocations = self.env['hr.leave.allocation'].sudo().search([
-                ('employee_id', '=', leave.employee_id.id),
-                ('holiday_status_id', '=', leave_type.id),
-                ('state', '=', 'validate'),
-                ('leave_year', '=', year),
-            ])
-            total_allocated = sum(allocations.mapped('number_of_days'))
-            if not total_allocated:
+            leave_id = leave._origin.id if leave._origin else leave.id
+            Allocation = self.env['hr.leave.allocation']
+            status = Allocation._get_monthly_accrual_status(
+                leave.employee_id,
+                leave_type,
+                year,
+                as_of_date=fields.Date.today(),
+                exclude_leave_id=leave_id,
+            )
+            if not status['has_allocation']:
                 continue
 
-            leave_id = leave._origin.id if leave._origin else leave.id
-            domain = [
-                ('employee_id', '=', leave.employee_id.id),
-                ('holiday_status_id', '=', leave_type.id),
-                ('state', 'not in', ('refuse', 'cancel')),
-                ('date_from', '>=', datetime(year, 1, 1)),
-                ('date_from', '<', datetime(year + 1, 1, 1)),
-            ]
-            if leave_id:
-                domain.append(('id', '!=', leave_id))
-
-            total_taken = sum(self.sudo().search(domain).mapped('number_of_days'))
-
-            today = fields.Date.today()
-            details = self.env['hr.leave.allocation']._compute_employee_entitlement(
-                leave.employee_id, date(year, 12, 31),
-            )
-            schedule = self.env['hr.leave.allocation']._annual_accrual_schedule(leave.employee_id, year, details)
-            start_month = schedule['first_eligible_month']
-            months_elapsed = max(0, today.month - start_month + 1) if start_month else 0
-            annual_entitlement = details['total_annual']
-            monthly_rate = schedule['monthly_rate']
-            accrued_balance = min(monthly_rate * months_elapsed, total_allocated)
-            available = max(0, accrued_balance - total_taken)
-
             requested = leave.number_of_days or 0
-            if requested > available and not leave.accrual_limit_override:
+            if requested > status['accrued_remaining'] and not leave.accrual_limit_override:
                 raise ValidationError(_(
                     "Monthly Accrual Limit Exceeded!\n\n"
                     "%(employee)s cannot take %(requested).2f day(s) of %(leave_type)s.\n\n"
-                    "• Monthly accrual rate: %(rate).2f days/month (annual entitlement ÷ 12)\n"
-                    "• Annual entitlement: %(annual).2f days\n"
+                    "• Monthly accrual rate: %(rate).2f days/month (yearly entitlement ÷ 12)\n"
+                    "• Yearly entitlement: %(entitlement).2f days\n"
                     "• Months elapsed (from %(start_month)s): %(months)d\n"
                     "• Accrued balance: %(accrued).2f days\n"
                     "• Already taken/pending: %(taken).2f days\n"
@@ -240,19 +217,19 @@ class HrLeave(models.Model):
                     employee=leave.employee_id.name,
                     requested=requested,
                     leave_type=leave_type.name,
-                     rate=round(monthly_rate, 2),
-                     annual=round(annual_entitlement, 2),
+                     rate=status['monthly_rate'],
+                     entitlement=round(status['full_year_entitlement'], 2),
                      start_month=(
-                         date(year, start_month, 1).strftime('%B %Y')
-                         if start_month else _('not eligible in this year')
+                         date(year, status['first_eligible_month'], 1).strftime('%B %Y')
+                         if status['first_eligible_month'] else _('not eligible in this year')
                      ),
-                     months=months_elapsed,
-                     accrued=round(accrued_balance, 2),
-                     taken=round(total_taken, 2),
-                     available=round(available, 2),
+                     months=status['months_accrued'],
+                     accrued=status['accrual_cap'],
+                     taken=status['total_taken'],
+                     available=status['accrued_remaining'],
                 ))
 
             _logger.info(
                 "Monthly accrual check passed for %s: %.2f requested, %.2f available, %.2f rate",
-                leave.employee_id.name, requested, available, monthly_rate,
+                leave.employee_id.name, requested, status['accrued_remaining'], status['monthly_rate'],
             )

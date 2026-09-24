@@ -6,6 +6,38 @@ from odoo.exceptions import ValidationError
 class HrLeaveType(models.Model):
     _inherit = 'hr.leave.type'
 
+    def get_allocation_data(self, employees, target_date=None):
+        """Show the source gross/net balances, including historical usage.
+
+        Odoo's consumption/excess checks still use the real net allocations.
+        The imported usage is accounting history, not fabricated leave requests.
+        """
+        result = super().get_allocation_data(employees, target_date)
+        target_date = fields.Date.to_date(target_date or fields.Date.today())
+        snapshots = self.env['hr.leave.opening.balance'].sudo().search([
+            ('employee_id', 'in', employees.ids), ('leave_type_id', 'in', self.ids),
+            ('balance_year', '=', target_date.year), ('balance_date', '<=', target_date),
+            ('balance_basis', '=', 'year_remaining'),
+        ])
+        by_key = {(b.employee_id.id, b.leave_type_id.id): b for b in snapshots}
+        for employee, entries in result.items():
+            for entry in entries:
+                snapshot = by_key.get((employee.id, entry[3]))
+                if not snapshot:
+                    continue
+                status = self.env['hr.leave.allocation']._get_monthly_accrual_status(
+                    employee, snapshot.leave_type_id, target_date.year, target_date,
+                )
+                entry[1].update({
+                    'max_leaves': round(snapshot.gross_balance_days, 2),
+                    'remaining_leaves': round(snapshot.amount - status['approved_taken'], 2),
+                    'virtual_remaining_leaves': status['remaining_balance'],
+                    'leaves_taken': round(snapshot.used_before_cutoff_days + status['approved_taken'], 2),
+                    'virtual_leaves_taken': round(snapshot.used_before_cutoff_days + status['total_taken'], 2),
+                    'monthly_available': status['accrued_remaining'],
+                })
+        return result
+
     _THAMAR_PORTAL_LEAVE_TYPE_XMLIDS = (
         'thamar_hr_leaves.leave_type_annual',
         'thamar_hr_leaves.leave_type_casual',
@@ -63,7 +95,7 @@ class HrLeaveType(models.Model):
     use_monthly_accrual = fields.Boolean(
         string='Monthly Accrual Policy (سياسة الاستحقاق الشهري)',
         default=False,
-        help="If enabled, the annual leave balance accrues monthly at "
+        help="If enabled, the configured leave balance accrues monthly at "
              "(Total Days / 12) per month. Employees cannot take more "
              "than their accrued balance up to the leave request month. "
              "Unused accrued days roll over automatically within the year.",

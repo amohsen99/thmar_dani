@@ -16,12 +16,36 @@
             <xpath expr="//page[@name='hr_settings']" position="before">
                 <page string="استحقاقات الإجازات" name="leave_entitlement">
 
+                    <group string="رصيد السنة المستورد" groups="hr_holidays.group_hr_holidays_user">
+                        <group>
+                            <field name="leave_balance_cutoff_date"/>
+                            <field name="leave_carryover_balance"/>
+                            <field name="leave_source_year_entitlement"/>
+                            <field name="leave_source_gross_balance"/>
+                            <field name="leave_source_used_balance"/>
+                        </group>
+                        <group>
+                            <field name="leave_source_remaining_balance"/>
+                            <field name="leave_source_annual_balance"/>
+                            <field name="leave_source_casual_balance"/>
+                            <field name="leave_current_annual_balance"/>
+                            <field name="leave_current_casual_balance"/>
+                            <field name="leave_current_total_balance" class="fw-bold text-primary"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert" groups="hr_holidays.group_hr_holidays_user">
+                        المتبقي من رصيد السنة يشمل المرحّل والمؤثرات بعد خصم الإجازات السابقة.
+                        الحد الشهري يحدد الجزء المسموح استخدامه من هذا الرصيد؛ لا يضاف مرة أخرى إلى إجمالي المتبقي.
+                        يمكن تعديل الرصيد المرحّل وبيانات المصدر من زر «رصيد افتتاحي للإجازات».
+                    </div>
+
                     <!-- ── Input Fields ── -->
                     <group string="بيانات احتساب الإجازات" name="leave_config">
                         <group>
                             <field name="external_experience_years"
                                    widget="float"
                                    help="سنوات الخبرة التأمينية السابقة التي تدخل في احتساب إجمالي مدة الخدمة."/>
+                            <field name="has_verified_service_bonus"/>
                         </group>
                         <group>
                             <field name="is_hazardous_location"
@@ -79,6 +103,23 @@
                         </group>
                     </group>
 
+                    <separator string="حالة الاستحقاق الشهري للإجازة العارضة"/>
+
+                    <group string="تفاصيل الاستحقاق الشهري للعارضة" name="leave_casual_accrual_status">
+                        <group>
+                            <field name="leave_casual_monthly_rate" readonly="1"
+                                   widget="float" digits="[10,2]"/>
+                            <field name="leave_casual_months_accrued" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="leave_casual_accrual_cap" readonly="1"
+                                   widget="float" digits="[10,2]"/>
+                            <field name="leave_casual_accrued_remaining" readonly="1"
+                                   widget="float" digits="[10,2]"
+                                   class="fw-bold text-success"/>
+                        </group>
+                    </group>
+
                     <!-- ── Regenerate Button ── -->
                     <div class="mt-3">
                         <button name="action_regenerate_leave_allocations"
@@ -87,6 +128,11 @@
                                 class="btn-secondary"
                                 groups="hr_holidays.group_hr_holidays_user"
                                 confirm="سيتم إنشاء التخصيصات الناقصة للسنة الحالية فقط، ولن تتكرر التخصيصات الآلية الموجودة. هل تريد المتابعة؟"/>
+                        <button name="action_open_leave_opening_balances"
+                                type="object"
+                                string="رصيد افتتاحي للإجازات"
+                                class="btn-secondary"
+                                groups="hr_holidays.group_hr_holidays_user"/>
                     </div>
 
                 </page>

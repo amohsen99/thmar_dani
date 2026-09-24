@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_leave_opening_balance_list" model="ir.ui.view">
+        <field name="name">hr.leave.opening.balance.list</field>
+        <field name="model">hr.leave.opening.balance</field>
+        <field name="arch" type="xml">
+            <list string="أرصدة الإجازات الافتتاحية">
+                <field name="employee_id"/>
+                <field name="leave_type_id"/>
+                <field name="balance_date"/>
+                <field name="amount" sum="إجمالي الأيام"/>
+                <field name="balance_basis"/>
+                <field name="carryover_days" sum="إجمالي المرحّل"/>
+                <field name="year_entitlement_days" optional="show"/>
+                <field name="balance_year"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_leave_opening_balance_form" model="ir.ui.view">
+        <field name="name">hr.leave.opening.balance.form</field>
+        <field name="model">hr.leave.opening.balance</field>
+        <field name="arch" type="xml">
+            <form string="رصيد إجازة افتتاحي">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        أدخل الرصيد الفعلي للموظف في تاريخ القطع المحدد، وليس إجمالي الاستحقاق السنوي.
+                        عند اختيار «المتبقي من رصيد السنة» يكون المرحّل والمؤثرات ضمن الرصيد بالفعل، والحد الشهري يفتح الجزء المستحق منه دون زيادة الإجمالي.
+                        عند اختيار «رصيد مستحق حتى تاريخ القطع» تضاف الاستحقاقات الجديدة من الشهر التالي. يسمح بالرصيد السالب.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="leave_type_id"/>
+                            <field name="balance_date"/>
+                            <field name="balance_basis"/>
+                        </group>
+                        <group>
+                            <field name="amount"/>
+                            <field name="balance_year" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="تفاصيل رصيد السنة في المصدر" invisible="balance_basis != 'year_remaining'">
+                        <group>
+                            <field name="carryover_days"/>
+                            <field name="year_entitlement_days"/>
+                            <field name="gross_balance_days"/>
+                            <field name="used_before_cutoff_days"/>
+                        </group>
+                        <group>
+                            <field name="service_bonus_days"/>
+                            <field name="hazard_bonus_days"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="مصدر الرصيد أو ملاحظة المراجعة..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hr_leave_opening_balance" model="ir.actions.act_window">
+        <field name="name">أرصدة الإجازات الافتتاحية</field>
+        <field name="res_model">hr.leave.opening.balance</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_hr_leave_opening_balance"
+              name="أرصدة افتتاحية للإجازات"
+              parent="hr_holidays.menu_hr_holidays_root"
+              action="action_hr_leave_opening_balance"
+              groups="hr_holidays.group_hr_holidays_user"
+              sequence="20"/>
+</odoo>

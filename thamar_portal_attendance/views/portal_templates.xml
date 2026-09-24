@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_home_attendance" inherit_id="portal.portal_my_home" name="Portal: Attendance">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
+        </xpath>
+        <xpath expr="//div[@id='portal_client_category']" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">الحضور والانصراف</t>
+                <t t-set="text">عرض سجلات حضورك وانصرافك وساعات العمل</t>
+                <t t-set="url" t-value="'/my/attendance'"/>
+                <t t-set="config_card" t-value="True"/>
+            </t>
+        </xpath>
+    </template>
+    <template id="portal_attendance_breadcrumbs" inherit_id="portal.portal_breadcrumbs" name="Attendance Breadcrumbs">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'attendance'" class="breadcrumb-item active">الحضور والانصراف</li>
+        </xpath>
+    </template>
+    <template id="portal_attendance_page" name="My Attendance">
+        <t t-call="portal.portal_layout">
+            <section dir="rtl" class="my-4">
+                <div class="d-flex flex-wrap justify-content-between gap-2 mb-4">
+                    <div><h2>الحضور والانصراف</h2><p t-if="employee" class="text-muted"><span t-out="employee.name"/> — سجلات الحضور الخاصة بك</p></div>
+                    <a href="/my/home" class="btn btn-outline-secondary align-self-start">الرئيسية</a>
+                </div>
+                <div t-if="not employee" class="alert alert-info">لا يوجد موظف مرتبط بحسابك. تواصل مع إدارة الموارد البشرية لربط الحساب.</div>
+                <t t-else="">
+                    <form method="get" action="/my/attendance" class="card card-body mb-4">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-6"><label for="attendance_month" class="form-label">الشهر والسنة</label><input id="attendance_month" name="month" type="month" class="form-control" t-att-value="month"/><small class="text-muted">اتركه فارغاً لعرض كل الشهور.</small></div>
+                            <div class="col-md-3"><label for="attendance_status" class="form-label">الحالة</label><select id="attendance_status" name="status" class="form-select">
+                                <option value="all" t-att-selected="status == 'all'">الكل</option><option value="open" t-att-selected="status == 'open'">لم يسجل انصراف</option><option value="closed" t-att-selected="status == 'closed'">مكتمل</option>
+                            </select></div>
+                            <div class="col-md-3 d-flex gap-2"><button class="btn btn-primary" type="submit">عرض</button><a href="/my/attendance" class="btn btn-outline-secondary">مسح</a></div>
+                        </div>
+                        <small class="text-muted mt-3">الفلترة حسب شهر الحضور. التوقيت: <span t-out="attendance_timezone"/>. ساعات العمل طبقاً لسجلات النظام.</small>
+                    </form>
+                    <div t-if="error" class="alert alert-warning" role="alert" t-out="error"/>
+                    <p>عدد السجلات: <strong t-out="total"/></p>
+                    <div t-if="not attendances and not error" class="alert alert-info">لا توجد سجلات حضور للفترة المحددة.</div>
+                    <div t-if="attendances" class="table-responsive card">
+                        <table class="table table-hover mb-0 text-nowrap">
+                            <thead class="table-light"><tr><th>الحضور</th><th>الانصراف</th><th>ساعات العمل</th><th>الحالة</th></tr></thead>
+                            <tbody><tr t-foreach="attendances" t-as="attendance" t-att-data-attendance-id="attendance.id">
+                                <td dir="ltr" class="text-end" t-out="format_attendance_time(attendance.check_in)"/>
+                                <td dir="ltr" class="text-end"><span t-if="attendance.check_out" t-out="format_attendance_time(attendance.check_out)"/><span t-else="">—</span></td>
+                                <td><span t-if="attendance.check_out" t-field="attendance.worked_hours" t-options="{'widget': 'float_time'}"/><span t-else="">—</span></td>
+                                <td><span t-if="attendance.check_out" class="badge text-bg-success">مكتمل</span><span t-else="" class="badge text-bg-warning">لم يسجل انصراف</span></td>
+                            </tr></tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3"><t t-call="portal.pager"/></div>
+                </t>
+            </section>
+        </t>
+    </template>
+</odoo>

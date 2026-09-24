@@ -6,7 +6,7 @@
         Comprehensive leave management module for Thamar:
         - Casual Leave (7 days/year, non-carryover, expires Dec 31)
         - Annual Leave (dynamic computation based on service year, age, experience, hazardous location)
-        - Monthly accrual for annual leave
+        - Monthly accrual for annual and casual leave
         - Auto-allocation on employee creation
         - Yearly cron job (Jan 1) for recalculation and carryover
         - Transparent readonly entitlement fields on employee form
@@ -14,7 +14,7 @@
     'license': 'Other proprietary',
     'author': 'Thamar',
     'category': 'Human Resources/Time Off',
-    'version': '19.0.1.3.0',
+    'version': '19.0.1.4.5',
     'pre_init_hook': 'pre_init_hook',
     'depends': [
         'hr',
@@ -36,6 +36,7 @@
         'views/hr_department_views.xml',
         'views/res_config_settings_views.xml',
         'views/hr_leave_approval_views.xml',
+        'views/hr_leave_opening_balance_views.xml',
     ],
     'installable': True,
     'auto_install': False,

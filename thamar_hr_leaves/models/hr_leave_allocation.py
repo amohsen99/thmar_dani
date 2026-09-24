@@ -7,7 +7,7 @@ Handles:
 - Yearly cron for recomputation, carryover, and new allocations
 """
 import logging
-from datetime import date
+from datetime import date, datetime
 
 from dateutil.relativedelta import relativedelta
 
@@ -40,6 +40,27 @@ class HrLeaveAllocation(models.Model):
         string='Leave Year',
         readonly=True,
         help="The calendar year this allocation applies to.",
+    )
+    is_opening_balance_adjustment = fields.Boolean(
+        string='Opening Balance Adjustment',
+        default=False,
+        readonly=True,
+        help=(
+            'Technical allocation that preserves a verified mid-year opening '
+            'balance without changing the employee entitlement policy.'
+        ),
+    )
+    opening_balance_id = fields.Many2one(
+        'hr.leave.opening.balance',
+        string='Opening Balance Source',
+        readonly=True,
+        index=True,
+        ondelete='cascade',
+        help='Opening balance record that created this technical adjustment.',
+    )
+    thamar_carryover_days = fields.Float(
+        string='الرصيد المرحّل من السنة السابقة', readonly=True,
+        help='Included in the allocation, and immediately available before monthly accrual.',
     )
 
     # ================================================================
@@ -105,7 +126,7 @@ class HrLeaveAllocation(models.Model):
         experience_bonus = (
             EXPERIENCE_BONUS_DAYS
             if employed_in_year
-            and total_service_years >= EXPERIENCE_BONUS_THRESHOLD
+            and (total_service_years >= EXPERIENCE_BONUS_THRESHOLD or employee.has_verified_service_bonus)
             and not age_bonus
             else 0
         )
@@ -183,9 +204,152 @@ class HrLeaveAllocation(models.Model):
         monthly_rate = details['casual_days'] / 12.0
         return {
             'monthly_rate': monthly_rate,
+            'first_eligible_month': annual_schedule['first_eligible_month'],
             'first_eligible_date': annual_schedule['first_eligible_date'],
             'eligible_months': annual_schedule['eligible_months'],
             'new_entitlement': round(monthly_rate * annual_schedule['eligible_months'], 2),
+        }
+
+    @api.model
+    def _get_monthly_accrual_policy(self, employee, leave_type, year, details=None):
+        """Return the monthly-accrual policy for annual or casual leave.
+
+        Both leave types use the same eligibility date: no entitlement is
+        earned during the appointment month.  They intentionally retain
+        separate balances and rates, so taking one type can never consume the
+        other type's entitlement.
+        """
+        details = details or self._compute_employee_entitlement(
+            employee, date(year, 12, 31),
+        )
+        if leave_type.is_annual_leave:
+            schedule = self._annual_accrual_schedule(employee, year, details)
+            full_year_entitlement = details['total_annual']
+        elif leave_type.is_casual_leave:
+            schedule = self._casual_allocation_schedule(employee, year, details)
+            full_year_entitlement = details['casual_days']
+        else:
+            return False
+
+        return dict(schedule, full_year_entitlement=full_year_entitlement)
+
+    @api.model
+    def _get_monthly_accrual_status(
+        self, employee, leave_type, year, as_of_date=None, exclude_leave_id=False,
+    ):
+        """Return the usable balance for a monthly-accrual leave type.
+
+        If an opening balance exists, it is the verified remaining balance on
+        its exact cut-off date.  Earlier requests are consequently not
+        deducted a second time.  Requests after that date are deducted, while
+        the normal monthly rate starts again on the first day of the next
+        calendar month.
+        """
+        as_of_date = fields.Date.to_date(as_of_date or fields.Date.today())
+        empty_status = {
+            'has_allocation': False,
+            'monthly_rate': 0.0,
+            'months_accrued': 0,
+            'accrual_cap': 0.0,
+            'accrued_remaining': 0.0,
+            'total_taken': 0.0,
+            'full_year_entitlement': 0.0,
+            'first_eligible_month': False,
+            'opening_balance': 0.0,
+            'opening_balance_date': False,
+            'remaining_balance': 0.0,
+            'approved_taken': 0.0,
+        }
+        if not leave_type or not leave_type.use_monthly_accrual:
+            return empty_status
+
+        allocations = self.sudo().search([
+            ('employee_id', '=', employee.id),
+            ('holiday_status_id', '=', leave_type.id),
+            ('state', '=', 'validate'),
+            ('leave_year', '=', year),
+            ('date_from', '<=', as_of_date),
+            '|', ('date_to', '=', False), ('date_to', '>=', as_of_date),
+        ])
+        total_allocated = sum(allocations.mapped('number_of_days'))
+
+        details = self._compute_employee_entitlement(employee, date(year, 12, 31))
+        policy = self._get_monthly_accrual_policy(employee, leave_type, year, details)
+        if not policy:
+            return empty_status
+
+        opening_balance = self.env['hr.leave.opening.balance'].sudo().search([
+            ('employee_id', '=', employee.id),
+            ('leave_type_id', '=', leave_type.id),
+            ('balance_year', '=', year),
+            ('balance_date', '<=', as_of_date),
+        ], limit=1)
+        if not total_allocated and not opening_balance:
+            return empty_status
+        monthly_rate = policy['monthly_rate']
+        taken_from = date(year, 1, 1)
+        if opening_balance:
+            # The stored amount is already net of leave through the exact
+            # cut-off date.  The next month's entitlement starts fresh, but
+            # any requests in the rest of the cut-off month still reduce it.
+            if opening_balance.balance_basis == 'year_remaining':
+                monthly_rate = opening_balance._get_source_monthly_rate()
+                start_month = policy['first_eligible_month']
+                months_accrued = max(0, as_of_date.month - start_month + 1) if start_month else 0
+                remaining_months = max(0, policy['eligible_months'] - months_accrued)
+                # The full year's unused balance already includes future
+                # months. Unlock them, do not add them to the source amount.
+                accrual_cap = opening_balance.amount - monthly_rate * remaining_months
+            else:
+                start_month = min(12, opening_balance.balance_date.month + 1)
+                months_accrued = max(0, as_of_date.month - opening_balance.balance_date.month)
+                accrual_cap = opening_balance.amount + monthly_rate * months_accrued
+            taken_from = opening_balance.balance_date + relativedelta(days=1)
+        else:
+            start_month = policy['first_eligible_month']
+            months_accrued = max(0, as_of_date.month - start_month + 1) if start_month else 0
+            accrual_cap = sum(allocations.mapped('thamar_carryover_days')) + monthly_rate * months_accrued
+
+        # Opening balances are backed by a dedicated technical allocation so
+        # standard Odoo availability checks remain compatible with verified
+        # carried balances.  Do not cap the verified balance at the regular
+        # yearly entitlement: that would silently discard valid carryover.
+        if not opening_balance:
+            accrual_cap = min(round(accrual_cap, 2), total_allocated)
+        else:
+            accrual_cap = round(accrual_cap, 2)
+        leave_domain = [
+            ('employee_id', '=', employee.id),
+            ('holiday_status_id', '=', leave_type.id),
+            ('state', 'not in', ('refuse', 'cancel')),
+            ('date_from', '>=', datetime.combine(taken_from, datetime.min.time())),
+            ('date_from', '<', datetime(year + 1, 1, 1)),
+        ]
+        excluded_ids = list(self.env.context.get('ignored_leave_ids') or [])
+        if exclude_leave_id:
+            excluded_ids.append(exclude_leave_id)
+        if excluded_ids:
+            leave_domain.append(('id', 'not in', excluded_ids))
+        leaves = self.env['hr.leave'].sudo().search(leave_domain)
+        total_taken = sum(leaves.mapped('number_of_days'))
+        remaining_balance = (
+            opening_balance.amount
+            if opening_balance and opening_balance.balance_basis == 'year_remaining'
+            else accrual_cap
+        ) - total_taken
+        return {
+            'has_allocation': True,
+            'monthly_rate': round(monthly_rate, 2),
+            'months_accrued': months_accrued,
+            'accrual_cap': accrual_cap,
+            'accrued_remaining': round(max(0.0, accrual_cap - total_taken), 2),
+            'total_taken': round(total_taken, 2),
+            'full_year_entitlement': policy['full_year_entitlement'],
+            'first_eligible_month': start_month,
+            'opening_balance': opening_balance.amount if opening_balance else 0.0,
+            'opening_balance_date': opening_balance.balance_date if opening_balance else False,
+            'remaining_balance': round(remaining_balance, 2),
+            'approved_taken': sum(leaves.filtered(lambda leave: leave.state == 'validate').mapped('number_of_days')),
         }
 
     # ================================================================
@@ -226,11 +390,15 @@ class HrLeaveAllocation(models.Model):
         details = self._compute_employee_entitlement(employee, reference_date)
 
         # ── Casual Leave Allocation ──
-        if casual_type:
+        snapshot_types = self.env['hr.leave.opening.balance'].sudo().search([
+            ('employee_id', '=', employee.id), ('balance_year', '=', year),
+            ('balance_basis', '=', 'year_remaining'),
+        ]).leave_type_id
+        if casual_type and casual_type not in snapshot_types:
             self._create_casual_allocation(employee, casual_type, year, details)
 
         # ── Annual Leave Allocation ──
-        if annual_type:
+        if annual_type and annual_type not in snapshot_types:
             self._create_annual_allocation(employee, annual_type, year, details, carryover_days)
 
     @api.model
@@ -286,6 +454,12 @@ class HrLeaveAllocation(models.Model):
             'is_auto_generated': True,
             'leave_year': year,
         })
+
+        # These are system-generated policy allocations, never employee
+        # allocation requests.  Explicitly validate them so their availability
+        # does not depend on an old database configuration of the leave type.
+        if allocation.state == 'confirm':
+            allocation._action_validate()
 
         # Note: allocation_validation_type='no_validation' on the leave type
         # means Odoo auto-approves the allocation on create.
@@ -391,6 +565,7 @@ class HrLeaveAllocation(models.Model):
             'employee_id': employee.id,
             'holiday_status_id': leave_type.id,
             'number_of_days': total_with_carryover,
+            'thamar_carryover_days': carryover_days,
             'date_from': schedule['first_eligible_date'] or date(year, 1, 1),
             'date_to': False,  # No expiry — unlimited carryover
             'notes': notes,
@@ -398,6 +573,10 @@ class HrLeaveAllocation(models.Model):
             'is_auto_generated': True,
             'leave_year': year,
         })
+
+        # See the equivalent casual-allocation safeguard above.
+        if allocation.state == 'confirm':
+            allocation._action_validate()
 
         # Note: allocation_validation_type='no_validation' on the leave type
         # means Odoo auto-approves the allocation on create.
@@ -524,6 +703,16 @@ class HrLeaveAllocation(models.Model):
         annual_type = self._get_annual_leave_type(employee.company_id)
         if not annual_type:
             return 0.0
+
+        opening = self.env['hr.leave.opening.balance'].sudo().search([
+            ('employee_id', '=', employee.id), ('leave_type_id', '=', annual_type.id),
+            ('balance_year', '=', prev_year), ('balance_basis', '=', 'year_remaining'),
+        ], limit=1)
+        if opening:
+            status = self._get_monthly_accrual_status(
+                employee, annual_type, prev_year, date(prev_year, 12, 31),
+            )
+            return status['remaining_balance']
 
         # Find all approved annual allocations for the previous year
         prev_allocations = self.search([

@@ -12,8 +12,7 @@
             <xpath expr="//field[@name='requires_allocation']" position="after">
                 <field name="is_annual_leave"/>
                 <field name="is_casual_leave"/>
-                <field name="use_monthly_accrual"
-                       invisible="is_casual_leave"/>
+                <field name="use_monthly_accrual"/>
                 <field name="manager_only_requests"/>
                 <field name="portal_self_service"
                        invisible="manager_only_requests"/>

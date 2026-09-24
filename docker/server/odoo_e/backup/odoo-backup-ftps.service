@@ -1,0 +1,15 @@
+[Unit]
+Description=Back up all Odoo databases and upload verified ZIPs over FTPS
+Wants=network-online.target
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/sbin/odoo-backup-ftps.py
+User=root
+UMask=0077
+Nice=10
+TimeoutStartSec=3h
+StandardOutput=journal
+StandardError=journal

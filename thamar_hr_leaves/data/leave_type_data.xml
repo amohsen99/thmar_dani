@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <!-- These two module-owned types must also correct their configuration
+         when upgrading an existing database.  In particular, allocations
+         are system-generated and therefore require no manual approval. -->
+    <data noupdate="0">
 
         <!-- ═══════════════════════════════════════════════════════ -->
         <!-- Leave Type: Casual Leave (إجازة عارضة)                 -->
@@ -9,6 +12,7 @@
         <record id="leave_type_casual" model="hr.leave.type">
             <field name="name">إجازة عارضة (Casual Leave)</field>
             <field name="is_casual_leave" eval="True"/>
+            <field name="use_monthly_accrual" eval="True"/>
             <field name="requires_allocation" eval="True"/>
             <field name="employee_requests" eval="True"/>
             <field name="leave_validation_type">hr</field>

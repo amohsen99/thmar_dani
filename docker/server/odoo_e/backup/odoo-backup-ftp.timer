@@ -1,0 +1,11 @@
+[Unit]
+Description=Odoo active FTP backup every four hours in Cairo time
+
+[Timer]
+OnCalendar=*-*-* 00,04,08,12,16,20:00:00 Africa/Cairo
+Persistent=true
+AccuracySec=1s
+Unit=odoo-backup-ftp.service
+
+[Install]
+WantedBy=timers.target

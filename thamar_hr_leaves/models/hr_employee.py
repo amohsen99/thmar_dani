@@ -23,6 +23,47 @@ class HrEmployee(models.Model):
         help='يمنح الموظف 7 أيام إضافية في رصيد الإجازة الاعتيادية.',
         tracking=True,
     )
+    has_verified_service_bonus = fields.Boolean(
+        string='استحقاق زيادة مدة الخدمة مثبت', tracking=True,
+        help='استحقاق 9 أيام موثق ببيانات الموارد البشرية عند عدم توفر عدد سنوات التأمين. لا يجمع مع زيادة العمر.',
+    )
+    leave_opening_balance_ids = fields.One2many('hr.leave.opening.balance', 'employee_id')
+    leave_balance_cutoff_date = fields.Date(string='تاريخ رصيد الشيت', compute='_compute_opening_balance_summary')
+    leave_carryover_balance = fields.Float(string='الرصيد المرحّل من السنة السابقة', compute='_compute_opening_balance_summary')
+    leave_source_year_entitlement = fields.Float(string='استحقاق السنة شامل المؤثرات', compute='_compute_opening_balance_summary')
+    leave_source_gross_balance = fields.Float(string='إجمالي الرصيد قبل الإجازات', compute='_compute_opening_balance_summary')
+    leave_source_used_balance = fields.Float(string='المستخدم حتى تاريخ الشيت', compute='_compute_opening_balance_summary')
+    leave_source_remaining_balance = fields.Float(string='المتبقي حسب الشيت', compute='_compute_opening_balance_summary')
+    leave_source_annual_balance = fields.Float(string='الاعتيادي حسب الشيت', compute='_compute_opening_balance_summary')
+    leave_source_casual_balance = fields.Float(string='العارض حسب الشيت', compute='_compute_opening_balance_summary')
+    leave_current_annual_balance = fields.Float(string='المتبقي الاعتيادي للسنة', compute='_compute_opening_balance_summary')
+    leave_current_casual_balance = fields.Float(string='المتبقي العارض للسنة', compute='_compute_opening_balance_summary')
+    leave_current_total_balance = fields.Float(string='إجمالي المتبقي للسنة', compute='_compute_opening_balance_summary')
+
+    def _compute_opening_balance_summary(self):
+        today = fields.Date.today()
+        for employee in self:
+            balances = employee.leave_opening_balance_ids.filtered(
+                lambda b: b.balance_year == today.year and b.balance_basis == 'year_remaining'
+            )
+            employee.leave_balance_cutoff_date = max(balances.mapped('balance_date'), default=False)
+            employee.leave_carryover_balance = sum(balances.mapped('carryover_days'))
+            employee.leave_source_year_entitlement = sum(balances.mapped('year_entitlement_days'))
+            employee.leave_source_gross_balance = sum(balances.mapped('gross_balance_days'))
+            employee.leave_source_used_balance = sum(balances.mapped('used_before_cutoff_days'))
+            employee.leave_source_remaining_balance = sum(balances.mapped('amount'))
+            employee.leave_source_annual_balance = sum(balances.filtered('leave_type_id.is_annual_leave').mapped('amount'))
+            employee.leave_source_casual_balance = sum(balances.filtered('leave_type_id.is_casual_leave').mapped('amount'))
+            annual = casual = 0.0
+            for balance in balances:
+                status = employee._get_monthly_accrual_status(balance.leave_type_id, today.year, today)
+                if balance.leave_type_id.is_annual_leave:
+                    annual += status['remaining_balance']
+                else:
+                    casual += status['remaining_balance']
+            employee.leave_current_annual_balance = annual
+            employee.leave_current_casual_balance = casual
+            employee.leave_current_total_balance = annual + casual
 
     # ── Computed entitlement detail fields (readonly, for transparency) ──
     leave_employee_age = fields.Integer(
@@ -101,8 +142,28 @@ class HrEmployee(models.Model):
         compute='_compute_accrual_status',
         help='الحد التراكمي بعد خصم الإجازات المأخوذة أو المعلقة.',
     )
+    leave_casual_monthly_rate = fields.Float(
+        string='معدل الاستحقاق الشهري للعارضة',
+        compute='_compute_accrual_status',
+        help='رصيد الإجازة العارضة السنوي مقسوماً على 12.',
+    )
+    leave_casual_months_accrued = fields.Integer(
+        string='عدد أشهر الاستحقاق للعارضة',
+        compute='_compute_accrual_status',
+        help='عدد أشهر الاستحقاق المنقضية للإجازة العارضة.',
+    )
+    leave_casual_accrual_cap = fields.Float(
+        string='الحد التراكمي للعارضة حتى الشهر الحالي',
+        compute='_compute_accrual_status',
+        help='أقصى رصيد عارض يمكن استخدامه حتى الشهر الحالي.',
+    )
+    leave_casual_accrued_remaining = fields.Float(
+        string='الرصيد الشهري المتاح للعارضة',
+        compute='_compute_accrual_status',
+        help='الحد التراكمي للعارضة بعد خصم الإجازات المأخوذة أو المعلقة.',
+    )
 
-    @api.depends('birthday', 'hire_date', 'external_experience_years', 'is_hazardous_location')
+    @api.depends('birthday', 'hire_date', 'external_experience_years', 'is_hazardous_location', 'has_verified_service_bonus')
     def _compute_leave_entitlement_details(self):
         """Compute all leave entitlement breakdown fields for transparency."""
         today = fields.Date.today()
@@ -121,67 +182,47 @@ class HrEmployee(models.Model):
             )
             emp.leave_casual_entitlement = casual_schedule['new_entitlement']
 
+    def _get_monthly_accrual_status(self, leave_type, year, today):
+        """Return the usable current-year balance for one leave type.
+
+        The same calculation is used by the employee form and the request
+        constraint.  Unused monthly amounts remain in ``accrual_cap`` and are
+        therefore available in later months of the same calendar year.
+        """
+        self.ensure_one()
+        return self.env['hr.leave.allocation']._get_monthly_accrual_status(
+            self, leave_type, year, as_of_date=today,
+        )
+
     def _compute_accrual_status(self):
-        """Compute the live monthly accrual status for annual leave."""
+        """Compute live monthly accrual status for annual and casual leave."""
         today = fields.Date.today()
         year = today.year
-        month = today.month
-
         Allocation = self.env['hr.leave.allocation'].sudo()
-        Leave = self.env['hr.leave'].sudo()
         annual_type_cache = {}
+        casual_type_cache = {}
 
         for emp in self:
-            # Default values
-            emp.leave_annual_monthly_rate = 0.0
-            emp.leave_annual_months_accrued = 0
-            emp.leave_annual_accrual_cap = 0.0
-            emp.leave_annual_accrued_remaining = 0.0
-
-            # Find the annual leave type for this employee's company
             company_id = emp.company_id.id if emp.company_id else False
             if company_id not in annual_type_cache:
                 annual_type_cache[company_id] = Allocation._get_annual_leave_type(emp.company_id)
-            annual_type = annual_type_cache[company_id]
+            if company_id not in casual_type_cache:
+                casual_type_cache[company_id] = Allocation._get_casual_leave_type(emp.company_id)
 
-            if not annual_type or not annual_type.use_monthly_accrual:
-                continue
-
-            # Total allocation for this year
-            allocations = Allocation.search([
-                ('employee_id', '=', emp.id),
-                ('holiday_status_id', '=', annual_type.id),
-                ('state', '=', 'validate'),
-                ('leave_year', '=', year),
-            ])
-            total_allocated = sum(allocations.mapped('number_of_days'))
-            if not total_allocated:
-                continue
-
-            details = Allocation._compute_employee_entitlement(emp, today)
-            schedule = Allocation._annual_accrual_schedule(emp, year, details)
-            monthly_rate = schedule['monthly_rate']
-
-            # No annual leave accrues in the hire month.
-            start_month = schedule['first_eligible_month']
-            months_accrued = max(0, month - start_month + 1) if start_month else 0
-            accrual_cap = min(round(monthly_rate * months_accrued, 2), total_allocated)
-
-            # Leaves taken/pending this year
-            from datetime import datetime as dt
-            existing_leaves = Leave.search([
-                ('employee_id', '=', emp.id),
-                ('holiday_status_id', '=', annual_type.id),
-                ('state', 'not in', ('refuse', 'cancel')),
-                ('date_from', '>=', dt(year, 1, 1)),
-                ('date_from', '<', dt(year + 1, 1, 1)),
-            ])
-            total_taken = sum(existing_leaves.mapped('number_of_days'))
-
-            emp.leave_annual_monthly_rate = round(monthly_rate, 2)
-            emp.leave_annual_months_accrued = months_accrued
-            emp.leave_annual_accrual_cap = accrual_cap
-            emp.leave_annual_accrued_remaining = round(max(0.0, accrual_cap - total_taken), 2)
+            annual_status = emp._get_monthly_accrual_status(
+                annual_type_cache[company_id], year, today,
+            )
+            casual_status = emp._get_monthly_accrual_status(
+                casual_type_cache[company_id], year, today,
+            )
+            emp.leave_annual_monthly_rate = annual_status['monthly_rate']
+            emp.leave_annual_months_accrued = annual_status['months_accrued']
+            emp.leave_annual_accrual_cap = annual_status['accrual_cap']
+            emp.leave_annual_accrued_remaining = annual_status['accrued_remaining']
+            emp.leave_casual_monthly_rate = casual_status['monthly_rate']
+            emp.leave_casual_months_accrued = casual_status['months_accrued']
+            emp.leave_casual_accrual_cap = casual_status['accrual_cap']
+            emp.leave_casual_accrued_remaining = casual_status['accrued_remaining']
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -226,9 +267,23 @@ class HrEmployee(models.Model):
             },
         }
 
+    def action_open_leave_opening_balances(self):
+        """Open the safe mid-year balance entry screen for this employee."""
+        self.ensure_one()
+        return {
+            'name': _('Opening Leave Balances'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'hr.leave.opening.balance',
+            'view_mode': 'list,form',
+            'domain': [('employee_id', '=', self.id)],
+            'context': {'default_employee_id': self.id},
+        }
+
 
 class HrEmployeePublic(models.Model):
     _inherit = 'hr.employee.public'
+
+    has_verified_service_bonus = fields.Boolean(related='employee_id.has_verified_service_bonus')
 
     # Mirror input fields as related (readonly by nature on public model)
     external_experience_years = fields.Float(
@@ -278,4 +333,36 @@ class HrEmployeePublic(models.Model):
     leave_casual_entitlement = fields.Float(
         string='Casual Leave Entitlement',
         related='employee_id.leave_casual_entitlement',
+    )
+    leave_annual_monthly_rate = fields.Float(
+        string='Annual Monthly Accrual Rate',
+        related='employee_id.leave_annual_monthly_rate',
+    )
+    leave_annual_months_accrued = fields.Integer(
+        string='Annual Months Accrued',
+        related='employee_id.leave_annual_months_accrued',
+    )
+    leave_annual_accrual_cap = fields.Float(
+        string='Annual Accrued Balance',
+        related='employee_id.leave_annual_accrual_cap',
+    )
+    leave_annual_accrued_remaining = fields.Float(
+        string='Annual Available Balance',
+        related='employee_id.leave_annual_accrued_remaining',
+    )
+    leave_casual_monthly_rate = fields.Float(
+        string='Casual Monthly Accrual Rate',
+        related='employee_id.leave_casual_monthly_rate',
+    )
+    leave_casual_months_accrued = fields.Integer(
+        string='Casual Months Accrued',
+        related='employee_id.leave_casual_months_accrued',
+    )
+    leave_casual_accrual_cap = fields.Float(
+        string='Casual Accrued Balance',
+        related='employee_id.leave_casual_accrual_cap',
+    )
+    leave_casual_accrued_remaining = fields.Float(
+        string='Casual Available Balance',
+        related='employee_id.leave_casual_accrued_remaining',
     )

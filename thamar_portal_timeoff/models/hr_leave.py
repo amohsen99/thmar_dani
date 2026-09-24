@@ -308,14 +308,17 @@ class HrLeave(models.Model):
 
         result = []
         today = fields.Date.today()
-        allocation_data = employee._get_consumed_leaves(leave_types, today)[0]
+        allocation_data = {
+            entry[3]: entry[1]
+            for entry in leave_types.get_allocation_data(employee, today).get(employee, [])
+        }
 
         for lt in leave_types:
-            max_leaves = 0
-            remaining = 0
-            for _alloc, alloc_data in allocation_data.get(employee, {}).get(lt, {}).items():
-                max_leaves += alloc_data.get('max_leaves', 0)
-                remaining += alloc_data.get('virtual_remaining_leaves', 0)
+            # The standard summary applies validity dates and the verified
+            # yearly snapshot, unlike summing every historical allocation.
+            alloc_data = allocation_data.get(lt.id, {})
+            max_leaves = alloc_data.get('max_leaves', 0)
+            remaining = alloc_data.get('virtual_remaining_leaves', 0)
 
             if max_leaves > 0:
                 result.append({
