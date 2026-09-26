@@ -415,6 +415,9 @@ class move_attendance_wizard(models.TransientModel):
 
                     last_punch_time = None
                     emp_marks = []
+                    emp_moved = 0
+                    emp_skipped = 0
+                    emp_dedup = 0
 
                     for dd in emp_drafts:
                         punch_time = dd['name']
@@ -423,7 +426,7 @@ class move_attendance_wizard(models.TransientModel):
                             # ── Anti-Duplicate Filter ──
                             if anti_dup_minutes > 0 and last_punch_time:
                                 if (punch_time - last_punch_time) < anti_dup_delta:
-                                    dedup_skipped += 1
+                                    emp_dedup += 1
                                     emp_marks.append((draft_id, None))
                                     continue
 
@@ -439,15 +442,19 @@ class move_attendance_wizard(models.TransientModel):
                                 emp_marks.append((draft_rec.id, att_id))
 
                             if was_skipped:
-                                skipped_count += 1
+                                emp_skipped += 1
                             else:
-                                moved_count += 1
+                                emp_moved += 1
 
                         except Exception as e:
-                            error_lines.append(f"{emp_name} @ {punch_time}: {str(e)}")
-                            _logger.error(
-                                'Error moving draft %s for %s: %s',
-                                draft_id, emp_name, str(e))
+                            # A failed SQL statement aborts this cursor. Stop here
+                            # and roll back the employee as a unit, including draft
+                            # links. Continuing could also pair later punches with
+                            # an attendance whose creation has been rolled back.
+                            raise UserError(
+                                _("Draft %(draft)s at %(time)s: %(error)s",
+                                  draft=draft_id, time=punch_time, error=str(e))
+                            ) from e
 
                     # ── Mark this employee's drafts as moved ──
                     if emp_marks:
@@ -465,13 +472,17 @@ class move_attendance_wizard(models.TransientModel):
                         open_att_id_map.pop(emp_id, None)
 
                     new_cr.commit()
+                    # Report only work that was actually committed.
+                    moved_count += emp_moved
+                    skipped_count += emp_skipped
+                    dedup_skipped += emp_dedup
                 except Exception:
                     new_cr.rollback()
                     raise
                 finally:
                     new_cr.close()
             except Exception as e:
-                error_lines.append(f"{emp_name}: transaction failed: {str(e)}")
+                error_lines.append(f"{emp_name}: no changes saved; transaction rolled back: {str(e)}")
                 _logger.error(
                     'Transaction failed for employee %s: %s', emp_name, str(e))
 

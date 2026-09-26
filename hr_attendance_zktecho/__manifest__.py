@@ -7,7 +7,7 @@
     'author': "Smart Way Business Solutions",
     'website': "https://www.smartway.co",
     'category': 'Human Resources',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.0.1',
     'depends': ['base', 'hr', 'hr_attendance', 'resource'],
     'data': [
         # 'data/zk_techo_data.xml',
