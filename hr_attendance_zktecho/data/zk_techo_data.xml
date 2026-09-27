@@ -1,16 +1,25 @@
-<?xml version="1.0" ?>
-<odoo>
-  <data noupdate="1">
-
-	<record id="biometric_attendances" model="ir.cron">
-		<field name="name">Biometric Attendance</field>
-		<field name="active">False</field>
-		<field name="interval_number">1</field>
-		<field name="interval_type">days</field>
-		<field name="model_id" ref="model_biomteric_device_info"/>
-		<field name="state">code</field>
-		<field name="code">model.fetch_attendance()</field>
-	</record>
-
-  </data>
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="biometric_attendances" model="ir.cron">
+        <field name="name">ZKTeco: Download Device Attendances</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="priority">5</field>
+        <field name="model_id" ref="model_biomteric_device_info"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_download_attendance()</field>
+    </record>
+    <record id="cron_move_draft_attendances" model="ir.cron">
+        <field name="name">ZKTeco: Move Drafts to HR Attendances</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="priority">6</field>
+        <field name="model_id" ref="model_hr_draft_attendance"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_move_attendance()</field>
+    </record>
 </odoo>

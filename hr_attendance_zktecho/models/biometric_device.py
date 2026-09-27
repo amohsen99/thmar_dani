@@ -18,10 +18,7 @@ class BiomtericDeviceInfo(models.Model):
 
     @api.model
     def fetch_attendance(self):
-        'Scheduled action function'
-        machines = self.search([])
-        for machine in machines:
-            machine.download_attendance_sched()
+        return self._cron_download_attendance()
 
     def test_connection_device(self):
         force_udp = False
@@ -57,135 +54,25 @@ class BiomtericDeviceInfo(models.Model):
                 res.disconnect()
 
     def download_attendance_sched(self):
-        hr_attendance =  self.env['hr.draft.attendance']
-        anti_dup_minutes = self.env['ir.config_parameter'].sudo().get_param('hr_attendance_zktecho.attendance_anti_duplicate_minutes', '5')
-        bunch_seconds = float(anti_dup_minutes) * 60
-        
-        _logger.info('Fetching attendance')
-        if self.fetch_days >= 0:
-            now_datetime = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d'), '%Y-%m-%d')
-            prev_datetime = now_datetime - datetime.timedelta(days=self.fetch_days)
-            curr_date = prev_datetime.date() 
-        else:
-            curr_date = datetime.datetime.strptime('1950-01-01','%Y-%m-%d').date()
-        
-        conn = None
-        password = self.password or 0
-        force_udp = False
-        if self.protocol == 'udp':
-            force_udp = True
-        zk = ZK(self.ipaddress, port=self.portnumber, timeout=self.time_out, password=password, force_udp=force_udp, ommit_ping=self.ommit_ping)
-        
-        try:
-            conn = zk.connect()
-            conn.disable_device()
-            attendance = conn.get_attendance()
-            conn.enable_device()
-            if (attendance):
-                if self.fetch_days > 0:
-                    now_datetime = conn.get_time()
-                    prev_datetime = now_datetime - datetime.timedelta(days=self.fetch_days)
-                    curr_date = prev_datetime.date()
-                
-                for lattendance in attendance:
-                    if curr_date <= lattendance.timestamp.date():
-                        
-                        local_timezone = timezone(self.time_zone)
-                        local_date = local_timezone.localize(lattendance.timestamp).astimezone(timezone('UTC'))
-                        atten_time = datetime.datetime.strftime(local_date, DEFAULT_SERVER_DATETIME_FORMAT)
-                        att_id = lattendance.user_id or ''
-                        # First: check global_attendance_id on hr.employee
-                        global_emp = self.env['hr.employee'].search([('global_attendance_id', '=', att_id)], limit=1)
-                        employee_id_val = global_emp.id if global_emp else False
-                        # Fallback: check per-device mapping
-                        if not employee_id_val:
-                            employees = self.env['employee.attendance.devices'].search([('attendance_id', '=', att_id), ('device_id', '=', self.id)])
-                            if employees:
-                                employee_id_val = employees.name.id
-                        try:
-                            # Force action overrides device punch type
-                            if self.force_action:
-                                action = self.force_action
-                            else:
-                                punch_flag = lattendance.punch
-                                if self.api_type == 'legacy':
-                                    punch_flag = lattendance.status
-                                
-                                if self.action == 'both':
-                                    if str(punch_flag) in list(self.sign_in):
-                                        action = 'sign_in'
-                                    elif str(punch_flag) in list(self.sign_out):
-                                         action = 'sign_out'
-                                    else:
-                                        action = 'sign_none'
-                                else:
-                                    action = self.action
-                            if action != False:
-                                if not employee_id_val:
-                                    _logger.info('No Employee record found to be associated with User ID: ' + str(att_id)+ ' on Finger Print Mahcine')
-                                    continue
-                                atten_ids = hr_attendance.search([('employee_id','=',employee_id_val), ('name','=',atten_time)])
-                                atten_time = now_datetime = datetime.datetime.strptime(atten_time, DEFAULT_SERVER_DATETIME_FORMAT)
-                                
-                                time_with_seconds = atten_time - datetime.timedelta(seconds=bunch_seconds)
-                                duplicated_recs = hr_attendance.search([('employee_id','=',employee_id_val),
-                                                                        ('name','>',time_with_seconds),
-                                                                        ('name','<=',atten_time)])
-                                if duplicated_recs:
-                                    continue
-                                emp_name = self.env['hr.employee'].browse(employee_id_val).name
-                                if atten_ids:
-                                    _logger.info('Attendance For Employee ' + str(emp_name) + ' on Same time Exist')
-                                    atten_ids.write({'name':atten_time,
-                                                     'employee_id':employee_id_val,
-                                                     'date':lattendance.timestamp.date(),
-                                                     'attendance_status': action,
-                                                     'day_name': lattendance.timestamp.strftime('%A'),
-                                                     'device_id': self.id})
-                                else:
-                                    atten_id = hr_attendance.create({'name':atten_time,
-                                                                     'employee_id':employee_id_val,
-                                                                     'date':lattendance.timestamp.date(),
-                                                                     'attendance_status': action,
-                                                                     'day_name': lattendance.timestamp.strftime('%A'),
-                                                                     'device_id': self.id})
-                                    _logger.info('Creating Draft Attendance Record: ' + str(atten_id) + ' For ' + str(emp_name))                                
-                        except Exception as e:
-                            _logger.error('Exception' + str(e))
-                    else:
-                        _logger.warning('Skip attendance because its before the threshold ' + str(curr_date))
-            else:
-                _logger.warning('No attendance Data to Fetch')
-        except ZKNetworkError as e:
-            if e.args[0] == "Device (ping %s) is Unreachable" % self.ipaddress:
-                _logger.warning("Make sure the device (ping %s) is powered on and connected to the network" % self.ipaddress)
-            else:
-                _logger.warning(e)
-        except ZKErrorResponse as e:
-            if e.args[0] == 'Unauthenticated':
-                _logger.warning("Unable to connect (Authentication Failure), Kindly supply correct password for the device.")
-            else:
-                _logger.warning(e)
-        except timeout:
-            _logger.warning("Connection timed out, make sure the device is turned on and not blocked by the Firewall")
-        except Exception as e:
-            _logger.warning(e)
-        finally:
-            if conn:
-                conn.disconnect()
-        return True
+        # Keep existing scheduled-action integrations on the same download path.
+        return self.download_attendance_oldapi()
 
     def download_attendance_oldapi(self):
+        self.ensure_one()
+        if not self._lock_attendance_sync():
+            raise UserError(_('Another attendance download or move is running. Please retry shortly.'))
         hr_attendance = self.env['hr.draft.attendance']
         anti_dup_minutes = self.env['ir.config_parameter'].sudo().get_param('hr_attendance_zktecho.attendance_anti_duplicate_minutes', '5')
         bunch_seconds = float(anti_dup_minutes) * 60
 
         _logger.info('Fetching attendance')
         # Date range fields take priority over fetch_days
-        use_date_range = self.sync_date_from or self.sync_date_to
+        sync_from = self.env.context.get('zk_sync_from', self.sync_date_from)
+        sync_to = self.env.context.get('zk_sync_to', self.sync_date_to)
+        use_date_range = sync_from or sync_to
         if use_date_range:
-            sync_from = self.sync_date_from or datetime.datetime(1950, 1, 1)
-            sync_to = self.sync_date_to or datetime.datetime(2099, 12, 31, 23, 59, 59)
+            sync_from = sync_from or datetime.datetime(1950, 1, 1)
+            sync_to = sync_to or datetime.datetime(2099, 12, 31, 23, 59, 59)
             curr_date = sync_from.date()
             _logger.info('Using date range filter: %s to %s', sync_from, sync_to)
         elif self.fetch_days >= 0:
@@ -204,9 +91,7 @@ class BiomtericDeviceInfo(models.Model):
 
         try:
             conn = zk.connect()
-            conn.disable_device()
             attendance = conn.get_attendance()
-            conn.enable_device()
             if (attendance):
                 if not use_date_range and self.fetch_days > 0:
                     now_datetime = conn.get_time()
@@ -231,7 +116,7 @@ class BiomtericDeviceInfo(models.Model):
 
                 # --- Pre-fetch existing attendance for duplicate checking ---
                 existing_attendance = hr_attendance.search([
-                    ('name', '>=', datetime.datetime.combine(curr_date, datetime.time.min)),
+                    ('name', '>=', (sync_from if use_date_range else datetime.datetime.combine(curr_date, datetime.time.min)) - datetime.timedelta(days=1)),
                 ])
                 # Build a set of (employee_id, name_str) for fast lookup
                 existing_set = set()
@@ -255,18 +140,16 @@ class BiomtericDeviceInfo(models.Model):
                 vals_to_create = []
                 bunch_secs = bunch_seconds
 
-                for lattendance in attendance:
-                    if curr_date > lattendance.timestamp.date():
+                for lattendance in sorted(attendance, key=lambda punch: punch.timestamp):
+                    if not use_date_range and curr_date > lattendance.timestamp.date():
                         continue
-                    # If date range is set, also skip records after sync_date_to
-                    if use_date_range and lattendance.timestamp > sync_to:
-                        continue
-
                     local_timezone = timezone(self.time_zone)
                     local_date = local_timezone.localize(lattendance.timestamp).astimezone(timezone('UTC'))
                     atten_time_str = datetime.datetime.strftime(local_date, DEFAULT_SERVER_DATETIME_FORMAT)
                     atten_time = datetime.datetime.strptime(atten_time_str, DEFAULT_SERVER_DATETIME_FORMAT)
-                    att_id = lattendance.user_id or ''
+                    if use_date_range and not sync_from <= atten_time <= sync_to:
+                        continue
+                    att_id = str(lattendance.user_id or '')
 
                     employee_id_val = resolve_employee(att_id)
                     if not employee_id_val:
@@ -331,7 +214,7 @@ class BiomtericDeviceInfo(models.Model):
                         _logger.info('Prepared Draft Attendance Record For ' + str(emp_name))
 
                     except Exception as e:
-                        _logger.error('Exception: ' + str(e))
+                        raise UserError(_('Cannot import device punch: %s') % e) from e
 
                 # --- Batch create in chunks ---
                 BATCH_SIZE = 500

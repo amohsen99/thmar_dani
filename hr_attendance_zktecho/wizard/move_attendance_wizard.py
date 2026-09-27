@@ -279,6 +279,9 @@ class move_attendance_wizard(models.TransientModel):
     # ------------------------------------------------------------------
 
     def move_confirm(self):
+        self.ensure_one()
+        if not self.env['biomteric.device.info']._lock_attendance_sync():
+            raise UserError(_('Another attendance download or move is running. Please retry shortly.'))
         HrAttendance = self.env['hr.attendance'].with_context(skip_work_entries=True)
         DraftAttendance = self.env['hr.draft.attendance']
 

@@ -18,6 +18,9 @@
 					<field name="name" />
 					<field name="ipaddress" />
 					<field name="portnumber" />
+                    <field name="auto_sync" optional="show"/>
+                    <field name="last_auto_sync" optional="show"/>
+                    <field name="auto_sync_error" optional="hide"/>
 				</list>
 			</field>
 		</record>
@@ -85,7 +88,12 @@
 							</group>
 						</group>
 						<group>
-							<group string="Sync Date Range">
+							<group string="Automatic Attendance Sync">
+                                <field name="auto_sync"/>
+                                <field name="last_auto_sync"/>
+                                <field name="auto_sync_error" invisible="not auto_sync_error"/>
+                            </group>
+                            <group string="Sync Date Range">
 								<field name="sync_date_from"/>
 								<field name="sync_date_to"/>
 							</group>
