@@ -1,0 +1,82 @@
+<odoo noupdate="1">
+<record id="sequence_batch" model="ir.sequence"><field name="name">تشغيلة الصباغة</field><field name="code">factory.dyeing.batch</field><field name="prefix">DYE/</field><field name="padding">5</field></record>
+<record id="operation_0" model="factory.operation"><field name="name">صباغة</field><field name="kind">dye</field></record>
+<record id="operation_1" model="factory.operation"><field name="name">تثبيت</field><field name="kind">finish</field></record>
+<record id="operation_2" model="factory.operation"><field name="name">تجفيف</field><field name="kind">finish</field></record>
+<record id="operation_3" model="factory.operation"><field name="name">كليندر</field><field name="kind">finish</field></record>
+<record id="operation_4" model="factory.operation"><field name="name">حرق</field><field name="kind">finish</field></record>
+<record id="operation_5" model="factory.operation"><field name="name">غسيل مفتوح</field><field name="kind">finish</field></record>
+<record id="operation_6" model="factory.operation"><field name="name">عرض</field><field name="kind">finish</field></record>
+<record id="operation_7" model="factory.operation"><field name="name">كسترة</field><field name="kind">finish</field></record>
+<record id="operation_8" model="factory.operation"><field name="name">وزن</field><field name="kind">finish</field></record>
+<record id="operation_9" model="factory.operation"><field name="name">إعداد</field><field name="kind">finish</field></record>
+<record id="operation_10" model="factory.operation"><field name="name">سانفور</field><field name="kind">finish</field></record>
+<record id="operation_11" model="factory.operation"><field name="name">تجهيز</field><field name="kind">finish</field></record>
+<record id="operation_12" model="factory.operation"><field name="name">كومباكتور</field><field name="kind">finish</field></record>
+<record id="operation_13" model="factory.operation"><field name="name">صنفرة</field><field name="kind">finish</field></record>
+<record id="operation_14" model="factory.operation"><field name="name">كربون</field><field name="kind">finish</field></record>
+<record id="operation_15" model="factory.operation"><field name="name">حلاقة</field><field name="kind">finish</field></record>
+<record id="operation_16" model="factory.operation"><field name="name">بيتش</field><field name="kind">finish</field></record>
+<record id="operation_17" model="factory.operation"><field name="name">فرش</field><field name="kind">finish</field></record>
+<record id="category_0" model="factory.cost.category"><field name="name">كهرباء</field><field name="code">C00</field></record>
+<record id="category_1" model="factory.cost.category"><field name="name">غاز</field><field name="code">C01</field></record>
+<record id="category_2" model="factory.cost.category"><field name="name">مياه</field><field name="code">C02</field></record>
+<record id="category_3" model="factory.cost.category"><field name="name">بخار</field><field name="code">C03</field></record>
+<record id="category_4" model="factory.cost.category"><field name="name">أجور مباشرة</field><field name="code">C04</field></record>
+<record id="category_5" model="factory.cost.category"><field name="name">أجور صناعية غير مباشرة</field><field name="code">C05</field></record>
+<record id="category_6" model="factory.cost.category"><field name="name">أجور غير مباشرة موزعة</field><field name="code">C06</field></record>
+<record id="category_7" model="factory.cost.category"><field name="name">إدارية وتسويقية</field><field name="code">C07</field></record>
+<record id="category_8" model="factory.cost.category"><field name="name">انتقالات</field><field name="code">C08</field></record>
+<record id="category_9" model="factory.cost.category"><field name="name">قطع غيار وصيانة</field><field name="code">C09</field></record>
+<record id="category_10" model="factory.cost.category"><field name="name">إهلاك</field><field name="code">C10</field></record>
+<record id="category_11" model="factory.cost.category"><field name="name">إضافات</field><field name="code">C11</field></record>
+<record id="category_12" model="factory.cost.category"><field name="name">لف وتغليف</field><field name="code">C12</field></record>
+<record id="category_13" model="factory.cost.category"><field name="name">أخرى</field><field name="code">C13</field></record>
+<record id="color_0" model="factory.color"><field name="name">أبيض</field></record>
+<record id="color_1" model="factory.color"><field name="name">بيج</field></record>
+<record id="color_2" model="factory.color"><field name="name">كافيه</field></record>
+<record id="color_3" model="factory.color"><field name="name">رمادي</field></record>
+<record id="color_4" model="factory.color"><field name="name">فسفوري</field></record>
+<record id="color_5" model="factory.color"><field name="name">فضي</field></record>
+<record id="color_6" model="factory.color"><field name="name">سكري</field></record>
+<record id="color_7" model="factory.color"><field name="name">كحلي</field></record>
+<record id="color_8" model="factory.color"><field name="name">أسود</field></record>
+<record id="color_9" model="factory.color"><field name="name">طوبي</field></record>
+<record id="color_10" model="factory.color"><field name="name">لافندر</field></record>
+<record id="color_11" model="factory.color"><field name="name">بني</field></record>
+<record id="color_12" model="factory.color"><field name="name">زيتي</field></record>
+<record id="color_13" model="factory.color"><field name="name">نبيتي</field></record>
+<record id="color_14" model="factory.color"><field name="name">جنزاري</field></record>
+<record id="color_15" model="factory.color"><field name="name">إنديجو</field></record>
+<record id="color_16" model="factory.color"><field name="name">باذنجاني</field></record>
+<record id="color_17" model="factory.color"><field name="name">بطيخي</field></record>
+<record id="color_18" model="factory.color"><field name="name">جملي</field></record>
+<record id="color_19" model="factory.color"><field name="name">أكوا</field></record>
+<record id="color_20" model="factory.color"><field name="name">هافان</field></record>
+<record id="color_21" model="factory.color"><field name="name">زهري</field></record>
+<record id="color_22" model="factory.color"><field name="name">عسلي</field></record>
+<record id="color_23" model="factory.color"><field name="name">أوف وايت</field></record>
+<record id="color_24" model="factory.color"><field name="name">جيشي</field></record>
+<record id="color_25" model="factory.color"><field name="name">بترولي</field></record>
+<record id="color_26" model="factory.color"><field name="name">كاكي</field></record>
+<record id="color_27" model="factory.color"><field name="name">حديدي</field></record>
+<record id="color_28" model="factory.color"><field name="name">مسطردة</field></record>
+<record id="color_29" model="factory.color"><field name="name">أخضر</field></record>
+<record id="color_30" model="factory.color"><field name="name">أحمر</field></record>
+<record id="color_31" model="factory.color"><field name="name">روز</field></record>
+<record id="color_32" model="factory.color"><field name="name">فسفور</field></record>
+<record id="color_33" model="factory.color"><field name="name">رصاصي</field></record>
+<record id="color_34" model="factory.color"><field name="name">موف</field></record>
+<record id="color_35" model="factory.color"><field name="name">أصفر</field></record>
+<record id="color_36" model="factory.color"><field name="name">منت</field></record>
+<record id="color_37" model="factory.color"><field name="name">فيروزي</field></record>
+<record id="color_38" model="factory.color"><field name="name">فوشيا</field></record>
+<record id="color_39" model="factory.color"><field name="name">منجاوي</field></record>
+<record id="color_40" model="factory.color"><field name="name">لبني</field></record>
+<record id="color_41" model="factory.color"><field name="name">ليلاك</field></record>
+<record id="color_42" model="factory.color"><field name="name">برتقالي</field></record>
+<record id="color_43" model="factory.color"><field name="name">تركواز</field></record>
+<record id="color_44" model="factory.color"><field name="name">سيمون</field></record>
+<record id="color_45" model="factory.color"><field name="name">عنابي</field></record>
+<record id="color_46" model="factory.color"><field name="name">كشمير</field></record>
+</odoo>

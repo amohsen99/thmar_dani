@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <record id="view_factory_dyeing_batch_list" model="ir.ui.view">
+    <field name="name">factory.dyeing.batch.list</field>
+    <field name="model">factory.dyeing.batch</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="name"/>
+        <field name="date"/>
+        <field name="job_id"/>
+        <field name="partner_id"/>
+        <field name="fabric_id"/>
+        <field name="color_id"/>
+        <field name="raw_kg"/>
+        <field name="finished_kg"/>
+        <field name="finished_meters"/>
+        <field name="total_cost"/>
+        <field name="state"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_factory_dyeing_batch_form" model="ir.ui.view">
+    <field name="name">factory.dyeing.batch.form</field>
+    <field name="model">factory.dyeing.batch</field>
+    <field name="arch" type="xml">
+      <form>
+        <header>
+          <button name="action_refresh_rates" type="object" string="تحديث أسعار الشهر" invisible="state != 'draft'"/>
+          <button name="action_approve" type="object" string="اعتماد وتثبيت التكلفة" class="oe_highlight" invisible="state != 'draft'" groups="thamar_textile_costing.group_manager"/>
+          <field name="state" widget="statusbar"/>
+        </header>
+        <sheet>
+          <div class="alert alert-info" invisible="state != 'draft'">التكلفة مبدئية حتى الاعتماد. حدّث أسعار الشهر بعد إضافة سعر جديد. السعر الناقص يظهر في سطر المرحلة ويمنع الاعتماد.</div>
+          <group col="4">
+            <field name="name" readonly="state == 'approved'"/>
+            <field name="job_id" readonly="state == 'approved'"/>
+            <field name="date" readonly="state == 'approved'"/>
+            <field name="color_id" readonly="state == 'approved'"/>
+            <field name="company_id" readonly="state == 'approved'"/>
+            <field name="currency_id" invisible="1"/>
+          </group>
+          <notebook>
+            <page string="الكميات">
+              <group col="4">
+                <field name="raw_kg" readonly="state == 'approved'"/>
+                <field name="meters_per_kg" readonly="state == 'approved'"/>
+                <field name="raw_meters" readonly="1"/>
+                <field name="finished_kg" readonly="state == 'approved'"/>
+                <field name="finished_meters" readonly="state == 'approved'"/>
+                <field name="second_kg" readonly="state == 'approved'"/>
+                <field name="second_meters" readonly="state == 'approved'"/>
+                <field name="waste_kg" readonly="state == 'approved'"/>
+                <field name="loss_percent" readonly="1"/>
+              </group>
+              <p>تكلفة الوحدة محسوبة على التام درجة أولى فقط. الفاقد بالوزن = الخام − أولى − ثانية − فضلات. تكلفة الوحدة غير متاحة قبل تسجيل كمية التام.</p>
+            </page>
+            <page string="مراحل التشغيل">
+              <field name="operation_ids" readonly="state == 'approved'">
+                <list editable="bottom" decoration-danger="rate_missing">
+                  <field name="sequence" widget="handle"/>
+                  <field name="operation_id"/>
+                  <field name="machine_id"/>
+                  <field name="duration_method"/>
+                  <field name="manual_hours"/>
+                  <field name="start_at" optional="hide"/>
+                  <field name="end_at" optional="hide"/>
+                  <field name="processed_meters" optional="hide"/>
+                  <field name="meters_per_minute" optional="hide"/>
+                  <field name="hours" sum="الساعات"/>
+                  <field name="rate_id" readonly="1" optional="hide"/>
+                  <field name="rate_missing"/>
+                  <field name="hourly_rate"/>
+                  <field name="cost" sum="التكلفة"/>
+                  <field name="notes" optional="hide"/>
+                </list>
+              </field>
+            </page>
+            <page string="الأصباغ والمواد">
+              <field name="material_ids" readonly="state == 'approved'">
+                <list editable="bottom">
+                  <field name="name"/>
+                  <field name="kind"/>
+                  <field name="amount" sum="الإجمالي"/>
+                </list>
+              </field>
+            </page>
+            <page string="ملخص التكلفة">
+              <group col="4">
+                <field name="dye_time_cost"/>
+                <field name="finish_time_cost"/>
+                <field name="material_cost"/>
+                <field name="total_hours"/>
+                <field name="extra_percent" readonly="state == 'approved'"/>
+                <field name="extra_reason" readonly="state == 'approved'"/>
+                <field name="extra_cost"/>
+                <field name="total_cost"/>
+                <field name="cost_per_kg" invisible="finished_kg == 0"/>
+                <field name="cost_per_meter" invisible="finished_meters == 0"/>
+                <field name="approved_by"/>
+                <field name="approved_at"/>
+              </group>
+            </page>
+          </notebook>
+          <field name="notes" readonly="state == 'approved'"/>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="action_factory_dyeing_batch" model="ir.actions.act_window">
+    <field name="name">تشغيل الصباغة والتجهيز</field>
+    <field name="res_model">factory.dyeing.batch</field>
+    <field name="view_mode">list,form,pivot,graph</field>
+  </record>
+  <record id="view_batch_search" model="ir.ui.view">
+    <field name="name">factory.batch.search</field>
+    <field name="model">factory.dyeing.batch</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="job_id"/>
+        <field name="partner_id"/>
+        <field name="fabric_id"/>
+        <field name="color_id"/>
+        <filter name="approved" string="معتمدة" domain="[('state','=','approved')]"/>
+        <filter name="month" string="الشهر" context="{'group_by':'date:month'}"/>
+        <filter name="customer" string="العميل" context="{'group_by':'partner_id'}"/>
+        <filter name="fabric" string="القماش" context="{'group_by':'fabric_id'}"/>
+        <filter name="color" string="اللون" context="{'group_by':'color_id'}"/>
+      </search>
+    </field>
+  </record>
+  <record id="view_batch_pivot" model="ir.ui.view">
+    <field name="name">factory.batch.pivot</field>
+    <field name="model">factory.dyeing.batch</field>
+    <field name="arch" type="xml">
+      <pivot string="تجميعي التشغيل" disable_linking="0">
+        <field name="date" interval="month" type="row"/>
+        <field name="color_id" type="row"/>
+        <field name="total_cost" type="measure"/>
+        <field name="finished_kg" type="measure"/>
+        <field name="finished_meters" type="measure"/>
+      </pivot>
+    </field>
+  </record>
+  <record id="view_batch_graph" model="ir.ui.view">
+    <field name="name">factory.batch.graph</field>
+    <field name="model">factory.dyeing.batch</field>
+    <field name="arch" type="xml">
+      <graph string="تكاليف التشغيل">
+        <field name="date" interval="month"/>
+        <field name="total_cost" type="measure"/>
+      </graph>
+    </field>
+  </record>
+  <record id="action_report" model="ir.actions.act_window">
+    <field name="name">تجميعي التشغيل المعتمد</field>
+    <field name="res_model">factory.dyeing.batch</field>
+    <field name="view_mode">pivot,graph,list,form</field>
+    <field name="domain">[('state','=','approved')]</field>
+  </record>
+</odoo>

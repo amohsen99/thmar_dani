@@ -49,13 +49,10 @@ class DraftAttendance(models.Model):
         devices_model = self.env['biomteric.device.info']
         if not devices_model._lock_attendance_sync():
             return
-        devices = devices_model.search([('auto_sync', '=', True)])
-        if not devices or any(not device.last_auto_sync for device in devices):
-            _logger.info('Automatic attendance move waiting for all enabled devices to download')
-            return
-        # Only process the interval fully downloaded from EVERY enabled device.
-        # A short delay allows a punch at the edge of a download to settle.
-        cutoff = min([fields.Datetime.now()] + devices.mapped('last_auto_sync')) - datetime.timedelta(minutes=2)
+        # Drafts may come from manual downloads as well as scheduled ones.
+        # An unavailable or never-synced device must not block the whole queue.
+        # Late arrivals still pass the chronological safety checks below.
+        cutoff = fields.Datetime.now() - datetime.timedelta(minutes=2)
         drafts = self.search([
             ('moved', '=', False), ('employee_id', '!=', False),
             ('attendance_status', 'in', ['sign_in', 'sign_out']),

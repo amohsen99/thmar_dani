@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <record id="view_factory_color_list" model="ir.ui.view">
+    <field name="name">factory.color.list</field>
+    <field name="model">factory.color</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="name"/>
+        <field name="code"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_factory_color_form" model="ir.ui.view">
+    <field name="name">factory.color.form</field>
+    <field name="model">factory.color</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <group col="4">
+            <field name="name"/>
+            <field name="code"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="action_factory_color" model="ir.actions.act_window">
+    <field name="name">الألوان</field>
+    <field name="res_model">factory.color</field>
+    <field name="view_mode">list,form</field>
+  </record>
+</odoo>

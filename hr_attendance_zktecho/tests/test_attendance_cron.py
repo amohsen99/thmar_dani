@@ -91,15 +91,12 @@ class TestAttendanceCron(TransactionCase):
         connection.clear_attendance.assert_not_called()
         self.assertEqual(connection.disconnect.call_count, 2)
 
-    def test_move_waits_for_download_and_does_not_repeat(self):
+    def test_manual_download_moves_after_delay_and_does_not_repeat(self):
         punch = self.punch('2026-09-01 22:00:00', 'sign_in')
-        with patch.object(type(self.device), 'search', return_value=self.device):
+        with patch.object(fields.Datetime, 'now', return_value=datetime(2026, 9, 1, 22, 1)):
             self.drafts._cron_move_attendance()
             self.assertFalse(punch.moved)
-            self.device.last_auto_sync = datetime(2026, 9, 1, 22, 1)
-            self.drafts._cron_move_attendance()
-            self.assertFalse(punch.moved)
-            self.device.last_auto_sync = datetime(2026, 9, 1, 22, 5)
+        with patch.object(fields.Datetime, 'now', return_value=datetime(2026, 9, 1, 22, 5)):
             self.drafts._cron_move_attendance()
             self.assertTrue(punch.moved)
             self.drafts._cron_move_attendance()
@@ -127,15 +124,12 @@ class TestAttendanceCron(TransactionCase):
             cr.execute('SELECT pg_try_advisory_xact_lock(%s, %s)', (903719, 1))
             self.assertFalse(cr.fetchone()[0])
 
-    def test_slowest_device_limits_move_cutoff(self):
+    def test_offline_device_does_not_block_downloaded_drafts(self):
         second = self.device.copy({'ipaddress': '192.0.2.102'})
         self.device.last_auto_sync = datetime(2026, 9, 2, 10)
         second.last_auto_sync = datetime(2026, 9, 1, 21)
         punch = self.punch('2026-09-01 22:00:00', 'sign_in')
         with patch.object(type(self.device), 'search', return_value=self.device | second):
-            self.drafts._cron_move_attendance()
-            self.assertFalse(punch.moved)
-            second.last_auto_sync = datetime(2026, 9, 2, 10)
             self.drafts._cron_move_attendance()
             self.assertTrue(punch.moved)
 

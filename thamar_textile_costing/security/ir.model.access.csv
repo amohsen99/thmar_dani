@@ -1,0 +1,27 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_factory_cost_center_user,factory.cost.center user,model_factory_cost_center,group_user,1,0,0,0
+access_factory_cost_center_manager,factory.cost.center manager,model_factory_cost_center,group_manager,1,1,1,1
+access_factory_machine_user,factory.machine user,model_factory_machine,group_user,1,0,0,0
+access_factory_machine_manager,factory.machine manager,model_factory_machine,group_manager,1,1,1,1
+access_factory_color_user,factory.color user,model_factory_color,group_user,1,0,0,0
+access_factory_color_manager,factory.color manager,model_factory_color,group_manager,1,1,1,1
+access_factory_operation_user,factory.operation user,model_factory_operation,group_user,1,0,0,0
+access_factory_operation_manager,factory.operation manager,model_factory_operation,group_manager,1,1,1,1
+access_factory_fabric_user,factory.fabric user,model_factory_fabric,group_user,1,0,0,0
+access_factory_fabric_manager,factory.fabric manager,model_factory_fabric,group_manager,1,1,1,1
+access_factory_fabric_speed_user,factory.fabric.speed user,model_factory_fabric_speed,group_user,1,0,0,0
+access_factory_fabric_speed_manager,factory.fabric.speed manager,model_factory_fabric_speed,group_manager,1,1,1,1
+access_factory_cost_category_user,factory.cost.category user,model_factory_cost_category,group_user,1,0,0,0
+access_factory_cost_category_manager,factory.cost.category manager,model_factory_cost_category,group_manager,1,1,1,1
+access_factory_machine_cost_rate_user,factory.machine.cost.rate user,model_factory_machine_cost_rate,group_user,1,0,0,0
+access_factory_machine_cost_rate_manager,factory.machine.cost.rate manager,model_factory_machine_cost_rate,group_manager,1,1,1,1
+access_factory_machine_cost_line_user,factory.machine.cost.line user,model_factory_machine_cost_line,group_user,1,0,0,0
+access_factory_machine_cost_line_manager,factory.machine.cost.line manager,model_factory_machine_cost_line,group_manager,1,1,1,1
+access_factory_job_user,factory.job user,model_factory_job,group_user,1,1,1,1
+access_factory_job_manager,factory.job manager,model_factory_job,group_manager,1,1,1,1
+access_factory_dyeing_batch_user,factory.dyeing.batch user,model_factory_dyeing_batch,group_user,1,1,1,1
+access_factory_dyeing_batch_manager,factory.dyeing.batch manager,model_factory_dyeing_batch,group_manager,1,1,1,1
+access_factory_batch_operation_user,factory.batch.operation user,model_factory_batch_operation,group_user,1,1,1,1
+access_factory_batch_operation_manager,factory.batch.operation manager,model_factory_batch_operation,group_manager,1,1,1,1
+access_factory_batch_material_user,factory.batch.material user,model_factory_batch_material,group_user,1,1,1,1
+access_factory_batch_material_manager,factory.batch.material manager,model_factory_batch_material,group_manager,1,1,1,1

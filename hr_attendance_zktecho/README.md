@@ -19,10 +19,11 @@ before applying the download range.
 Only enable **Automatic Attendance Sync** on devices that should participate.
 Each device shows its last successful automatic download and most recent error.
 An offline device is retried next run; it does not roll back successful downloads
-from other devices. Draft movement waits for all enabled devices to have synced,
-then processes through the earliest successful download minus two minutes. This
-prevents an OUT device getting ahead of an unavailable IN device. If a device is
-permanently retired, disable its Automatic Attendance Sync setting.
+from other devices. Draft movement processes downloaded punches older than two
+minutes, including manual downloads. Offline or never-synced devices do not block
+the draft queue. Delayed punches that precede already moved records require
+review; the two-minute delay cannot guarantee ordering across device outages.
+If a device is permanently retired, disable its Automatic Attendance Sync setting.
 
 Check-ins stay open across cron runs and midnight. A subsequent checkout closes
 the same attendance, subject to the configured maximum shift duration. Duplicate

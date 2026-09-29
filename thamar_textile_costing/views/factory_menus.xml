@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <menuitem id="menu_root" name="تكاليف المصنع" sequence="15" groups="group_user"/>
+  <menuitem id="menu_setup" name="الإعدادات" parent="menu_root" sequence="90"/>
+  <menuitem id="menu_factory_job" name="أوامر الشغل" parent="menu_root" action="action_factory_job" sequence="1"/>
+  <menuitem id="menu_factory_dyeing_batch" name="تشغيل الصباغة والتجهيز" parent="menu_root" action="action_factory_dyeing_batch" sequence="2"/>
+  <menuitem id="menu_factory_machine_cost_rate" name="أسعار الساعة الشهرية" parent="menu_root" action="action_factory_machine_cost_rate" sequence="3"/>
+  <menuitem id="menu_report" name="تجميعي التشغيل" parent="menu_root" action="action_report" sequence="4"/>
+  <menuitem id="menu_factory_cost_center" name="الأقسام" parent="menu_setup" action="action_factory_cost_center" sequence="1"/>
+  <menuitem id="menu_factory_machine" name="الماكينات" parent="menu_setup" action="action_factory_machine" sequence="2"/>
+  <menuitem id="menu_factory_fabric" name="أصناف القماش والسرعات" parent="menu_setup" action="action_factory_fabric" sequence="3"/>
+  <menuitem id="menu_factory_color" name="الألوان" parent="menu_setup" action="action_factory_color" sequence="4"/>
+  <menuitem id="menu_factory_operation" name="مراحل التشغيل" parent="menu_setup" action="action_factory_operation" sequence="5"/>
+  <menuitem id="menu_factory_cost_category" name="بنود التكلفة" parent="menu_setup" action="action_factory_cost_category" sequence="6"/>
+</odoo>
