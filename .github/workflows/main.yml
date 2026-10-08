@@ -49,7 +49,7 @@ jobs:
 
             echo "Upgrading Al-Omar Account Custom on Live2..."
             docker compose -f "$COMPOSE_FILE" run --rm --no-deps odoo \
-              odoo -d hr -u alomar_account_custom --stop-after-init
+              odoo -d Hr-Live2 -u base --stop-after-init
 
             echo "Upgrading old-barcode compatibility modules..."
             docker compose -f "$COMPOSE_FILE" run --rm --no-deps odoo \
