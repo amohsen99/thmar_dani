@@ -51,13 +51,7 @@ jobs:
             docker compose -f "$COMPOSE_FILE" run --rm --no-deps odoo \
               odoo -d Hr-Live2 -u web --stop-after-init
 
-            echo "Upgrading old-barcode compatibility modules..."
-            docker compose -f "$COMPOSE_FILE" run --rm --no-deps odoo \
-              odoo -d old-barcode -u thamar_print_batch,thamar_product_barcode --stop-after-init
-
-            echo "Recreating the Odoo service with the updated code..."
-            docker compose -f "$COMPOSE_FILE" up -d --no-deps --force-recreate odoo
-
+            
             echo "Waiting for Odoo to be ready on port 8069..."
             sleep 10
             
