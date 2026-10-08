@@ -2,8 +2,8 @@
 
 Upgrade `hr_attendance_zktecho` to install these Odoo scheduled actions:
 
-- **ZKTeco: Download Device Attendances** — every five minutes.
-- **ZKTeco: Move Drafts to HR Attendances** — every five minutes, up to 1,000 punches per run.
+- **ZKTeco: Download Device Attendances** — every two hours.
+- **ZKTeco: Move Drafts to HR Attendances** — every two hours, up to 1,000 punches per run.
 
 Intervals can be changed under Settings → Technical → Scheduled Actions.
 Both jobs run all day, including weekends. The existing attendance routing,
