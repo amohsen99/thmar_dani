@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="category_textile_coding" model="product.category">
+            <field name="name">ترميز منتجات المصنع</field>
+        </record>
+
+        <record id="category_yarn" model="product.category">
+            <field name="name">غزول</field>
+            <field name="parent_id" ref="category_textile_coding"/>
+        </record>
+        <record id="category_yarn_polyester" model="product.category">
+            <field name="name">غزل بوليستر</field>
+            <field name="parent_id" ref="category_yarn"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">0101</field>
+            <field name="product_code_serial_digits">4</field>
+        </record>
+        <record id="category_yarn_cotton" model="product.category">
+            <field name="name">غزل قطن</field>
+            <field name="parent_id" ref="category_yarn"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">0102</field>
+            <field name="product_code_serial_digits">4</field>
+        </record>
+        <record id="category_yarn_mixed" model="product.category">
+            <field name="name">غزل مخلوط</field>
+            <field name="parent_id" ref="category_yarn"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">0103</field>
+            <field name="product_code_serial_digits">4</field>
+        </record>
+
+        <record id="category_raw_fabric" model="product.category">
+            <field name="name">قماش خام</field>
+            <field name="parent_id" ref="category_textile_coding"/>
+        </record>
+        <record id="category_raw_fabric_rectangular" model="product.category">
+            <field name="name">خام مستطيل</field>
+            <field name="parent_id" ref="category_raw_fabric"/>
+        </record>
+        <record id="category_raw_rectangular_polyester" model="product.category">
+            <field name="name">خام مستطيل بوليستر</field>
+            <field name="parent_id" ref="category_raw_fabric_rectangular"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">211</field>
+            <field name="product_code_serial_digits">3</field>
+        </record>
+        <record id="category_raw_rectangular_cotton" model="product.category">
+            <field name="name">خام مستطيل قطن</field>
+            <field name="parent_id" ref="category_raw_fabric_rectangular"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">212</field>
+            <field name="product_code_serial_digits">3</field>
+        </record>
+        <record id="category_raw_rectangular_mixed" model="product.category">
+            <field name="name">خام مستطيل مخلوط</field>
+            <field name="parent_id" ref="category_raw_fabric_rectangular"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">213</field>
+            <field name="product_code_serial_digits">3</field>
+        </record>
+        <record id="category_raw_fabric_circular" model="product.category">
+            <field name="name">خام دائري</field>
+            <field name="parent_id" ref="category_raw_fabric"/>
+        </record>
+        <record id="category_raw_circular_polyester" model="product.category">
+            <field name="name">خام دائري بوليستر</field>
+            <field name="parent_id" ref="category_raw_fabric_circular"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">221</field>
+            <field name="product_code_serial_digits">4</field>
+        </record>
+        <record id="category_raw_circular_cotton" model="product.category">
+            <field name="name">خام دائري قطن</field>
+            <field name="parent_id" ref="category_raw_fabric_circular"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">222</field>
+            <field name="product_code_serial_digits">4</field>
+        </record>
+        <record id="category_raw_circular_mixed" model="product.category">
+            <field name="name">خام دائري مخلوط</field>
+            <field name="parent_id" ref="category_raw_fabric_circular"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">223</field>
+            <field name="product_code_serial_digits">4</field>
+        </record>
+
+        <record id="category_chemicals" model="product.category">
+            <field name="name">كيماويات</field>
+            <field name="parent_id" ref="category_textile_coding"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">4</field>
+            <field name="product_code_serial_digits">4</field>
+        </record>
+        <record id="category_spare_parts" model="product.category">
+            <field name="name">قطع غيار</field>
+            <field name="parent_id" ref="category_textile_coding"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">5</field>
+            <field name="product_code_serial_digits">4</field>
+        </record>
+        <record id="category_miscellaneous" model="product.category">
+            <field name="name">متنوعات</field>
+            <field name="parent_id" ref="category_textile_coding"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">6</field>
+            <field name="product_code_serial_digits">4</field>
+        </record>
+
+        <record id="category_finished_fabric" model="product.category">
+            <field name="name">منتج تام</field>
+            <field name="parent_id" ref="category_textile_coding"/>
+        </record>
+        <record id="category_finished_printed" model="product.category">
+            <field name="name">منتج تام مطبوع</field>
+            <field name="parent_id" ref="category_finished_fabric"/>
+        </record>
+        <record id="category_finished_printed_polyester" model="product.category">
+            <field name="name">مطبوع بوليستر</field>
+            <field name="parent_id" ref="category_finished_printed"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">311</field>
+            <field name="product_code_serial_digits">4</field>
+            <field name="product_code_variant_source">design</field>
+            <field name="product_code_grade_position">before_serial</field>
+        </record>
+        <record id="category_finished_printed_fiber" model="product.category">
+            <field name="name">مطبوع فبران</field>
+            <field name="parent_id" ref="category_finished_printed"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">312</field>
+            <field name="product_code_serial_digits">4</field>
+            <field name="product_code_variant_source">design</field>
+            <field name="product_code_grade_position">before_serial</field>
+        </record>
+        <record id="category_finished_printed_mixed" model="product.category">
+            <field name="name">مطبوع مخلوط</field>
+            <field name="parent_id" ref="category_finished_printed"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">313</field>
+            <field name="product_code_serial_digits">4</field>
+            <field name="product_code_variant_source">design</field>
+            <field name="product_code_grade_position">before_serial</field>
+        </record>
+        <record id="category_finished_dyed" model="product.category">
+            <field name="name">منتج تام مصبوغ</field>
+            <field name="parent_id" ref="category_finished_fabric"/>
+        </record>
+        <record id="category_finished_dyed_disperse" model="product.category">
+            <field name="name">مصبوغ ديسبريس</field>
+            <field name="parent_id" ref="category_finished_dyed"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">321</field>
+            <field name="product_code_serial_digits">4</field>
+            <field name="product_code_variant_source">color</field>
+            <field name="product_code_grade_position">before_serial</field>
+        </record>
+        <record id="category_finished_dyed_reactive" model="product.category">
+            <field name="name">مصبوغ رياكتف</field>
+            <field name="parent_id" ref="category_finished_dyed"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">322</field>
+            <field name="product_code_serial_digits">4</field>
+            <field name="product_code_variant_source">color</field>
+            <field name="product_code_grade_position">before_serial</field>
+        </record>
+        <record id="category_finished_dyed_pigment" model="product.category">
+            <field name="name">مصبوغ بجمنت</field>
+            <field name="parent_id" ref="category_finished_dyed"/>
+            <field name="product_code_scheme">serial</field>
+            <field name="product_code_prefix">323</field>
+            <field name="product_code_serial_digits">4</field>
+            <field name="product_code_variant_source">color</field>
+            <field name="product_code_grade_position">before_serial</field>
+        </record>
+
+        <record id="category_printing_residue" model="product.category">
+            <field name="name">فضلات طباعة</field>
+            <field name="parent_id" ref="category_textile_coding"/>
+            <field name="product_code_scheme">fixed</field>
+            <field name="product_code_fixed_value">3555555</field>
+        </record>
+        <record id="category_dyeing_residue" model="product.category">
+            <field name="name">فضلات صباغة</field>
+            <field name="parent_id" ref="category_textile_coding"/>
+            <field name="product_code_scheme">fixed</field>
+            <field name="product_code_fixed_value">3666666</field>
+        </record>
+    </data>
+</odoo>
