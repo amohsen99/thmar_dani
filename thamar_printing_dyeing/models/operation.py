@@ -159,6 +159,20 @@ class DyeingOperation(models.Model):
     temperature = fields.Float(string="الحرارة", digits=(16, 2), tracking=True)
     worker_name = fields.Char(string="اسم الفني / الموظف", tracking=True)
     notes = fields.Text(string="ملاحظات")
+    material_issue_ids = fields.One2many(
+        "stock.picking",
+        "dyeing_operation_id",
+        string="مستندات صرف المواد",
+    )
+    material_move_ids = fields.One2many(
+        "stock.move",
+        "dyeing_operation_id",
+        string="المواد المصروفة",
+    )
+    material_issue_count = fields.Integer(
+        string="عدد مستندات الصرف",
+        compute="_compute_material_issue_count",
+    )
     company_id = fields.Many2one(
         related="work_order_id.company_id",
         string="الشركة",
@@ -182,6 +196,11 @@ class DyeingOperation(models.Model):
         )
         for operation in self:
             operation.can_edit_customer = can_edit
+
+    @api.depends("material_issue_ids")
+    def _compute_material_issue_count(self):
+        for operation in self:
+            operation.material_issue_count = len(operation.material_issue_ids)
 
     @api.depends(
         "entry_time",
@@ -393,3 +412,18 @@ class DyeingOperation(models.Model):
     def _onchange_stage_type_id(self):
         if self.machine_id and self.stage_type_id not in self.machine_id.stage_type_ids:
             self.machine_id = False
+
+    def action_view_material_issues(self):
+        self.ensure_one()
+        action = self.env.ref(
+            "thamar_printing_dyeing.action_dyeing_material_issue"
+        ).read()[0]
+        action["domain"] = [("dyeing_operation_id", "=", self.id)]
+        action["context"] = {
+            "default_is_dyeing_material_issue": True,
+            "default_dyeing_work_order_id": self.work_order_id.id,
+            "default_dyeing_operation_id": self.id,
+            "default_origin": self.work_order_id.name,
+            "restricted_picking_type_code": "internal",
+        }
+        return action

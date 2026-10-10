@@ -53,6 +53,8 @@
               parent="menu_printing_dyeing_root" action="action_dyeing_batch" sequence="25"/>
     <menuitem id="menu_dyeing_machine" name="الماكينات"
               parent="menu_printing_dyeing_root" action="action_dyeing_machine" sequence="30"/>
+    <menuitem id="menu_dyeing_material_issue" name="صرف مواد المراحل"
+              parent="menu_printing_dyeing_root" action="action_dyeing_material_issue" sequence="35"/>
 
     <menuitem id="menu_printing_dyeing_configuration" name="الإعدادات"
               parent="menu_printing_dyeing_root" sequence="90"

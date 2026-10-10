@@ -11,6 +11,9 @@ class TestPrintingDyeing(TransactionCase):
         super().setUpClass()
         cls.partner = cls.env["res.partner"].create({"name": "Test Fabric Customer"})
         cls.product = cls.env["product.product"].create({"name": "Cotton"})
+        cls.chemical_product = cls.env["product.product"].create(
+            {"name": "Test Dye Chemical", "is_storable": True}
+        )
         cls.stage_dye = cls.env.ref("thamar_printing_dyeing.stage_type_dyehouse")
         cls.stage_finish = cls.env.ref("thamar_printing_dyeing.stage_type_finishing")
         cls.stage_preparation = cls.env.ref(
@@ -202,6 +205,68 @@ class TestPrintingDyeing(TransactionCase):
                     "operation_ids": [(6, 0, operation.ids)],
                 }
             )
+
+    def test_material_issue_is_linked_to_plan_and_operation(self):
+        order = self._create_order(message_number="LOT-MATERIALS")
+        operation = order.operation_ids.sorted("sequence")[0]
+        warehouse = self.env["stock.warehouse"].search(
+            [("company_id", "=", self.env.company.id)], limit=1
+        )
+        picking_type = warehouse.int_type_id
+        source_location = warehouse.lot_stock_id
+        destination_location = self.env["stock.location"].search(
+            [
+                ("usage", "=", "production"),
+                "|",
+                ("company_id", "=", self.env.company.id),
+                ("company_id", "=", False),
+            ],
+            order="company_id desc, id",
+            limit=1,
+        )
+        self.env["stock.quant"]._update_available_quantity(
+            self.chemical_product, source_location, 10
+        )
+        picking = self.env["stock.picking"].create(
+            {
+                "is_dyeing_material_issue": True,
+                "dyeing_work_order_id": order.id,
+                "dyeing_operation_id": operation.id,
+                "picking_type_id": picking_type.id,
+                "location_id": source_location.id,
+                "location_dest_id": destination_location.id,
+                "move_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "product_id": self.chemical_product.id,
+                            "product_uom_qty": 4,
+                            "product_uom": self.chemical_product.uom_id.id,
+                            "location_id": source_location.id,
+                            "location_dest_id": destination_location.id,
+                        },
+                    )
+                ],
+            }
+        )
+        self.assertEqual(picking.dyeing_work_order_id, order)
+        self.assertEqual(picking.dyeing_operation_id, operation)
+        self.assertEqual(operation.material_issue_ids, picking)
+        self.assertEqual(operation.material_move_ids, picking.move_ids)
+
+        picking.action_confirm()
+        picking.action_assign()
+        picking.move_ids.quantity = 4
+        picking.move_ids.picked = True
+        picking.button_validate()
+
+        self.assertEqual(picking.state, "done")
+        self.assertEqual(operation.material_move_ids.quantity, 4)
+        remaining_quantity = self.env["stock.quant"]._get_available_quantity(
+            self.chemical_product, source_location
+        )
+        self.assertEqual(remaining_quantity, 6)
 
     def test_only_manager_can_change_customer_from_operation(self):
         regular_user = new_test_user(

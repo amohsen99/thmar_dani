@@ -38,6 +38,13 @@
         <field name="arch" type="xml">
             <form string="متابعة مرحلة">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_material_issues" type="object"
+                                class="oe_stat_button" icon="fa-cubes">
+                            <field name="material_issue_count" widget="statinfo"
+                                   string="صرف المواد"/>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <label for="name"/>
                         <h1><field name="name"/></h1>
@@ -96,6 +103,23 @@
                                 <field name="total_cost"/>
                                 <field name="currency_id" invisible="1"/>
                             </group>
+                        </page>
+                        <page string="المواد المصروفة" name="issued_materials">
+                            <field name="material_move_ids" readonly="1">
+                                <list string="المواد المصروفة"
+                                      decoration-success="state == 'done'"
+                                      decoration-muted="state == 'cancel'">
+                                    <field name="picking_id" string="مستند الصرف"/>
+                                    <field name="product_id" string="المادة"/>
+                                    <field name="product_uom_qty" string="الكمية المطلوبة"/>
+                                    <field name="quantity" string="الكمية المصروفة"/>
+                                    <field name="product_uom" string="الوحدة"/>
+                                    <field name="location_id" string="من مخزن" optional="show"/>
+                                    <field name="location_dest_id" string="إلى" optional="hide"/>
+                                    <field name="date" string="التاريخ" optional="show"/>
+                                    <field name="state" string="حالة الصرف" widget="badge"/>
+                                </list>
+                            </field>
                         </page>
                         <page string="ملاحظات" name="notes">
                             <field name="notes" placeholder="ملاحظات المرحلة..."/>

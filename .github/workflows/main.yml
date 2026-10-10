@@ -47,9 +47,9 @@ jobs:
             echo "Building the updated Odoo image..."
             docker compose -f "$COMPOSE_FILE" build odoo
 
-            echo "Upgrading Al-Omar Account Custom on Live2..."
-            docker compose -f "$COMPOSE_FILE" run --rm --no-deps odoo \
-              odoo -d Hr-Live2 -u web --stop-after-init
+            # echo "Upgrading Al-Omar Account Custom on Live2..."
+            # docker compose -f "$COMPOSE_FILE" run --rm --no-deps odoo \
+            #   odoo -d Hr-Live2 -u web --stop-after-init
 
             
             echo "Waiting for Odoo to be ready on port 8069..."
