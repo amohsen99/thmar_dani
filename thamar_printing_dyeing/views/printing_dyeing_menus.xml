@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_printing_dyeing_root" name="الطباعة والصباغة"
+              sequence="45" groups="group_printing_dyeing_user"/>
+
+    <menuitem id="menu_dyeing_work_order" name="الخطط"
+              parent="menu_printing_dyeing_root" action="action_dyeing_work_order" sequence="10"/>
+    <menuitem id="menu_dyeing_operation" name="المراحل"
+              parent="menu_printing_dyeing_root" sequence="20"/>
+    <menuitem id="menu_dyeing_operation_all" name="كل المراحل"
+              parent="menu_dyeing_operation" action="action_dyeing_operation" sequence="1"/>
+    <menuitem id="menu_operation_dyehouse" name="المصبغة"
+              parent="menu_dyeing_operation" action="action_operation_dyehouse" sequence="10"/>
+    <menuitem id="menu_operation_finishing" name="التجهيز"
+              parent="menu_dyeing_operation" action="action_operation_finishing" sequence="20"/>
+    <menuitem id="menu_operation_heat_setting" name="تثبيت حراري"
+              parent="menu_dyeing_operation" action="action_operation_heat_setting" sequence="21"/>
+    <menuitem id="menu_operation_final_finishing" name="تجهيز نهائي"
+              parent="menu_dyeing_operation" action="action_operation_final_finishing" sequence="22"/>
+    <menuitem id="menu_operation_carbon_preparation" name="إعداد كاربون"
+              parent="menu_dyeing_operation" action="action_operation_carbon_preparation" sequence="23"/>
+    <menuitem id="menu_operation_casting_preparation" name="إعداد كسترة"
+              parent="menu_dyeing_operation" action="action_operation_casting_preparation" sequence="24"/>
+    <menuitem id="menu_operation_compactor_preparation" name="إعداد كومباكتور"
+              parent="menu_dyeing_operation" action="action_operation_compactor_preparation" sequence="25"/>
+    <menuitem id="menu_operation_calender_preparation" name="إعداد كلندر"
+              parent="menu_dyeing_operation" action="action_operation_calender_preparation" sequence="26"/>
+    <menuitem id="menu_operation_printing_preparation" name="إعداد طباعة"
+              parent="menu_dyeing_operation" action="action_operation_printing_preparation" sequence="27"/>
+    <menuitem id="menu_operation_carbon" name="كاربون"
+              parent="menu_dyeing_operation" action="action_operation_carbon" sequence="30"/>
+    <menuitem id="menu_operation_casting" name="كسترة"
+              parent="menu_dyeing_operation" action="action_operation_casting" sequence="40"/>
+    <menuitem id="menu_operation_printing" name="المطبعة"
+              parent="menu_dyeing_operation" action="action_operation_printing" sequence="50"/>
+    <menuitem id="menu_operation_preparation" name="الإعداد"
+              parent="menu_dyeing_operation" action="action_operation_preparation" sequence="60"/>
+    <menuitem id="menu_operation_singeing" name="حرق وبرة"
+              parent="menu_dyeing_operation" action="action_operation_singeing" sequence="70"/>
+    <menuitem id="menu_operation_heat_calender" name="كلندر حراري"
+              parent="menu_dyeing_operation" action="action_operation_heat_calender" sequence="80"/>
+    <menuitem id="menu_operation_open_compactor" name="كومباكتور مفتوح"
+              parent="menu_dyeing_operation" action="action_operation_open_compactor" sequence="90"/>
+    <menuitem id="menu_operation_tubular_compactor" name="كومباكتور مقفول"
+              parent="menu_dyeing_operation" action="action_operation_tubular_compactor" sequence="100"/>
+    <menuitem id="menu_operation_sanfor" name="سانفور"
+              parent="menu_dyeing_operation" action="action_operation_sanfor" sequence="110"/>
+    <menuitem id="menu_operation_print_washing" name="غسيل مطبعة"
+              parent="menu_dyeing_operation" action="action_operation_print_washing" sequence="120"/>
+    <menuitem id="menu_operation_print_steamer" name="استيمر مطبعة"
+              parent="menu_dyeing_operation" action="action_operation_print_steamer" sequence="130"/>
+    <menuitem id="menu_dyeing_batch" name="التشغيلات المجمعة"
+              parent="menu_printing_dyeing_root" action="action_dyeing_batch" sequence="25"/>
+    <menuitem id="menu_dyeing_machine" name="الماكينات"
+              parent="menu_printing_dyeing_root" action="action_dyeing_machine" sequence="30"/>
+
+    <menuitem id="menu_printing_dyeing_configuration" name="الإعدادات"
+              parent="menu_printing_dyeing_root" sequence="90"
+              groups="group_printing_dyeing_manager"/>
+    <menuitem id="menu_dyeing_stage_type" name="أنواع المراحل"
+              parent="menu_printing_dyeing_configuration" action="action_dyeing_stage_type" sequence="10"/>
+    <menuitem id="menu_dyeing_color" name="الألوان"
+              parent="menu_printing_dyeing_configuration" action="action_dyeing_color" sequence="20"/>
+    <menuitem id="menu_dyeing_design" name="الرسومات"
+              parent="menu_printing_dyeing_configuration" action="action_dyeing_design" sequence="30"/>
+    <menuitem id="menu_printing_type" name="أنواع الطباعة"
+              parent="menu_printing_dyeing_configuration" action="action_printing_type" sequence="40"/>
+    <menuitem id="menu_dyeing_type" name="أنواع الصباغة"
+              parent="menu_printing_dyeing_configuration" action="action_dyeing_type" sequence="50"/>
+</odoo>

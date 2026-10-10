@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="product_category_form_view_thamar_barcode" model="ir.ui.view">
+        <field name="name">product.category.form.thamar.barcode</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='first']" position="after">
+                <group string="تكويد المنتجات" name="thamar_product_coding">
+                    <field name="thamar_barcode_code" placeholder="مثال: 01"/>
+                    <field name="thamar_full_category_code" readonly="1"/>
+                    <field name="thamar_barcode_mode"/>
+                    <field name="thamar_barcode_serial_digits"
+                           invisible="thamar_barcode_mode != 'sequence'"
+                           required="thamar_barcode_mode == 'sequence'"/>
+                    <field name="thamar_barcode_sequence_id"
+                           invisible="not thamar_barcode_sequence_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_category_list_view_thamar_barcode" model="ir.ui.view">
+        <field name="name">product.category.list.thamar.barcode</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_list_view"/>
+        <field name="arch" type="xml">
+            <field name="display_name" position="after">
+                <field name="thamar_barcode_code" optional="show"/>
+                <field name="thamar_full_category_code" optional="show"/>
+                <field name="thamar_barcode_mode" optional="show"/>
+                <field name="thamar_barcode_serial_digits" optional="hide"/>
+            </field>
+        </field>
+    </record>
+</odoo>

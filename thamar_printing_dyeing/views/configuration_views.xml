@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dyeing_stage_type_list" model="ir.ui.view">
+        <field name="name">thamar.dyeing.stage.type.list</field>
+        <field name="model">thamar.dyeing.stage.type</field>
+        <field name="arch" type="xml">
+            <list string="أنواع المراحل" editable="bottom" default_order="sequence, id">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="updates_actual_quantities" optional="show"/>
+                <field name="allow_batching" optional="show"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_dyeing_stage_type_form" model="ir.ui.view">
+        <field name="name">thamar.dyeing.stage.type.form</field>
+        <field name="model">thamar.dyeing.stage.type</field>
+        <field name="arch" type="xml">
+            <form string="نوع مرحلة">
+                <sheet>
+                    <widget name="web_ribbon" title="مؤرشفة" bg_color="text-bg-danger" invisible="active"/>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="sequence"/>
+                        <field name="updates_actual_quantities"/>
+                        <field name="allow_batching"/>
+                        <field name="active" invisible="1"/>
+                    </group>
+                    <notebook>
+                        <page string="الماكينات">
+                            <field name="machine_ids" readonly="1">
+                                <list><field name="name"/><field name="code"/><field name="capacity_kg"/><field name="hourly_cost"/><field name="currency_id" column_invisible="True"/></list>
+                            </field>
+                        </page>
+                        <page string="ملاحظات"><field name="notes"/></page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_dyeing_stage_type" model="ir.actions.act_window">
+        <field name="name">أنواع المراحل</field>
+        <field name="res_model">thamar.dyeing.stage.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_dyeing_color_list" model="ir.ui.view">
+        <field name="name">thamar.dyeing.color.list</field>
+        <field name="model">thamar.dyeing.color</field>
+        <field name="arch" type="xml">
+            <list string="الألوان" editable="bottom"><field name="name"/><field name="code"/><field name="active" optional="hide"/></list>
+        </field>
+    </record>
+    <record id="view_dyeing_color_form" model="ir.ui.view">
+        <field name="name">thamar.dyeing.color.form</field>
+        <field name="model">thamar.dyeing.color</field>
+        <field name="arch" type="xml">
+            <form string="لون"><sheet><group><field name="name"/><field name="code"/><field name="active"/></group></sheet></form>
+        </field>
+    </record>
+    <record id="action_dyeing_color" model="ir.actions.act_window">
+        <field name="name">الألوان</field><field name="res_model">thamar.dyeing.color</field><field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_dyeing_design_list" model="ir.ui.view">
+        <field name="name">thamar.dyeing.design.list</field>
+        <field name="model">thamar.dyeing.design</field>
+        <field name="arch" type="xml">
+            <list string="الرسومات" editable="bottom"><field name="name"/><field name="description"/><field name="active" optional="hide"/></list>
+        </field>
+    </record>
+    <record id="view_dyeing_design_form" model="ir.ui.view">
+        <field name="name">thamar.dyeing.design.form</field>
+        <field name="model">thamar.dyeing.design</field>
+        <field name="arch" type="xml">
+            <form string="رسمة"><sheet><group><field name="name"/><field name="description"/><field name="active"/></group></sheet></form>
+        </field>
+    </record>
+    <record id="action_dyeing_design" model="ir.actions.act_window">
+        <field name="name">الرسومات</field><field name="res_model">thamar.dyeing.design</field><field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_printing_type_list" model="ir.ui.view">
+        <field name="name">thamar.printing.type.list</field>
+        <field name="model">thamar.printing.type</field>
+        <field name="arch" type="xml">
+            <list string="أنواع الطباعة" editable="bottom"><field name="name"/><field name="active" optional="hide"/></list>
+        </field>
+    </record>
+    <record id="view_printing_type_form" model="ir.ui.view">
+        <field name="name">thamar.printing.type.form</field>
+        <field name="model">thamar.printing.type</field>
+        <field name="arch" type="xml">
+            <form string="نوع طباعة"><sheet><group><field name="name"/><field name="active"/></group></sheet></form>
+        </field>
+    </record>
+    <record id="action_printing_type" model="ir.actions.act_window">
+        <field name="name">أنواع الطباعة</field><field name="res_model">thamar.printing.type</field><field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_dyeing_type_list" model="ir.ui.view">
+        <field name="name">thamar.dyeing.type.list</field>
+        <field name="model">thamar.dyeing.type</field>
+        <field name="arch" type="xml">
+            <list string="أنواع الصباغة" editable="bottom"><field name="name"/><field name="active" optional="hide"/></list>
+        </field>
+    </record>
+    <record id="view_dyeing_type_form" model="ir.ui.view">
+        <field name="name">thamar.dyeing.type.form</field>
+        <field name="model">thamar.dyeing.type</field>
+        <field name="arch" type="xml">
+            <form string="نوع صباغة"><sheet><group><field name="name"/><field name="active"/></group></sheet></form>
+        </field>
+    </record>
+    <record id="action_dyeing_type" model="ir.actions.act_window">
+        <field name="name">أنواع الصباغة</field><field name="res_model">thamar.dyeing.type</field><field name="view_mode">list,form</field>
+    </record>
+</odoo>

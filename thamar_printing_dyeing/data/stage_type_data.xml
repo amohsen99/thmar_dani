@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="stage_type_dyehouse" model="thamar.dyeing.stage.type">
+        <field name="name">مصبغة</field><field name="code">DYE</field><field name="sequence">10</field>
+        <field name="allow_batching" eval="True"/>
+    </record>
+    <record id="stage_type_finishing" model="thamar.dyeing.stage.type">
+        <field name="name">تجهيز</field><field name="code">FIN</field><field name="sequence">20</field>
+    </record>
+    <record id="stage_type_heat_setting" model="thamar.dyeing.stage.type">
+        <field name="name">تثبيت حراري</field><field name="code">HST</field><field name="sequence">21</field>
+    </record>
+    <record id="stage_type_final_finishing" model="thamar.dyeing.stage.type">
+        <field name="name">تجهيز نهائي</field><field name="code">FFN</field><field name="sequence">22</field>
+    </record>
+    <record id="stage_type_carbon_preparation" model="thamar.dyeing.stage.type">
+        <field name="name">إعداد كاربون</field><field name="code">PCR</field><field name="sequence">23</field>
+    </record>
+    <record id="stage_type_casting_preparation" model="thamar.dyeing.stage.type">
+        <field name="name">إعداد كسترة</field><field name="code">PCS</field><field name="sequence">24</field>
+    </record>
+    <record id="stage_type_compactor_preparation" model="thamar.dyeing.stage.type">
+        <field name="name">إعداد كومباكتور</field><field name="code">PCO</field><field name="sequence">25</field>
+    </record>
+    <record id="stage_type_calender_preparation" model="thamar.dyeing.stage.type">
+        <field name="name">إعداد كلندر</field><field name="code">PCL</field><field name="sequence">26</field>
+    </record>
+    <record id="stage_type_printing_preparation" model="thamar.dyeing.stage.type">
+        <field name="name">إعداد طباعة</field><field name="code">PPR</field><field name="sequence">27</field>
+    </record>
+    <record id="stage_type_carbon" model="thamar.dyeing.stage.type">
+        <field name="name">كاربون</field><field name="code">CAR</field><field name="sequence">30</field>
+    </record>
+    <record id="stage_type_casting" model="thamar.dyeing.stage.type">
+        <field name="name">كسترة</field><field name="code">CAS</field><field name="sequence">40</field>
+    </record>
+    <record id="stage_type_printing" model="thamar.dyeing.stage.type">
+        <field name="name">المطبعة</field><field name="code">PRN</field><field name="sequence">50</field>
+    </record>
+    <record id="stage_type_preparation" model="thamar.dyeing.stage.type">
+        <field name="name">الإعداد</field><field name="code">PRE</field><field name="sequence">60</field>
+        <field name="updates_actual_quantities" eval="True"/>
+    </record>
+    <record id="stage_type_singeing" model="thamar.dyeing.stage.type">
+        <field name="name">حرق وبرة</field><field name="code">SIN</field><field name="sequence">70</field>
+    </record>
+    <record id="stage_type_heat_calender" model="thamar.dyeing.stage.type">
+        <field name="name">كلندر حراري</field><field name="code">HCL</field><field name="sequence">80</field>
+    </record>
+    <record id="stage_type_open_compactor" model="thamar.dyeing.stage.type">
+        <field name="name">كومباكتور مفتوح</field><field name="code">OCP</field><field name="sequence">90</field>
+    </record>
+    <record id="stage_type_tubular_compactor" model="thamar.dyeing.stage.type">
+        <field name="name">كومباكتور مقفول</field><field name="code">TCP</field><field name="sequence">100</field>
+    </record>
+    <record id="stage_type_sanfor" model="thamar.dyeing.stage.type">
+        <field name="name">سانفور</field><field name="code">SAN</field><field name="sequence">110</field>
+    </record>
+    <record id="stage_type_print_washing" model="thamar.dyeing.stage.type">
+        <field name="name">غسيل مطبعة</field><field name="code">PWA</field><field name="sequence">120</field>
+    </record>
+    <record id="stage_type_print_steamer" model="thamar.dyeing.stage.type">
+        <field name="name">استيمر مطبعة</field><field name="code">PST</field><field name="sequence">130</field>
+    </record>
+</odoo>

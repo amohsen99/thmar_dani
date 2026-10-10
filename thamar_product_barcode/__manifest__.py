@@ -1,6 +1,6 @@
 {
     'name': 'Thamar Product Barcode Generator',
-    'version': '19.0.1.0.1',
+    'version': '19.0.2.0.1',
     'summary': 'Auto-generate product barcodes from category and variants',
     'description': '''
         Automatic Barcode Generation for Products

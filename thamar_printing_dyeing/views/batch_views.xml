@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dyeing_batch_list" model="ir.ui.view">
+        <field name="name">thamar.dyeing.batch.list</field>
+        <field name="model">thamar.dyeing.batch</field>
+        <field name="arch" type="xml">
+            <list string="التشغيلات المجمعة" default_order="operation_date desc, id desc">
+                <field name="name"/>
+                <field name="operation_date"/>
+                <field name="stage_type_id"/>
+                <field name="machine_id"/>
+                <field name="work_order_count"/>
+                <field name="total_weight_kg" sum="الإجمالي"/>
+                <field name="total_meter" optional="show" sum="الإجمالي"/>
+                <field name="entry_time" optional="show"/>
+                <field name="exit_time" optional="show"/>
+                <field name="duration_hours" optional="show" sum="الإجمالي"/>
+                <field name="total_cost" optional="show" sum="الإجمالي"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_dyeing_batch_form" model="ir.ui.view">
+        <field name="name">thamar.dyeing.batch.form</field>
+        <field name="model">thamar.dyeing.batch</field>
+        <field name="arch" type="xml">
+            <form string="تشغيلة ماكينة مجمعة">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="stage_type_id" options="{'no_create': True}"/>
+                            <field name="machine_id" options="{'no_create': True}"/>
+                            <field name="operation_date"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="shift"/>
+                            <field name="shift_supervisor_id"/>
+                            <field name="worker_name"/>
+                            <field name="entry_time"/>
+                            <field name="exit_time"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="خطط التشغيلة" name="plans">
+                            <field name="operation_ids"
+                                   options="{'no_create': True, 'no_create_edit': True}">
+                                <list string="مراحل الخطط">
+                                    <field name="work_order_id"/>
+                                    <field name="message_number"/>
+                                    <field name="partner_id"/>
+                                    <field name="product_id" optional="show"/>
+                                    <field name="dyeing_type_id" optional="show"/>
+                                    <field name="color_id" optional="show"/>
+                                    <field name="weight_kg" sum="إجمالي الوزن"/>
+                                    <field name="meter" sum="إجمالي الأمتار"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="الإجماليات والتكلفة" name="totals">
+                            <group>
+                                <group>
+                                    <field name="work_order_count"/>
+                                    <field name="work_order_ids" widget="many2many_tags"/>
+                                    <field name="total_weight_kg"/>
+                                    <field name="total_meter"/>
+                                </group>
+                                <group>
+                                    <field name="duration_hours"/>
+                                    <field name="hourly_cost"/>
+                                    <field name="total_cost"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="ملاحظات" name="notes">
+                            <field name="notes" placeholder="ملاحظات التشغيلة..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_dyeing_batch_search" model="ir.ui.view">
+        <field name="name">thamar.dyeing.batch.search</field>
+        <field name="model">thamar.dyeing.batch</field>
+        <field name="arch" type="xml">
+            <search string="البحث في التشغيلات المجمعة">
+                <field name="name"/>
+                <field name="stage_type_id"/>
+                <field name="machine_id"/>
+                <field name="operation_ids"/>
+                <filter name="group_stage" string="المرحلة" context="{'group_by': 'stage_type_id'}"/>
+                <filter name="group_machine" string="الماكينة" context="{'group_by': 'machine_id'}"/>
+                <filter name="group_date" string="التاريخ" context="{'group_by': 'operation_date'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dyeing_batch" model="ir.actions.act_window">
+        <field name="name">التشغيلات المجمعة</field>
+        <field name="res_model">thamar.dyeing.batch</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_dyeing_batch_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">أنشئ تشغيلة ماكينة لعدة خطط</p>
+            <p>اختر المرحلة والماكينة، ثم أضف مراحل الخطط المختلفة وأدخل بيانات التشغيل.</p>
+        </field>
+    </record>
+</odoo>

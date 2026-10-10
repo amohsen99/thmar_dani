@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dyeing_operation_list" model="ir.ui.view">
+        <field name="name">thamar.dyeing.operation.list</field>
+        <field name="model">thamar.dyeing.operation</field>
+        <field name="arch" type="xml">
+            <list string="متابعة المراحل" default_order="operation_date desc, work_order_id, sequence"
+                  editable="bottom" open_form_view="True" multi_edit="1">
+                <field name="sequence" optional="hide"/>
+                <field name="name" optional="hide"/>
+                <field name="work_order_id"/>
+                <field name="stage_type_id"/>
+                <field name="can_edit_customer" column_invisible="True"/>
+                <field name="partner_id" readonly="not can_edit_customer"/>
+                <field name="entry_time"/>
+                <field name="exit_time"/>
+                <field name="worker_name"/>
+                <field name="dyeing_type_id"/>
+                <field name="printing_type_id"/>
+                <field name="machine_id" optional="show"/>
+                <field name="batch_ids" widget="many2many_tags" optional="hide"/>
+                <field name="weight_kg" optional="show"/>
+                <field name="meter" optional="show"/>
+                <field name="message_number" optional="show"/>
+                <field name="operation_date" optional="show"/>
+                <field name="shift" optional="show"/>
+                <field name="shift_supervisor_id" optional="show"/>
+                <field name="duration_hours" optional="show" sum="الإجمالي"/>
+                <field name="total_cost" optional="show" sum="الإجمالي"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_dyeing_operation_form" model="ir.ui.view">
+        <field name="name">thamar.dyeing.operation.form</field>
+        <field name="model">thamar.dyeing.operation</field>
+        <field name="arch" type="xml">
+            <form string="متابعة مرحلة">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="work_order_id"/>
+                            <field name="stage_type_id"/>
+                            <field name="machine_id" options="{'no_create': True}"/>
+                            <field name="next_stage_type_id"/>
+                        </group>
+                        <group>
+                            <field name="operation_date"/>
+                            <field name="shift"/>
+                            <field name="shift_supervisor_id"/>
+                            <field name="worker_name"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="can_edit_customer" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="بيانات القماش" name="fabric">
+                            <group>
+                                <group>
+                                    <field name="partner_id" readonly="not can_edit_customer"/>
+                                    <field name="message_number"/>
+                                    <field name="product_id"/>
+                                    <field name="color_id"/>
+                                </group>
+                                <group>
+                                    <field name="design_id"/>
+                                    <field name="printing_type_id"/>
+                                    <field name="dyeing_type_id"/>
+                                    <field name="weight_kg"/>
+                                    <field name="meter"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="بيانات التشغيل" name="execution">
+                            <group>
+                                <group>
+                                    <field name="entry_time"/>
+                                    <field name="exit_time"/>
+                                    <field name="duration_hours"/>
+                                    <field name="batch_ids" widget="many2many_tags" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="speed"/>
+                                    <field name="temperature"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="التكلفة" name="cost">
+                            <group>
+                                <field name="hourly_cost"/>
+                                <field name="total_cost"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                        </page>
+                        <page string="ملاحظات" name="notes">
+                            <field name="notes" placeholder="ملاحظات المرحلة..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_dyeing_operation_search" model="ir.ui.view">
+        <field name="name">thamar.dyeing.operation.search</field>
+        <field name="model">thamar.dyeing.operation</field>
+        <field name="arch" type="xml">
+            <search string="البحث في المراحل">
+                <field name="name"/>
+                <field name="work_order_id"/>
+                <field name="message_number"/>
+                <field name="partner_id"/>
+                <field name="stage_type_id"/>
+                <field name="machine_id"/>
+                <field name="shift_supervisor_id"/>
+                <filter name="group_stage" string="المرحلة" context="{'group_by': 'stage_type_id'}"/>
+                <filter name="group_machine" string="الماكينة" context="{'group_by': 'machine_id'}"/>
+                <filter name="group_work_order" string="الخطة" context="{'group_by': 'work_order_id'}"/>
+                <filter name="group_shift" string="الوردية" context="{'group_by': 'shift'}"/>
+                <filter name="group_date" string="التاريخ" context="{'group_by': 'operation_date'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_dyeing_operation_pivot" model="ir.ui.view">
+        <field name="name">thamar.dyeing.operation.pivot</field>
+        <field name="model">thamar.dyeing.operation</field>
+        <field name="arch" type="xml">
+            <pivot string="تحليل المراحل">
+                <field name="stage_type_id" type="row"/>
+                <field name="machine_id" type="row"/>
+                <field name="operation_date" type="col" interval="month"/>
+                <field name="weight_kg" type="measure"/>
+                <field name="meter" type="measure"/>
+                <field name="duration_hours" type="measure"/>
+                <field name="total_cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_dyeing_operation" model="ir.actions.act_window">
+        <field name="name">متابعة المراحل</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">لا توجد مراحل تشغيل حالية</p>
+            <p>تُنشأ المراحل من الخطة، ويمكن لقسم التخطيط إضافة مرحلة من هنا.</p>
+        </field>
+    </record>
+
+    <record id="action_operation_dyehouse" model="ir.actions.act_window">
+        <field name="name">المصبغة</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_dyehouse'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_dyehouse')}"/>
+    </record>
+    <record id="action_operation_finishing" model="ir.actions.act_window">
+        <field name="name">التجهيز</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_finishing'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_finishing')}"/>
+    </record>
+    <record id="action_operation_heat_setting" model="ir.actions.act_window">
+        <field name="name">تثبيت حراري</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_heat_setting'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_heat_setting')}"/>
+    </record>
+    <record id="action_operation_final_finishing" model="ir.actions.act_window">
+        <field name="name">تجهيز نهائي</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_final_finishing'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_final_finishing')}"/>
+    </record>
+    <record id="action_operation_carbon_preparation" model="ir.actions.act_window">
+        <field name="name">إعداد كاربون</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_carbon_preparation'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_carbon_preparation')}"/>
+    </record>
+    <record id="action_operation_casting_preparation" model="ir.actions.act_window">
+        <field name="name">إعداد كسترة</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_casting_preparation'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_casting_preparation')}"/>
+    </record>
+    <record id="action_operation_compactor_preparation" model="ir.actions.act_window">
+        <field name="name">إعداد كومباكتور</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_compactor_preparation'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_compactor_preparation')}"/>
+    </record>
+    <record id="action_operation_calender_preparation" model="ir.actions.act_window">
+        <field name="name">إعداد كلندر</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_calender_preparation'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_calender_preparation')}"/>
+    </record>
+    <record id="action_operation_printing_preparation" model="ir.actions.act_window">
+        <field name="name">إعداد طباعة</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_printing_preparation'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_printing_preparation')}"/>
+    </record>
+    <record id="action_operation_carbon" model="ir.actions.act_window">
+        <field name="name">كاربون</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_carbon'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_carbon')}"/>
+    </record>
+    <record id="action_operation_casting" model="ir.actions.act_window">
+        <field name="name">كسترة</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_casting'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_casting')}"/>
+    </record>
+    <record id="action_operation_printing" model="ir.actions.act_window">
+        <field name="name">المطبعة</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_printing'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_printing')}"/>
+    </record>
+    <record id="action_operation_preparation" model="ir.actions.act_window">
+        <field name="name">الإعداد</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_preparation'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_preparation')}"/>
+    </record>
+    <record id="action_operation_singeing" model="ir.actions.act_window">
+        <field name="name">حرق وبرة</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_singeing'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_singeing')}"/>
+    </record>
+    <record id="action_operation_heat_calender" model="ir.actions.act_window">
+        <field name="name">كلندر حراري</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_heat_calender'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_heat_calender')}"/>
+    </record>
+    <record id="action_operation_open_compactor" model="ir.actions.act_window">
+        <field name="name">كومباكتور مفتوح</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_open_compactor'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_open_compactor')}"/>
+    </record>
+    <record id="action_operation_tubular_compactor" model="ir.actions.act_window">
+        <field name="name">كومباكتور مقفول</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_tubular_compactor'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_tubular_compactor')}"/>
+    </record>
+    <record id="action_operation_sanfor" model="ir.actions.act_window">
+        <field name="name">سانفور</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_sanfor'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_sanfor')}"/>
+    </record>
+    <record id="action_operation_print_washing" model="ir.actions.act_window">
+        <field name="name">غسيل مطبعة</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_print_washing'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_print_washing')}"/>
+    </record>
+    <record id="action_operation_print_steamer" model="ir.actions.act_window">
+        <field name="name">استيمر مطبعة</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_print_steamer'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_print_steamer')}"/>
+    </record>
+</odoo>

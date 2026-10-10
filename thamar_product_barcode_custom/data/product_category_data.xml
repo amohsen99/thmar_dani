@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="category_factory_products" model="product.category">
+        <field name="name">منتجات المصنع</field>
+    </record>
+
+    <record id="category_yarn" model="product.category">
+        <field name="name">غزول</field>
+        <field name="parent_id" ref="category_factory_products"/>
+        <field name="thamar_barcode_code">01</field>
+    </record>
+    <record id="category_yarn_polyester" model="product.category">
+        <field name="name">غزل بوليستر</field>
+        <field name="parent_id" ref="category_yarn"/>
+        <field name="thamar_barcode_code">01</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_yarn_cotton" model="product.category">
+        <field name="name">غزل قطن</field>
+        <field name="parent_id" ref="category_yarn"/>
+        <field name="thamar_barcode_code">02</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_yarn_mixed" model="product.category">
+        <field name="name">غزل مخلوط</field>
+        <field name="parent_id" ref="category_yarn"/>
+        <field name="thamar_barcode_code">03</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+
+    <record id="category_raw_fabric" model="product.category">
+        <field name="name">قماش خام</field>
+        <field name="parent_id" ref="category_factory_products"/>
+        <field name="thamar_barcode_code">2</field>
+    </record>
+    <record id="category_raw_rectangular" model="product.category">
+        <field name="name">خام مستطيل</field>
+        <field name="parent_id" ref="category_raw_fabric"/>
+        <field name="thamar_barcode_code">1</field>
+    </record>
+    <record id="category_raw_rectangular_polyester" model="product.category">
+        <field name="name">خام مستطيل بوليستر</field>
+        <field name="parent_id" ref="category_raw_rectangular"/>
+        <field name="thamar_barcode_code">1</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">3</field>
+    </record>
+    <record id="category_raw_rectangular_cotton" model="product.category">
+        <field name="name">خام مستطيل قطن</field>
+        <field name="parent_id" ref="category_raw_rectangular"/>
+        <field name="thamar_barcode_code">2</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">3</field>
+    </record>
+    <record id="category_raw_rectangular_mixed" model="product.category">
+        <field name="name">خام مستطيل مخلوط</field>
+        <field name="parent_id" ref="category_raw_rectangular"/>
+        <field name="thamar_barcode_code">3</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">3</field>
+    </record>
+    <record id="category_raw_circular" model="product.category">
+        <field name="name">خام دائري</field>
+        <field name="parent_id" ref="category_raw_fabric"/>
+        <field name="thamar_barcode_code">2</field>
+    </record>
+    <record id="category_raw_circular_polyester" model="product.category">
+        <field name="name">خام دائري بوليستر</field>
+        <field name="parent_id" ref="category_raw_circular"/>
+        <field name="thamar_barcode_code">1</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_raw_circular_cotton" model="product.category">
+        <field name="name">خام دائري قطن</field>
+        <field name="parent_id" ref="category_raw_circular"/>
+        <field name="thamar_barcode_code">2</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_raw_circular_mixed" model="product.category">
+        <field name="name">خام دائري مخلوط</field>
+        <field name="parent_id" ref="category_raw_circular"/>
+        <field name="thamar_barcode_code">3</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+
+    <record id="category_finished" model="product.category">
+        <field name="name">منتج تام</field>
+        <field name="parent_id" ref="category_factory_products"/>
+        <field name="thamar_barcode_code">3</field>
+    </record>
+    <record id="category_finished_printed" model="product.category">
+        <field name="name">مطبوع</field>
+        <field name="parent_id" ref="category_finished"/>
+        <field name="thamar_barcode_code">1</field>
+    </record>
+    <record id="category_finished_dyed" model="product.category">
+        <field name="name">مصبوغ</field>
+        <field name="parent_id" ref="category_finished"/>
+        <field name="thamar_barcode_code">2</field>
+    </record>
+
+    <record id="category_printed_polyester" model="product.category">
+        <field name="name">مطبوع بوليستر</field>
+        <field name="parent_id" ref="category_finished_printed"/>
+        <field name="thamar_barcode_code">1</field>
+    </record>
+    <record id="category_printed_fiber" model="product.category">
+        <field name="name">مطبوع فبران</field>
+        <field name="parent_id" ref="category_finished_printed"/>
+        <field name="thamar_barcode_code">2</field>
+    </record>
+    <record id="category_printed_mixed" model="product.category">
+        <field name="name">مطبوع مخلوط</field>
+        <field name="parent_id" ref="category_finished_printed"/>
+        <field name="thamar_barcode_code">3</field>
+    </record>
+
+    <record id="category_dyed_disperse" model="product.category">
+        <field name="name">مصبوغ ديسبرس</field>
+        <field name="parent_id" ref="category_finished_dyed"/>
+        <field name="thamar_barcode_code">1</field>
+    </record>
+    <record id="category_dyed_reactive" model="product.category">
+        <field name="name">مصبوغ رياكتف</field>
+        <field name="parent_id" ref="category_finished_dyed"/>
+        <field name="thamar_barcode_code">2</field>
+    </record>
+    <record id="category_dyed_pigment" model="product.category">
+        <field name="name">مصبوغ بجمنت</field>
+        <field name="parent_id" ref="category_finished_dyed"/>
+        <field name="thamar_barcode_code">3</field>
+    </record>
+
+    <record id="category_printed_polyester_grade_1" model="product.category">
+        <field name="name">بوليستر درجة أولى</field>
+        <field name="parent_id" ref="category_printed_polyester"/>
+        <field name="thamar_barcode_code">1</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_printed_polyester_grade_2" model="product.category">
+        <field name="name">بوليستر درجة ثانية</field>
+        <field name="parent_id" ref="category_printed_polyester"/>
+        <field name="thamar_barcode_code">2</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_printed_fiber_grade_1" model="product.category">
+        <field name="name">فبران درجة أولى</field>
+        <field name="parent_id" ref="category_printed_fiber"/>
+        <field name="thamar_barcode_code">1</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_printed_fiber_grade_2" model="product.category">
+        <field name="name">فبران درجة ثانية</field>
+        <field name="parent_id" ref="category_printed_fiber"/>
+        <field name="thamar_barcode_code">2</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_printed_mixed_grade_1" model="product.category">
+        <field name="name">مخلوط درجة أولى</field>
+        <field name="parent_id" ref="category_printed_mixed"/>
+        <field name="thamar_barcode_code">1</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_printed_mixed_grade_2" model="product.category">
+        <field name="name">مخلوط درجة ثانية</field>
+        <field name="parent_id" ref="category_printed_mixed"/>
+        <field name="thamar_barcode_code">2</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+
+    <record id="category_dyed_disperse_grade_1" model="product.category">
+        <field name="name">ديسبرس درجة أولى</field>
+        <field name="parent_id" ref="category_dyed_disperse"/>
+        <field name="thamar_barcode_code">1</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_dyed_disperse_grade_2" model="product.category">
+        <field name="name">ديسبرس درجة ثانية</field>
+        <field name="parent_id" ref="category_dyed_disperse"/>
+        <field name="thamar_barcode_code">2</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_dyed_reactive_grade_1" model="product.category">
+        <field name="name">رياكتف درجة أولى</field>
+        <field name="parent_id" ref="category_dyed_reactive"/>
+        <field name="thamar_barcode_code">1</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_dyed_reactive_grade_2" model="product.category">
+        <field name="name">رياكتف درجة ثانية</field>
+        <field name="parent_id" ref="category_dyed_reactive"/>
+        <field name="thamar_barcode_code">2</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_dyed_pigment_grade_1" model="product.category">
+        <field name="name">بجمنت درجة أولى</field>
+        <field name="parent_id" ref="category_dyed_pigment"/>
+        <field name="thamar_barcode_code">1</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_dyed_pigment_grade_2" model="product.category">
+        <field name="name">بجمنت درجة ثانية</field>
+        <field name="parent_id" ref="category_dyed_pigment"/>
+        <field name="thamar_barcode_code">2</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+
+    <record id="category_printing_waste" model="product.category">
+        <field name="name">فضلات الطباعة</field>
+        <field name="parent_id" ref="category_finished"/>
+        <field name="thamar_barcode_code">555555</field>
+        <field name="thamar_barcode_mode">fixed</field>
+    </record>
+    <record id="category_dyeing_waste" model="product.category">
+        <field name="name">فضلات الصباغة</field>
+        <field name="parent_id" ref="category_finished"/>
+        <field name="thamar_barcode_code">666666</field>
+        <field name="thamar_barcode_mode">fixed</field>
+    </record>
+
+    <record id="category_chemicals" model="product.category">
+        <field name="name">كيماويات</field>
+        <field name="parent_id" ref="category_factory_products"/>
+        <field name="thamar_barcode_code">4</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_spare_parts" model="product.category">
+        <field name="name">قطع غيار</field>
+        <field name="parent_id" ref="category_factory_products"/>
+        <field name="thamar_barcode_code">5</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+    <record id="category_miscellaneous" model="product.category">
+        <field name="name">متنوعات</field>
+        <field name="parent_id" ref="category_factory_products"/>
+        <field name="thamar_barcode_code">6</field>
+        <field name="thamar_barcode_mode">sequence</field>
+        <field name="thamar_barcode_serial_digits">4</field>
+    </record>
+</odoo>

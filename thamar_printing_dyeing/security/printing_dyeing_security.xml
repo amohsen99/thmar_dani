@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_printing_dyeing" model="ir.module.category">
+        <field name="name">الطباعة والصباغة</field>
+        <field name="description">صلاحيات إدارة تشغيل مصنع الطباعة والصباغة</field>
+        <field name="sequence">35</field>
+    </record>
+
+    <record id="privilege_printing_dyeing" model="res.groups.privilege">
+        <field name="name">الطباعة والصباغة</field>
+        <field name="category_id" ref="module_category_printing_dyeing"/>
+        <field name="sequence">35</field>
+    </record>
+
+    <record id="group_printing_dyeing_user" model="res.groups">
+        <field name="name">مستخدم الطباعة والصباغة</field>
+        <field name="privilege_id" ref="privilege_printing_dyeing"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_printing_dyeing_manager" model="res.groups">
+        <field name="name">مدير الطباعة والصباغة</field>
+        <field name="privilege_id" ref="privilege_printing_dyeing"/>
+        <field name="implied_ids" eval="[(4, ref('group_printing_dyeing_user'))]"/>
+    </record>
+
+    <record id="rule_dyeing_machine_company" model="ir.rule">
+        <field name="name">ماكينات الطباعة والصباغة حسب الشركة</field>
+        <field name="model_id" ref="model_thamar_dyeing_machine"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_printing_dyeing_user'))]"/>
+    </record>
+
+    <record id="rule_dyeing_work_order_company" model="ir.rule">
+        <field name="name">أوامر تشغيل الطباعة والصباغة حسب الشركة</field>
+        <field name="model_id" ref="model_thamar_dyeing_work_order"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_printing_dyeing_user'))]"/>
+    </record>
+
+    <record id="rule_dyeing_operation_company" model="ir.rule">
+        <field name="name">مراحل الطباعة والصباغة حسب الشركة</field>
+        <field name="model_id" ref="model_thamar_dyeing_operation"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_printing_dyeing_user'))]"/>
+    </record>
+
+    <record id="rule_dyeing_batch_company" model="ir.rule">
+        <field name="name">تشغيلات الماكينات المجمعة حسب الشركة</field>
+        <field name="model_id" ref="model_thamar_dyeing_batch"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_printing_dyeing_user'))]"/>
+    </record>
+</odoo>
