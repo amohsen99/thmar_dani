@@ -33,13 +33,14 @@ jobs:
             echo "Backup created: $BACKUP_FILE"
 
             echo "Removing only generated /web/assets attachments from $DB_NAME..."
-            docker compose -f "$COMPOSE_FILE" exec -T odoo               odoo shell -d "$DB_NAME" <<'PY'
-assets = env["ir.attachment"].search([("url", "like", "/web/assets/%")])
-print(f"Generated asset attachments found: {len(assets)}")
-assets.unlink()
-env.cr.commit()
-print("Generated asset attachments removed. Odoo will rebuild them on demand.")
-PY
+            docker compose -f "$COMPOSE_FILE" exec -T odoo \
+              odoo shell -d "$DB_NAME" <<'PY'
+            assets = env["ir.attachment"].search([("url", "like", "/web/assets/%")])
+            print(f"Generated asset attachments found: {len(assets)}")
+            assets.unlink()
+            env.cr.commit()
+            print("Generated asset attachments removed. Odoo will rebuild them on demand.")
+            PY
 
             echo "Restarting Odoo..."
             docker compose -f "$COMPOSE_FILE" restart odoo
