@@ -1,0 +1,67 @@
+name: Repair HR Production Assets
+
+on:
+  workflow_dispatch:
+
+jobs:
+  repair-assets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repair generated Odoo assets
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            set -Eeuo pipefail
+
+            PROJECT_DIR="/root/odoo19/thamar_dani"
+            COMPOSE_FILE="docker/server/odoo.yaml"
+            DB_NAME="HR-Production"
+            BACKUP_DIR="/root/odoo19/backups"
+
+            cd "$PROJECT_DIR"
+            mkdir -p "$BACKUP_DIR"
+
+            BACKUP_FILE="$BACKUP_DIR/${DB_NAME}_before_asset_repair_$(date +%Y%m%d_%H%M%S).dump"
+
+            echo "Creating PostgreSQL backup before changing generated assets..."
+            docker exec pg-db pg_dump -U odoo19 -Fc "$DB_NAME" > "$BACKUP_FILE"
+            test -s "$BACKUP_FILE"
+            echo "Backup created: $BACKUP_FILE"
+
+            echo "Removing only generated /web/assets attachments from $DB_NAME..."
+            docker compose -f "$COMPOSE_FILE" exec -T odoo               odoo shell -d "$DB_NAME" <<'PY'
+assets = env["ir.attachment"].search([("url", "like", "/web/assets/%")])
+print(f"Generated asset attachments found: {len(assets)}")
+assets.unlink()
+env.cr.commit()
+print("Generated asset attachments removed. Odoo will rebuild them on demand.")
+PY
+
+            echo "Restarting Odoo..."
+            docker compose -f "$COMPOSE_FILE" restart odoo
+
+            echo "Waiting for login page..."
+            healthy=0
+            for i in {1..24}; do
+              if curl -fsS "http://localhost:8069/web/login?db=$DB_NAME" >/dev/null; then
+                healthy=1
+                echo "Login page is responding."
+                break
+              fi
+              sleep 5
+            done
+
+            if [ "$healthy" -ne 1 ]; then
+              echo "Asset repair health check failed."
+              docker logs odoo --tail 500 2>&1 || true
+              exit 1
+            fi
+
+            echo "Recent Odoo errors after repair:"
+            docker logs odoo --since 5m 2>&1 | grep -Ei "ERROR|CRITICAL|Traceback|Exception" || true
+
+            echo "HR-Production asset repair completed."
