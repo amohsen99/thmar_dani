@@ -34,7 +34,7 @@ jobs:
 
             echo "Removing only generated /web/assets attachments from $DB_NAME..."
             docker compose -f "$COMPOSE_FILE" exec -T odoo \
-              odoo shell -d "$DB_NAME" <<'PY'
+              odoo shell -d "$DB_NAME" --no-http <<'PY'
             assets = env["ir.attachment"].search([("url", "like", "/web/assets/%")])
             print(f"Generated asset attachments found: {len(assets)}")
             assets.unlink()
