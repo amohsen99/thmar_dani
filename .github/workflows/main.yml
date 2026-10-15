@@ -20,20 +20,13 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            set -e
+            set -Eeuo pipefail
 
             COMPOSE_FILE="docker/server/odoo.yaml"
             PROJECT_DIR="/root/odoo19/thamar_dani"
-
-            if [ -d "$PROJECT_DIR" ]; then
-                echo "Directory exists, navigating..."
-            else
-                echo "Project directory not found at: $PROJECT_DIR"
-                exit 1
-            fi
+            DB_NAME="HR-Production"
 
             cd "$PROJECT_DIR"
-            echo "Current path: $PROJECT_DIR"
 
             if [ ! -f "$COMPOSE_FILE" ]; then
               echo "Docker compose file not found: $COMPOSE_FILE"
@@ -47,21 +40,35 @@ jobs:
             echo "Building the updated Odoo image..."
             docker compose -f "$COMPOSE_FILE" build odoo
 
-            # echo "Upgrading Al-Omar Account Custom on Live2..."
-            # docker compose -f "$COMPOSE_FILE" run --rm --no-deps odoo \
-            #   odoo -d Hr-Live2 -u web --stop-after-init
+            # IMPORTANT:
+            # Do not run '-u web' automatically on production.
+            # A previous web upgrade failed while loading Enterprise account_reports.
+            echo "Recreating Odoo with the updated image/code..."
+            docker compose -f "$COMPOSE_FILE" up -d --no-deps --force-recreate odoo
 
-            
-            echo "Waiting for Odoo to be ready on port 8069..."
-            sleep 10
-            
-            for i in {1..12}; do
-              if curl -s http://localhost:8069 > /dev/null; then
-                echo "Odoo is up and responding!"
+            echo "Waiting for Odoo database $DB_NAME..."
+            healthy=0
+            for i in {1..24}; do
+              if curl -fsS "http://localhost:8069/web/login?db=$DB_NAME" >/dev/null; then
+                healthy=1
+                echo "Odoo is up and responding for $DB_NAME."
                 break
               fi
-              echo "Odoo registry is still loading... waiting 5s (Attempt $i/12)"
+
+              echo "Waiting 5s (attempt $i/24)..."
               sleep 5
             done
 
-            echo "Deployment completed successfully!"
+            if [ "$healthy" -ne 1 ]; then
+              echo "Odoo health check failed."
+              echo "========== ODOO LOGS =========="
+              docker logs odoo --tail 500 2>&1 || true
+              echo "========== POSTGRES LOGS =========="
+              docker logs pg-db --tail 200 2>&1 || true
+              exit 1
+            fi
+
+            echo "Container status:"
+            docker compose -f "$COMPOSE_FILE" ps odoo
+
+            echo "Deployment completed successfully."
