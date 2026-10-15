@@ -19,7 +19,7 @@ class DyeingOperation(models.Model):
     sequence = fields.Integer(string="الترتيب", default=10, index=True)
     work_order_id = fields.Many2one(
         "thamar.dyeing.work.order",
-        string="الخطة",
+        string="أمر التشغيل",
         required=True,
         ondelete="cascade",
         index=True,

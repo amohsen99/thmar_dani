@@ -38,19 +38,19 @@ class DyeingBatch(models.Model):
         "thamar_dyeing_batch_operation_rel",
         "batch_id",
         "operation_id",
-        string="مراحل الخطط",
+        string="مراحل أوامر التشغيل",
         required=True,
         tracking=True,
         domain="[('stage_type_id', '=', stage_type_id), ('company_id', '=', company_id)]",
     )
     work_order_ids = fields.Many2many(
         "thamar.dyeing.work.order",
-        string="الخطط",
+        string="أوامر التشغيل",
         compute="_compute_totals",
         store=True,
     )
     work_order_count = fields.Integer(
-        string="عدد الخطط", compute="_compute_totals", store=True
+        string="عدد أوامر التشغيل", compute="_compute_totals", store=True
     )
     operation_date = fields.Date(
         string="التاريخ", required=True, default=fields.Date.context_today, tracking=True
@@ -216,10 +216,12 @@ class DyeingBatch(models.Model):
                 and batch.total_weight_kg > batch.machine_id.capacity_kg
             ):
                 raise ValidationError(
-                    "إجمالي وزن الخطط أكبر من حمولة الماكينة المختارة."
+                    "إجمالي وزن أوامر التشغيل أكبر من حمولة الماكينة المختارة."
                 )
             if len(batch.operation_ids.mapped("work_order_id")) != len(batch.operation_ids):
-                raise ValidationError("لا يمكن إضافة مرحلتين من نفس الخطة إلى تشغيلة واحدة.")
+                raise ValidationError(
+                    "لا يمكن إضافة مرحلتين من نفس أمر التشغيل إلى تشغيلة واحدة."
+                )
             for operation in batch.operation_ids:
                 other_batches = operation.batch_ids.filtered(lambda other: other != batch)
                 if other_batches:

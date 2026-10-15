@@ -229,8 +229,6 @@ class TestPrintingDyeing(TransactionCase):
         )
         picking = self.env["stock.picking"].create(
             {
-                "is_dyeing_material_issue": True,
-                "dyeing_work_order_id": order.id,
                 "dyeing_operation_id": operation.id,
                 "picking_type_id": picking_type.id,
                 "location_id": source_location.id,
@@ -252,6 +250,7 @@ class TestPrintingDyeing(TransactionCase):
         )
         self.assertEqual(picking.dyeing_work_order_id, order)
         self.assertEqual(picking.dyeing_operation_id, operation)
+        self.assertTrue(picking.is_dyeing_material_issue)
         self.assertEqual(operation.material_issue_ids, picking)
         self.assertEqual(operation.material_move_ids, picking.move_ids)
 
@@ -267,6 +266,31 @@ class TestPrintingDyeing(TransactionCase):
             self.chemical_product, source_location
         )
         self.assertEqual(remaining_quantity, 6)
+
+    def test_stock_transfer_plan_and_operation_are_optional(self):
+        warehouse = self.env["stock.warehouse"].search(
+            [("company_id", "=", self.env.company.id)], limit=1
+        )
+        production_location = self.env["stock.location"].search(
+            [("usage", "=", "production")], limit=1
+        )
+        picking = self.env["stock.picking"].create(
+            {
+                "picking_type_id": warehouse.int_type_id.id,
+                "location_id": warehouse.lot_stock_id.id,
+                "location_dest_id": production_location.id,
+            }
+        )
+        self.assertFalse(picking.dyeing_work_order_id)
+        self.assertFalse(picking.dyeing_operation_id)
+
+        order = self._create_order(message_number="LOT-STOCK-LINK")
+        operation = order.operation_ids.sorted("sequence")[0]
+        picking.dyeing_operation_id = operation
+
+        self.assertEqual(picking.dyeing_work_order_id, order)
+        self.assertTrue(picking.is_dyeing_material_issue)
+        self.assertIn(picking, operation.material_issue_ids)
 
     def test_only_manager_can_change_customer_from_operation(self):
         regular_user = new_test_user(

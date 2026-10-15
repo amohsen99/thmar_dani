@@ -13,7 +13,7 @@ class DyeingStageType(models.Model):
     active = fields.Boolean(default=True)
     updates_actual_quantities = fields.Boolean(
         string="مرحلة إدخال الكميات الفعلية",
-        help="عند إدخال الوزن والأمتار في هذه المرحلة، يتم تحديث الخطة وكل المراحل التالية.",
+        help="عند إدخال الوزن والأمتار في هذه المرحلة، يتم تحديث أمر التشغيل وكل المراحل التالية.",
     )
     allow_batching = fields.Boolean(
         string="السماح بتجميع عدة خطط",

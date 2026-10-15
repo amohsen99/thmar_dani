@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
     <record id="seq_dyeing_work_order" model="ir.sequence">
-        <field name="name">خطة تشغيل طباعة وصباغة</field>
+        <field name="name">أمر تشغيل طباعة وصباغة</field>
         <field name="code">thamar.dyeing.work.order</field>
         <field name="prefix">PLAN/%(year)s/</field>
         <field name="padding">5</field>

@@ -145,7 +145,7 @@
                 <field name="shift_supervisor_id"/>
                 <filter name="group_stage" string="المرحلة" context="{'group_by': 'stage_type_id'}"/>
                 <filter name="group_machine" string="الماكينة" context="{'group_by': 'machine_id'}"/>
-                <filter name="group_work_order" string="الخطة" context="{'group_by': 'work_order_id'}"/>
+                <filter name="group_work_order" string="أمر التشغيل" context="{'group_by': 'work_order_id'}"/>
                 <filter name="group_shift" string="الوردية" context="{'group_by': 'shift'}"/>
                 <filter name="group_date" string="التاريخ" context="{'group_by': 'operation_date'}"/>
             </search>
@@ -175,7 +175,7 @@
         <field name="search_view_id" ref="view_dyeing_operation_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">لا توجد مراحل تشغيل حالية</p>
-            <p>تُنشأ المراحل من الخطة، ويمكن لقسم التخطيط إضافة مرحلة من هنا.</p>
+            <p>تُنشأ المراحل من أمر التشغيل، ويمكن لقسم التخطيط إضافة مرحلة من هنا.</p>
         </field>
     </record>
 

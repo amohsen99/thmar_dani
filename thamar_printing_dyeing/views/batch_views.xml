@@ -47,10 +47,10 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="خطط التشغيلة" name="plans">
+                        <page string="أوامر التشغيل" name="plans">
                             <field name="operation_ids"
                                    options="{'no_create': True, 'no_create_edit': True}">
-                                <list string="مراحل الخطط">
+                                <list string="مراحل أوامر التشغيل">
                                     <field name="work_order_id"/>
                                     <field name="message_number"/>
                                     <field name="partner_id"/>
@@ -111,7 +111,7 @@
         <field name="search_view_id" ref="view_dyeing_batch_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">أنشئ تشغيلة ماكينة لعدة خطط</p>
-            <p>اختر المرحلة والماكينة، ثم أضف مراحل الخطط المختلفة وأدخل بيانات التشغيل.</p>
+            <p>اختر المرحلة والماكينة، ثم أضف مراحل أوامر التشغيل المختلفة وأدخل بيانات التشغيل.</p>
         </field>
     </record>
 </odoo>

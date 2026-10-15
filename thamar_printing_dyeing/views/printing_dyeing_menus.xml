@@ -3,7 +3,7 @@
     <menuitem id="menu_printing_dyeing_root" name="الطباعة والصباغة"
               sequence="45" groups="group_printing_dyeing_user"/>
 
-    <menuitem id="menu_dyeing_work_order" name="الخطط"
+    <menuitem id="menu_dyeing_work_order" name="أوامر التشغيل"
               parent="menu_printing_dyeing_root" action="action_dyeing_work_order" sequence="10"/>
     <menuitem id="menu_dyeing_operation" name="المراحل"
               parent="menu_printing_dyeing_root" sequence="20"/>

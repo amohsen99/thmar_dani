@@ -16,7 +16,7 @@ class StockPicking(models.Model):
     )
     dyeing_work_order_id = fields.Many2one(
         "thamar.dyeing.work.order",
-        string="الخطة",
+        string="أمر التشغيل",
         ondelete="restrict",
         index=True,
         tracking=True,
@@ -76,6 +76,15 @@ class StockPicking(models.Model):
                 values.setdefault("origin", operation.work_order_id.name)
         return super().create(vals_list)
 
+    def write(self, values):
+        values = dict(values)
+        operation_id = values.get("dyeing_operation_id")
+        if operation_id:
+            operation = self.env["thamar.dyeing.operation"].browse(operation_id)
+            values["dyeing_work_order_id"] = operation.work_order_id.id
+            values["is_dyeing_material_issue"] = True
+        return super().write(values)
+
     @api.onchange("dyeing_work_order_id")
     def _onchange_dyeing_work_order_id(self):
         if (
@@ -88,6 +97,7 @@ class StockPicking(models.Model):
     def _onchange_dyeing_operation_id(self):
         if self.dyeing_operation_id:
             self.dyeing_work_order_id = self.dyeing_operation_id.work_order_id
+            self.is_dyeing_material_issue = True
             self.origin = self.dyeing_operation_id.work_order_id.name
 
     @api.constrains(
@@ -97,15 +107,21 @@ class StockPicking(models.Model):
         "company_id",
     )
     def _check_dyeing_material_issue_reference(self):
-        for picking in self.filtered("is_dyeing_material_issue"):
-            if not picking.dyeing_work_order_id or not picking.dyeing_operation_id:
+        for picking in self:
+            if (
+                picking.dyeing_operation_id
+                and picking.dyeing_work_order_id
+                and picking.dyeing_operation_id.work_order_id
+                != picking.dyeing_work_order_id
+            ):
+                raise ValidationError("المرحلة المختارة لا تتبع أمر التشغيل المحدد.")
+            if (
+                picking.dyeing_work_order_id
+                and picking.dyeing_work_order_id.company_id != picking.company_id
+            ):
                 raise ValidationError(
-                    "يجب اختيار الخطة والمرحلة عند صرف مواد الطباعة والصباغة."
+                    "أمر التشغيل ومستند الصرف يجب أن يكونا في نفس الشركة."
                 )
-            if picking.dyeing_operation_id.work_order_id != picking.dyeing_work_order_id:
-                raise ValidationError("المرحلة المختارة لا تتبع الخطة المحددة.")
-            if picking.dyeing_work_order_id.company_id != picking.company_id:
-                raise ValidationError("الخطة ومستند الصرف يجب أن يكونا في نفس الشركة.")
 
 
 class StockMove(models.Model):
@@ -120,7 +136,7 @@ class StockMove(models.Model):
     )
     dyeing_work_order_id = fields.Many2one(
         "thamar.dyeing.work.order",
-        string="خطة الطباعة والصباغة",
+        string="أمر تشغيل الطباعة والصباغة",
         related="picking_id.dyeing_work_order_id",
         store=True,
         index=True,

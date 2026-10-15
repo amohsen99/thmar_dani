@@ -5,12 +5,12 @@ from odoo.exceptions import ValidationError
 
 class DyeingWorkOrder(models.Model):
     _name = "thamar.dyeing.work.order"
-    _description = "Printing and Dyeing Production Plan"
+    _description = "Printing and Dyeing Work Order"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "date desc, id desc"
 
     name = fields.Char(
-        string="رقم الخطة",
+        string="رقم أمر التشغيل",
         required=True,
         copy=False,
         readonly=True,
@@ -18,7 +18,7 @@ class DyeingWorkOrder(models.Model):
         tracking=True,
     )
     date = fields.Date(
-        string="تاريخ الخطة",
+        string="تاريخ أمر التشغيل",
         required=True,
         default=fields.Date.context_today,
         tracking=True,
