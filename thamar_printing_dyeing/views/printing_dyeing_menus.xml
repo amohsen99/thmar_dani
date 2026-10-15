@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <menuitem id="menu_printing_dyeing_root" name="الطباعة والصباغة"
-              sequence="45" groups="group_printing_dyeing_user"/>
+              sequence="45" groups="group_printing_dyeing_user"
+              web_icon="thamar_printing_dyeing,static/description/icon.png"/>
 
     <menuitem id="menu_dyeing_work_order" name="أوامر التشغيل"
               parent="menu_printing_dyeing_root" action="action_dyeing_work_order" sequence="10"/>
