@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════
+         Cartella Card - Form View  (Mobile-Optimized)
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_cartella_card_form" model="ir.ui.view">
+        <field name="name">cartella.card.form</field>
+        <field name="model">cartella.card</field>
+        <field name="arch" type="xml">
+            <form string="الكارتيلة">
+                <sheet>
+                    <!-- Header badges -->
+                    <div class="oe_title">
+                        <label for="sequence_number" string="رقم الكارتيلة"/>
+                        <h1>
+                            <field name="sequence_number" readonly="1" placeholder="سيتم توليده تلقائياً"/>
+                        </h1>
+                    </div>
+
+                    <!-- ─── Basic Info ─────────────────────── -->
+                    <group string="معلومات أساسية">
+                        <group>
+                            <field name="finished_product_id"/>
+                            <field name="category_id"/>
+                            <field name="reference"/>
+                            <field name="raw_material_detail"/>
+                        </group>
+                        <group>
+                            <field name="blend_ratio_id" readonly="1"/>
+                            <field name="yarn_count"/>
+                        </group>
+                    </group>
+
+                    <!-- ─── Blend Ratios ────────────────────── -->
+                    <group string="نسب الخلط">
+                        <group>
+                            <field name="cotton_ratio" widget="percentage"/>
+                        </group>
+                        <group>
+                            <field name="polyester_ratio" widget="percentage"/>
+                        </group>
+                        <group>
+                            <field name="lycra_ratio" widget="percentage"/>
+                        </group>
+                    </group>
+
+                    <!-- ─── Raw Material Specs ──────────────── -->
+                    <group string="مواصفات الخام">
+                        <group>
+                            <field name="raw_weight"/>
+                        </group>
+                        <group>
+                            <field name="raw_width"/>
+                        </group>
+                    </group>
+
+                    <!-- ─── Finished Product Specs ──────────── -->
+                    <group string="مواصفات التام والتشطيب">
+                        <group>
+                            <field name="finished_weight"/>
+                        </group>
+                        <group>
+                            <field name="finished_width"/>
+                        </group>
+                    </group>
+
+                    <!-- ─── Links ───────────────────────────── -->
+                    <group string="روابط" col="2">
+                        <field name="record_url" readonly="1" widget="url" invisible="not id"/>
+                        <field name="print_label_url" readonly="1" widget="url" invisible="not id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Cartella Card - List View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_cartella_card_list" model="ir.ui.view">
+        <field name="name">cartella.card.list</field>
+        <field name="model">cartella.card</field>
+        <field name="arch" type="xml">
+            <list string="الكارتيلات" decoration-info="barcode == False">
+                <field name="sequence_number"/>
+                <field name="finished_product_id"/>
+                <field name="category_id"/>
+                <field name="blend_ratio_id" optional="show"/>
+                <field name="reference"/>
+                <field name="finished_weight" optional="show"/>
+                <field name="finished_width" optional="show"/>
+                <field name="raw_weight" optional="show"/>
+                <field name="raw_width" optional="show"/>
+                <field name="yarn_count" optional="show"/>
+                <field name="barcode"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Cartella Card - Search View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_cartella_card_search" model="ir.ui.view">
+        <field name="name">cartella.card.search</field>
+        <field name="model">cartella.card</field>
+        <field name="arch" type="xml">
+            <search string="بحث في الكارتيلات">
+                <field name="sequence_number" string="الرقم التسلسلي"/>
+                <field name="barcode" string="الباركود"/>
+                <field name="reference" string="المرجع / الكود"/>
+                <field name="finished_product_id" string="المنتج التام"/>
+                <field name="category_id" string="الفئة"/>
+                <field name="blend_ratio_id" string="نسبة الخلط"/>
+                <field name="yarn_count" string="نمرة الخيط"/>
+                <separator/>
+                <filter
+                    name="filter_has_barcode"
+                    string="لديه باركود"
+                    domain="[('barcode', '!=', False), ('barcode', '!=', '')]"/>
+                <separator/>
+                <filter
+                    name="group_by_finished_product"
+                    string="تجميع بـ: المنتج التام"
+                    context="{'group_by': 'finished_product_id'}"/>
+                <filter
+                    name="group_by_category"
+                    string="تجميع بـ: الفئة"
+                    context="{'group_by': 'category_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Cartella Card - Window Action
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="action_cartella_card" model="ir.actions.act_window">
+        <field name="name">الكارتيلات</field>
+        <field name="res_model">cartella.card</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_cartella_card_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                أنشئ أول كارتيلة نسيجية
+            </p>
+            <p>
+                سيتم توليد الرقم التسلسلي والباركود تلقائياً.
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Print Label - Server Action bound to cartella.card
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="action_report_cartella_label" model="ir.actions.report">
+        <field name="name">طباعة ملصق الكارتيلة</field>
+        <field name="model">cartella.card</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">thmar_textile_cartella.report_cartella_label</field>
+        <field name="report_file">thmar_textile_cartella.report_cartella_label</field>
+        <field name="binding_model_id" ref="model_cartella_card"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+</odoo>

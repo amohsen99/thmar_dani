@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════
+         Category - Form View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_cartella_category_form" model="ir.ui.view">
+        <field name="name">cartella.category.form</field>
+        <field name="model">cartella.category</field>
+        <field name="arch" type="xml">
+            <form string="فئة الكارتيلة">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="اسم الفئة"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="code" placeholder="كود الفئة"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Category - List View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_cartella_category_list" model="ir.ui.view">
+        <field name="name">cartella.category.list</field>
+        <field name="model">cartella.category</field>
+        <field name="arch" type="xml">
+            <list string="فئات الكارتيلة" editable="bottom">
+                <field name="name"/>
+                <field name="code"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Category - Search View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_cartella_category_search" model="ir.ui.view">
+        <field name="name">cartella.category.search</field>
+        <field name="model">cartella.category</field>
+        <field name="arch" type="xml">
+            <search string="بحث في فئات الكارتيلة">
+                <field name="name" string="الاسم"/>
+                <field name="code" string="الكود"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Category - Window Action
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="action_cartella_category" model="ir.actions.act_window">
+        <field name="name">فئات الكارتيلة</field>
+        <field name="res_model">cartella.category</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_cartella_category_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                أضف أول فئة كارتيلة
+            </p>
+        </field>
+    </record>
+</odoo>

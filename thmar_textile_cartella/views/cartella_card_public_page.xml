@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Public mobile web page for cartella cards.
+        Clean gray/white design with bilingual Arabic/English labels.
+    -->
+    <template id="cartella_card_public_page" name="Cartella Card - Public View">
+        <html lang="ar" dir="rtl">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title>
+                    كارتيلة - <t t-esc="card.sequence_number"/>
+                </title>
+                <style>
+                    *, *::before, *::after {
+                        box-sizing: border-box;
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    html, body {
+                        height: 100%;
+                    }
+
+                    body {
+                        font-family: 'Segoe UI', 'Cairo', 'Tahoma', 'Arial', sans-serif;
+                        background: #f0f2f5;
+                        min-height: 100vh;
+                        padding: 20px 12px 40px;
+                        color: #222;
+                        -webkit-font-smoothing: antialiased;
+                    }
+
+                    /* Page container */
+                    .crt-page {
+                        max-width: 420px;
+                        margin: 0 auto;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 14px;
+                    }
+
+                    /* Header */
+                    .crt-header {
+                        text-align: center;
+                        padding: 8px 0 4px;
+                    }
+
+                    .crt-brand {
+                        font-size: 11px;
+                        letter-spacing: 3px;
+                        text-transform: uppercase;
+                        color: #888;
+                        margin-bottom: 10px;
+                    }
+
+                    .crt-seq {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        background: #fff;
+                        border: 1px solid #d5d9e0;
+                        border-radius: 50px;
+                        padding: 8px 22px;
+                        font-size: 15px;
+                        font-weight: 700;
+                        color: #222;
+                        letter-spacing: 1px;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+                    }
+
+                    /* Main card */
+                    .crt-card {
+                        background: #ffffff;
+                        border: 1px solid #d5d9e0;
+                        border-radius: 16px;
+                        overflow: hidden;
+                        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+                    }
+
+                    /* Product title bar */
+                    .crt-title-bar {
+                        background: #e9ecef;
+                        padding: 14px 18px;
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        border-bottom: 1px solid #d5d9e0;
+                    }
+
+                    .crt-title-icon {
+                        width: 38px;
+                        height: 38px;
+                        border-radius: 10px;
+                        background: #dee2e6;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 20px;
+                        flex-shrink: 0;
+                    }
+
+                    .crt-title-label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #000000;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                    }
+
+                    .crt-title-value {
+                        font-size: 16px;
+                        font-weight: 700;
+                        color: #111;
+                        margin-top: 2px;
+                        line-height: 1.3;
+                    }
+
+                    /* Specs grid */
+                    .crt-specs {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                    }
+
+                    .crt-spec {
+                        padding: 14px 16px;
+                        border-top: 1px solid #f0f2f5;
+                        border-left: 1px solid #f0f2f5;
+                    }
+
+                    .crt-spec:nth-child(odd) {
+                        border-left: none;
+                    }
+
+                    .crt-spec-label {
+                        font-size: 12px;
+                        color: #0a0909;
+                        font-weight: 600;
+                        text-transform: uppercase;
+                        letter-spacing: 0.8px;
+                        margin-bottom: 4px;
+                    }
+
+                    .crt-spec-value {
+                        font-size: 15px;
+                        font-weight: 600;
+                        color: #111;
+                        line-height: 1.3;
+                    }
+
+                    .crt-spec-value.accent {
+                        color: #495057;
+                    }
+
+                    .crt-spec-value.mono {
+                        font-family: 'Courier New', monospace;
+                        font-size: 13px;
+                        letter-spacing: 1px;
+                        color: #495057;
+                    }
+
+                    .crt-spec-value small {
+                        font-size: 10px;
+                        color: #888;
+                        font-weight: 400;
+                        margin-right: 2px;
+                    }
+
+                    .crt-spec.wide {
+                        grid-column: 1 / -1;
+                        border-left: none;
+                    }
+
+                    /* QR section */
+                    .crt-qr-section {
+                        background: #ffffff;
+                        border: 1px solid #d5d9e0;
+                        border-radius: 16px;
+                        padding: 22px 18px;
+                        text-align: center;
+                        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+                    }
+
+                    .crt-qr-title {
+                        font-size: 10px;
+                        color: #777;
+                        text-transform: uppercase;
+                        letter-spacing: 2.5px;
+                        margin-bottom: 14px;
+                    }
+
+                    .crt-qr-img {
+                        width: 160px;
+                        height: 160px;
+                        background: #fff;
+                        padding: 8px;
+                        display: block;
+                        margin: 0 auto 14px;
+                        border: 1px solid #d5d9e0;
+                        border-radius: 12px;
+                    }
+
+                    .crt-barcode-str {
+                        display: inline-block;
+                        font-family: 'Courier New', monospace;
+                        font-size: 12px;
+                        letter-spacing: 1.5px;
+                        color: #495057;
+                        background: #f8f9fa;
+                        border: 1px solid #d5d9e0;
+                        border-radius: 6px;
+                        padding: 7px 14px;
+                    }
+
+                    /* Action button */
+                    .crt-btn {
+                        display: block;
+                        width: 100%;
+                        padding: 14px;
+                        background: #e9ecef;
+                        color: #222;
+                        font-size: 14px;
+                        font-weight: 700;
+                        border: 1px solid #d5d9e0;
+                        border-radius: 14px;
+                        text-align: center;
+                        text-decoration: none;
+                        cursor: pointer;
+                        letter-spacing: 0.5px;
+                    }
+
+                    .crt-btn:hover {
+                        background: #dee2e6;
+                    }
+
+                    /* Footer */
+                    .crt-footer {
+                        text-align: center;
+                        color: #999;
+                        font-size: 11px;
+                        padding-bottom: 4px;
+                    }
+
+                    /* Responsive */
+                    @media (max-width: 360px) {
+                        .crt-specs { grid-template-columns: 1fr; }
+                        .crt-spec { border-left: none; }
+                        .crt-spec.wide { grid-column: 1; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="crt-page">
+
+                    <!-- Header -->
+                    <div class="crt-header">
+                        <div class="crt-brand">Al-Omar Group · الكارتيلات</div>
+                        <div class="crt-seq">
+                            🏷
+                            <t t-esc="card.sequence_number or 'N/A'"/>
+                        </div>
+                    </div>
+
+                    <!-- Main card -->
+                    <div class="crt-card">
+
+                        <!-- Product title bar -->
+                        <div class="crt-title-bar">
+                            <div class="crt-title-icon">🧵</div>
+                            <div>
+                                <div class="crt-title-label">اسم المنتج التام / Product Name</div>
+                                <div class="crt-title-value">
+                                    <t t-esc="card.finished_product_id.name or '—'"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Specs -->
+                        <div class="crt-specs">
+
+                            <!-- Raw detail -->
+                            <div class="crt-spec wide">
+                                <div class="crt-spec-label">الخام بالتفصيل / Raw Material</div>
+                                <div class="crt-spec-value" style="font-size:14px; color:#444;">
+                                    <t t-esc="card.raw_material_detail or '—'"/>
+                                </div>
+                            </div>
+
+                            <!-- Finished width -->
+                            <div class="crt-spec">
+                                <div class="crt-spec-label">عرض التام / Width</div>
+                                <div class="crt-spec-value accent">
+                                    <t t-esc="card.finished_width_display or '—'"/> <small>سم</small>
+                                </div>
+                            </div>
+
+                            <!-- Finished weight -->
+                            <div class="crt-spec">
+                                <div class="crt-spec-label">وزن التام / Weight</div>
+                                <div class="crt-spec-value accent">
+                                    <t t-esc="card.finished_weight_display or '—'"/> <small>جم/م²</small>
+                                </div>
+                            </div>
+
+                            <!-- Raw width -->
+                            <div class="crt-spec">
+                                <div class="crt-spec-label">عرض الخام / Raw Width</div>
+                                <div class="crt-spec-value">
+                                    <t t-esc="card.raw_width_display or '—'"/>
+                                </div>
+                            </div>
+
+                            <!-- Raw weight -->
+                            <div class="crt-spec">
+                                <div class="crt-spec-label">وزن الخام / Raw Weight</div>
+                                <div class="crt-spec-value">
+                                    <t t-esc="card.raw_weight_display or '—'"/>
+                                </div>
+                            </div>
+
+                            <!-- Yarn count -->
+                            <t t-if="card.yarn_count">
+                                <div class="crt-spec">
+                                    <div class="crt-spec-label">نمرة الخيط / Yarn Count</div>
+                                    <div class="crt-spec-value">
+                                        <t t-esc="card.yarn_count"/>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- Blend ratio -->
+                            <t t-if="card.blend_ratio_id">
+                                <div class="crt-spec">
+                                    <div class="crt-spec-label">نسبة الخلط / Composition</div>
+                                    <div class="crt-spec-value" style="font-size:13px; color:#444;">
+                                        <t t-esc="card.blend_ratio_id or ''"/>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- Reference -->
+                            <t t-if="card.reference">
+                                <div class="crt-spec wide">
+                                    <div class="crt-spec-label">الكود / المرجع / Sample Code</div>
+                                    <div class="crt-spec-value mono">
+                                        <t t-esc="card.reference"/>
+                                    </div>
+                                </div>
+                            </t>
+
+                        </div><!-- /.crt-specs -->
+                    </div><!-- /.crt-card -->
+
+                    <!-- QR code section -->
+                    <!-- <t t-if="card.record_url">
+                        <div class="crt-qr-section">
+                            <div class="crt-qr-title">QR Code · امسح للمشاركة</div>
+                            <img
+                                class="crt-qr-img"
+                                t-attf-src="/report/barcode/?barcode_type=QR&amp;value={{ card.record_url }}&amp;width=300&amp;height=300"
+                                alt="QR Code"/>
+                            <t t-if="card.barcode">
+                                <div class="crt-barcode-str">
+                                    <t t-esc="card.barcode"/>
+                                </div>
+                            </t>
+                        </div>
+                    </t> -->
+
+                    <!-- Open in backend -->
+                    <a t-attf-href="{{ backend_url }}" class="crt-btn">
+                        ⚙ فتح في النظام / Open in Backend
+                    </a>
+
+                    <!-- Footer -->
+                    <div class="crt-footer">
+                        Al-Omar Group · العمر جروب
+                    </div>
+
+                </div><!-- /.crt-page -->
+            </body>
+        </html>
+    </template>
+</odoo>

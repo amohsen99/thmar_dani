@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════
+         Root Menu
+    ═══════════════════════════════════════════════════════════════ -->
+    <menuitem
+        id="menu_cartella_root"
+        name="الكارتيلات"
+        sequence="50"
+        web_icon="thmar_textile_cartella,static/description/icon.png"/>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Main Menu - Cartella Cards
+    ═══════════════════════════════════════════════════════════════ -->
+    <menuitem
+        id="menu_cartella_cards"
+        name="الكارتيلات"
+        parent="menu_cartella_root"
+        action="action_cartella_card"
+        sequence="10"/>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Configuration Menu
+    ═══════════════════════════════════════════════════════════════ -->
+    <menuitem
+        id="menu_cartella_config"
+        name="الإعدادات والبيانات الأساسية"
+        parent="menu_cartella_root"
+        sequence="90"/>
+
+    <menuitem
+        id="menu_cartella_finished_products"
+        name="المنتجات التامة"
+        parent="menu_cartella_config"
+        action="action_cartella_finished_product"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_cartella_categories"
+        name="فئات الكارتيلة"
+        parent="menu_cartella_config"
+        action="action_cartella_category"
+        sequence="20"/>
+</odoo>

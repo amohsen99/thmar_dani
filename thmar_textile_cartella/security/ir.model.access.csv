@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cartella_finished_product_user,cartella.finished.product user,model_cartella_finished_product,base.group_user,1,1,1,1
+access_cartella_category_user,cartella.category user,model_cartella_category,base.group_user,1,1,1,1
+access_cartella_card_user,cartella.card user,model_cartella_card,base.group_user,1,1,1,1

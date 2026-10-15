@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_cartella_label">
+        <t t-call="web.html_container">
+            <style type="text/css">
+                @page {
+                    margin: 0mm !important;
+                    size: 100mm 70mm !important;
+                }
+                html, body {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+                .label-page {
+                    width: 100mm;
+                    height: 70mm;
+                    box-sizing: border-box;
+                    padding: 3mm;
+                    border: 2px solid #000;
+                    display: flex;
+                    flex-direction: row;
+                    font-family: Arial, sans-serif;
+                    font-size: 11pt;
+                    color: #000;
+                    background: #fff;
+                }
+                .label-left {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    padding-right: 2mm;
+                    padding-left: 2mm;
+                    min-width: 0;
+                }
+                .label-right {
+                    width: 28mm;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    border-right: 1.5px solid #000;
+                    padding-right: 2mm;
+                    padding-left: 2mm;
+                    flex-shrink: 0;
+                }
+                .label-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-size: 12pt;
+                    font-weight: bold;
+                    border: 1.5px solid #000;
+                }
+                .label-table td {
+                    padding: 2mm 2.5mm;
+                    border: 1px solid #000;
+                    word-wrap: break-word;
+                    overflow: hidden;
+                }
+                .label-table .lbl {
+                    width: 40%;
+                    background: #e8eeff;
+                    font-size: 10pt;
+                    white-space: nowrap;
+                }
+                .label-table .val {
+                    text-align: center;
+                    font-size: 11pt;
+                }
+                .label-table tr:nth-child(even) .lbl,
+                .label-table tr:nth-child(even) .val {
+                    background: #ffffff;
+                }
+                .label-footer img {
+                    width: 14mm;
+                    height: 14mm;
+                    display: block;
+                    margin: 0 auto 0.8mm auto;
+                }
+                .label-barcode {
+                    font-family: 'Courier New', monospace;
+                    font-size: 7pt;
+                    font-weight: bold;
+                    letter-spacing: 0.5px;
+                    background: #f0f0f0;
+                    border: 1px solid #000;
+                    padding: 0.6mm 1.5mm;
+                    display: inline-block;
+                }
+            </style>
+
+            <t t-foreach="docs" t-as="doc">
+                <div class="label-page">
+                    <!-- Left: Info Table -->
+                    <div class="label-left">
+                        <table class="label-table">
+                            <tr>
+                                <td class="lbl">Product</td>
+                                <td class="val">
+                                    <t t-esc="doc.finished_product_id.name or ''"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">Code</td>
+                                <td class="val">
+                                    <t t-esc="doc.reference or ''"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">Width</td>
+                                <td class="val">
+                                    <t t-esc="doc.finished_width_display or ''"/> cm
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">Weight</td>
+                                <td class="val">
+                                    <t t-esc="doc.finished_weight_display or ''"/> g/m²
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">Composition</td>
+                                <td class="val">
+                                    <t t-if="doc.blend_ratio_id">
+                                        <t t-esc="doc.blend_ratio_id or ''"/>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-esc="doc.barcode or ''"/>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Right: QR Code + barcode -->
+                    <div class="label-right">
+                        <t t-if="doc.qr_image">
+                            <img t-att-src="image_data_uri(doc.qr_image)" alt="QR" class="label-footer"/>
+                        </t>
+                        <t t-if="doc.barcode">
+                            <div class="label-barcode">
+                                <t t-esc="doc.barcode"/>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

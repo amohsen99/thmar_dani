@@ -2,7 +2,7 @@
 {
     'name': 'Thamar Transportation Management',
     'summary': 'Bus routes, vehicle capacity, and employee transportation allocation',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.0.1',
     'category': 'Human Resources',
     'author': 'Thamar',
     'license': 'Other proprietary',

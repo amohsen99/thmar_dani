@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════
+         Finished Product - Form View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_cartella_finished_product_form" model="ir.ui.view">
+        <field name="name">cartella.finished.product.form</field>
+        <field name="model">cartella.finished.product</field>
+        <field name="arch" type="xml">
+            <form string="المنتج التام">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="اسم المنتج التام"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="code" placeholder="كود المنتج التام"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Finished Product - List View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_cartella_finished_product_list" model="ir.ui.view">
+        <field name="name">cartella.finished.product.list</field>
+        <field name="model">cartella.finished.product</field>
+        <field name="arch" type="xml">
+            <list string="المنتجات التامة" editable="bottom">
+                <field name="name"/>
+                <field name="code"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Finished Product - Search View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_cartella_finished_product_search" model="ir.ui.view">
+        <field name="name">cartella.finished.product.search</field>
+        <field name="model">cartella.finished.product</field>
+        <field name="arch" type="xml">
+            <search string="بحث في المنتجات التامة">
+                <field name="name" string="الاسم"/>
+                <field name="code" string="الكود"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Finished Product - Window Action
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="action_cartella_finished_product" model="ir.actions.act_window">
+        <field name="name">المنتجات التامة</field>
+        <field name="res_model">cartella.finished.product</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_cartella_finished_product_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                أضف أول منتج تام
+            </p>
+        </field>
+    </record>
+</odoo>

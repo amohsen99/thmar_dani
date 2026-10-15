@@ -108,7 +108,9 @@
     <field name="domain">[('kind', '=', 'mission')]</field>
     <field name="context">{'default_kind': 'mission'}</field>
   </record>
-  <menuitem id="menu_overtime_root" name="العمل الإضافي والمأموريات" sequence="95" groups="thamar_holiday_overtime.group_overtime_user,thamar_holiday_overtime.group_overtime_manager,thamar_holiday_overtime.group_overtime_hr_admin"/>
+  <menuitem id="menu_overtime_root" name="العمل الإضافي والمأموريات" sequence="95"
+            groups="thamar_holiday_overtime.group_overtime_user,thamar_holiday_overtime.group_overtime_manager,thamar_holiday_overtime.group_overtime_hr_admin"
+            web_icon="thamar_holiday_overtime,static/description/icon.png"/>
   <menuitem id="menu_overtime_requests" parent="menu_overtime_root" action="action_overtime" name="العمل الإضافي" sequence="10" groups="thamar_holiday_overtime.group_overtime_user,thamar_holiday_overtime.group_overtime_manager,thamar_holiday_overtime.group_overtime_hr_admin"/>
   <menuitem id="menu_missions" parent="menu_overtime_root" action="action_missions" name="المأموريات" sequence="20" groups="thamar_holiday_overtime.group_overtime_user,thamar_holiday_overtime.group_overtime_manager,thamar_holiday_overtime.group_overtime_hr_admin"/>
   <record id="company_overtime_form" model="ir.ui.view">

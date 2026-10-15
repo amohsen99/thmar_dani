@@ -11,7 +11,7 @@
     'license': 'Other proprietary',
     'author': 'Thamar',
     'category': 'Human Resources/Payroll',
-    'version': '19.0.4.0.0',
+    'version': '19.0.4.0.1',
     'depends': [
         'hr_payroll',
         'hr_holidays',
