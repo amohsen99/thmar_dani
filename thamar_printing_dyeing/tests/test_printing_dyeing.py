@@ -292,6 +292,31 @@ class TestPrintingDyeing(TransactionCase):
         self.assertTrue(picking.is_dyeing_material_issue)
         self.assertIn(picking, operation.material_issue_ids)
 
+    def test_warehouse_menu_opens_operation_types_kanban(self):
+        warehouse = self.env["stock.warehouse"].search(
+            [("company_id", "=", self.env.company.id)], limit=1
+        )
+        warehouse._sync_dyeing_warehouse_menus()
+
+        root_menu = self.env.ref(
+            "thamar_printing_dyeing.menu_dyeing_material_issue"
+        )
+        self.assertEqual(root_menu.name, "المخازن")
+        self.assertEqual(warehouse.dyeing_menu_id.parent_id, root_menu)
+        self.assertEqual(warehouse.dyeing_menu_id.name, warehouse.name)
+        self.assertEqual(
+            warehouse.dyeing_operations_action_id.res_model, "stock.picking.type"
+        )
+        self.assertEqual(
+            warehouse.dyeing_operations_action_id.view_mode, "kanban,form"
+        )
+        self.assertIn(str(warehouse.id), warehouse.dyeing_operations_action_id.domain)
+        self.assertTrue(
+            self.env["stock.picking.type"].search_count(
+                [("warehouse_id", "=", warehouse.id), ("active", "=", True)]
+            )
+        )
+
     def test_only_manager_can_change_customer_from_operation(self):
         regular_user = new_test_user(
             self.env,

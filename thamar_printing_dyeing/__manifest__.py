@@ -2,7 +2,7 @@
 {
     "name": "الطباعة والصباغة",
     "summary": "إدارة أوامر تشغيل ومراحل وماكينات مصانع طباعة وصباغة الأقمشة",
-    "version": "19.0.1.6.4",
+    "version": "19.0.1.6.5",
     "category": "Manufacturing",
     "author": "Thamar",
     "license": "LGPL-3",
@@ -23,4 +23,5 @@
     ],
     "application": True,
     "installable": True,
+    "post_init_hook": "post_init_hook",
 }
