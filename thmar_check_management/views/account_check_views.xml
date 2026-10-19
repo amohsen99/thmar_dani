@@ -206,14 +206,13 @@
                     <filter string="Outgoing Checks (شيكات صادرة)" name="outgoing" domain="[('check_type', '=', 'outgoing')]"/>
                     <filter string="Guarantee Checks (شيكات ضمان)" name="guarantee" domain="[('is_guarantee', '=', True)]"/>
 
-                    <group expand="0" string="Group By">
-                        <filter string="Status / الحالة" name="group_status" context="{'group_by': 'state'}"/>
-                        <filter string="Original Partner / الطرف المصدر" name="group_partner" context="{'group_by': 'partner_id'}"/>
-                        <filter string="Current Beneficiary / المظهر له" name="group_current_partner" context="{'group_by': 'current_partner_id'}"/>
-                        <filter string="Drawee Bank / البنك" name="group_bank" context="{'group_by': 'bank_id'}"/>
-                        <filter string="Safe / Drawer (الخزينة)" name="group_drawer" context="{'group_by': 'storage_drawer_id'}"/>
-                        <filter string="Due Date / تاريخ الاستحقاق" name="group_due_date" context="{'group_by': 'due_date:month'}"/>
-                    </group>
+                    <separator/>
+                    <filter string="Status / الحالة" name="group_status" context="{'group_by': 'state'}"/>
+                    <filter string="Original Partner / الطرف المصدر" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Current Beneficiary / المظهر له" name="group_current_partner" context="{'group_by': 'current_partner_id'}"/>
+                    <filter string="Drawee Bank / البنك" name="group_bank" context="{'group_by': 'bank_id'}"/>
+                    <filter string="Safe / Drawer (الخزينة)" name="group_drawer" context="{'group_by': 'storage_drawer_id'}"/>
+                    <filter string="Due Date / تاريخ الاستحقاق" name="group_due_date" context="{'group_by': 'due_date:month'}"/>
                 </search>
             </field>
         </record>
