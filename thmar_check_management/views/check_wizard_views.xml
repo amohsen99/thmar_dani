@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================
+             1. Deposit Wizard View
+        ============================================================ -->
+        <record id="view_check_deposit_wizard_form" model="ir.ui.view">
+            <field name="name">check.deposit.wizard.form</field>
+            <field name="model">check.deposit.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Deposit Checks to Bank / إيداع الشيكات بالبنك برسم التحصيل">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="bank_journal_id" options="{'no_create': True}"/>
+                                <field name="deposit_date"/>
+                            </group>
+                            <group>
+                                <field name="total_amount"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Checks to Deposit / الشيكات المودعة" name="checks_page">
+                                <field name="check_ids" readonly="1">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="partner_id"/>
+                                        <field name="bank_id"/>
+                                        <field name="due_date"/>
+                                        <field name="amount" sum="Total"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Notes / ملاحظات" name="notes_page">
+                                <field name="notes" placeholder="e.g. أودعت بحافظة بنكية رقم ..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <footer>
+                        <button name="action_confirm_deposit" string="تأكيد الإيداع بالبنك" type="object" class="btn-primary"/>
+                        <button string="إلغاء" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             2. Clear Wizard View
+        ============================================================ -->
+        <record id="view_check_clear_wizard_form" model="ir.ui.view">
+            <field name="name">check.clear.wizard.form</field>
+            <field name="model">check.clear.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Clear / Collect Check / إثبات تحصيل أو صرف الشيك">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="bank_journal_id" options="{'no_create': True}"/>
+                                <field name="clear_date"/>
+                            </group>
+                            <group>
+                                <field name="total_amount"/>
+                                <field name="fee_amount"/>
+                                <field name="fee_account_id" invisible="fee_amount == 0" options="{'no_create': True}"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Checks to Clear / الشيكات المحصلة" name="checks_page">
+                                <field name="check_ids" readonly="1">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="partner_id"/>
+                                        <field name="bank_id"/>
+                                        <field name="due_date"/>
+                                        <field name="amount" sum="Total"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Notes / ملاحظات" name="notes_page">
+                                <field name="notes" placeholder="ملاحظات التحصيل أو رقم إشعار البنك..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <footer>
+                        <button name="action_confirm_clear" string="تأكيد التحصيل والإيداع بالحساب" type="object" class="btn-success"/>
+                        <button string="إلغاء" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             3. Bounce Wizard View
+        ============================================================ -->
+        <record id="view_check_bounce_wizard_form" model="ir.ui.view">
+            <field name="name">check.bounce.wizard.form</field>
+            <field name="model">check.bounce.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Bounce / Return Check / إثبات ارتداد الشيك">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="bounce_date"/>
+                                <field name="bounce_reason"/>
+                            </group>
+                            <group>
+                                <field name="notes" placeholder="تفاصيل سبب الرفض من البنك أو الطرف المسلم إليه..."/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Bounced Checks / الشيكات المرتدة" name="checks_page">
+                                <field name="check_ids" readonly="1">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="partner_id"/>
+                                        <field name="current_partner_id" optional="show"/>
+                                        <field name="bank_id"/>
+                                        <field name="due_date"/>
+                                        <field name="amount" sum="Total"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <footer>
+                        <button name="action_confirm_bounce" string="تأكيد ارتداد الشيك" type="object" class="btn-danger"/>
+                        <button string="إلغاء" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             4. Endorse Wizard View
+        ============================================================ -->
+        <record id="view_check_endorse_wizard_form" model="ir.ui.view">
+            <field name="name">check.endorse.wizard.form</field>
+            <field name="model">check.endorse.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Endorse Check / تظهير وتسليم الشيك لطرف آخر">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="partner_id" options="{'no_create': True}"/>
+                                <field name="account_id" options="{'no_create': True}"/>
+                                <field name="endorse_date"/>
+                            </group>
+                            <group>
+                                <field name="total_amount"/>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="notes" placeholder="سند الصرف أو الفاتورة المسددة..."/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Checks to Endorse / الشيكات المراد تظهيرها" name="checks_page">
+                                <field name="check_ids" readonly="1">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="partner_id" string="Original Partner"/>
+                                        <field name="bank_id"/>
+                                        <field name="due_date"/>
+                                        <field name="amount" sum="Total"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <footer>
+                        <button name="action_confirm_endorse" string="تأكيد التظهير والتسليم" type="object" class="btn-warning"/>
+                        <button string="إلغاء" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

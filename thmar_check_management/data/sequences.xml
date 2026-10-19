@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sequence for Inward Batch Portfolio -->
+        <record id="seq_check_batch_inward" model="ir.sequence">
+            <field name="name">Inward Cheque Batch Portfolio</field>
+            <field name="code">check.batch.inward</field>
+            <field name="prefix">CHK-IN/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Outward / Endorsement Batch Portfolio -->
+        <record id="seq_check_batch_outward" model="ir.sequence">
+            <field name="name">Outward Cheque Batch Portfolio</field>
+            <field name="code">check.batch.outward</field>
+            <field name="prefix">CHK-OUT/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

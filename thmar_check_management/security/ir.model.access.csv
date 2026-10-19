@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_check_user,account.check.user,model_account_check,thmar_check_management.group_check_user,1,1,1,0
+access_account_check_manager,account.check.manager,model_account_check,thmar_check_management.group_check_manager,1,1,1,1
+access_check_batch_user,check.batch.user,model_check_batch,thmar_check_management.group_check_user,1,1,1,0
+access_check_batch_manager,check.batch.manager,model_check_batch,thmar_check_management.group_check_manager,1,1,1,1
+access_check_storage_drawer_user,check.storage.drawer.user,model_check_storage_drawer,thmar_check_management.group_check_user,1,1,1,0
+access_check_storage_drawer_manager,check.storage.drawer.manager,model_check_storage_drawer,thmar_check_management.group_check_manager,1,1,1,1
+access_check_dashboard_user,check.dashboard.user,model_check_dashboard,thmar_check_management.group_check_user,1,1,1,0
+access_check_dashboard_manager,check.dashboard.manager,model_check_dashboard,thmar_check_management.group_check_manager,1,1,1,1
+access_check_deposit_wizard_user,check.deposit.wizard.user,model_check_deposit_wizard,thmar_check_management.group_check_user,1,1,1,1
+access_check_deposit_wizard_manager,check.deposit.wizard.manager,model_check_deposit_wizard,thmar_check_management.group_check_manager,1,1,1,1
+access_check_clear_wizard_user,check.clear.wizard.user,model_check_clear_wizard,thmar_check_management.group_check_user,1,1,1,1
+access_check_clear_wizard_manager,check.clear.wizard.manager,model_check_clear_wizard,thmar_check_management.group_check_manager,1,1,1,1
+access_check_bounce_wizard_user,check.bounce.wizard.user,model_check_bounce_wizard,thmar_check_management.group_check_user,1,1,1,1
+access_check_bounce_wizard_manager,check.bounce.wizard.manager,model_check_bounce_wizard,thmar_check_management.group_check_manager,1,1,1,1
+access_check_endorse_wizard_user,check.endorse.wizard.user,model_check_endorse_wizard,thmar_check_management.group_check_user,1,1,1,1
+access_check_endorse_wizard_manager,check.endorse.wizard.manager,model_check_endorse_wizard,thmar_check_management.group_check_manager,1,1,1,1

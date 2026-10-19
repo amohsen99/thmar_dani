@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================
+             1. Account Check Form View
+        ============================================================ -->
+        <record id="view_account_check_form" model="ir.ui.view">
+            <field name="name">account.check.form</field>
+            <field name="model">account.check</field>
+            <field name="arch" type="xml">
+                <form string="Commercial Paper Cheque / شيك تجاري">
+                    <header>
+                        <button name="action_deposit" string="إيداع بالبنك برسم التحصيل" type="object" class="btn-primary" invisible="state != 'in_safe' or check_type != 'incoming'"/>
+                        <button name="action_endorse" string="تظهير وتسليم لطرف آخر" type="object" class="btn-warning" invisible="state != 'in_safe' or check_type != 'incoming'"/>
+                        <button name="action_clear" string="إثبات تحصيل أو صرف" type="object" class="btn-success" invisible="state not in ('deposited', 'in_safe', 'endorsed')"/>
+                        <button name="action_bounce" string="إثبات ارتداد الشيك" type="object" class="btn-danger" invisible="state not in ('deposited', 'endorsed', 'in_safe')"/>
+                        <button name="action_reset_to_safe" string="إرجاع للخزينة" type="object" invisible="state in ('in_safe', 'draft')"/>
+                        <button name="action_cancel" string="إلغاء الشيك" type="object" invisible="state in ('cancelled', 'cleared')"/>
+                        <field name="state" widget="statusbar" statusbar_visible="in_safe,deposited,endorsed,cleared"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_moves" type="object" class="oe_stat_button" icon="fa-bars" invisible="moves_count == 0">
+                                <field name="moves_count" widget="statinfo" string="القيود المحاسبية"/>
+                            </button>
+                        </div>
+                        <div class="badge bg-danger float-end fs-6" invisible="not is_overdue">
+                            <i class="fa fa-exclamation-triangle me-1"/> متأخر عن موعد الاستحقاق!
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" string="Check Number / رقم الشيك"/>
+                            <h1>
+                                <field name="name" placeholder="e.g. 0001234"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Basic &amp; Partner Info / بيانات الشيك والأطراف">
+                                <field name="check_type" widget="radio" options="{'horizontal': true}"/>
+                                <field name="partner_id" options="{'no_create_edit': True}"/>
+                                <field name="current_partner_id" invisible="not current_partner_id" readonly="1"/>
+                                <field name="drawer" placeholder="الاسم المكتوب على الشيك إن اختلف"/>
+                                <field name="bank_id" options="{'no_create_edit': True}"/>
+                                <field name="bank_branch"/>
+                                <field name="is_guarantee"/>
+                            </group>
+                            <group string="Amounts &amp; Dates / المبالغ وتواريخ الاستحقاق">
+                                <field name="amount"/>
+                                <field name="currency_id" options="{'no_create': True}"/>
+                                <field name="check_date"/>
+                                <field name="due_date"/>
+                                <field name="days_to_due" invisible="state in ('cleared', 'cancelled')"/>
+                                <field name="is_overdue" invisible="1"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Storage Location / مكان الحفظ في الخزينة" name="storage_page">
+                                <group>
+                                    <group>
+                                        <field name="storage_drawer_id" options="{'no_create_edit': True}"/>
+                                        <field name="storage_division" placeholder="رقم الخانة، الرف، أو الملف"/>
+                                    </group>
+                                    <group>
+                                        <field name="inward_batch_id" readonly="1" invisible="not inward_batch_id"/>
+                                        <field name="outward_batch_id" readonly="1" invisible="not outward_batch_id"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Lifecycle Details / تفاصيل دورة الشيك" name="lifecycle_page">
+                                <group>
+                                    <group string="Deposit &amp; Clearance / الإيداع والتحصيل">
+                                        <field name="deposit_date" readonly="1"/>
+                                        <field name="deposit_bank_journal_id" readonly="1"/>
+                                        <field name="clear_date" readonly="1"/>
+                                    </group>
+                                    <group string="Endorsement &amp; Bounce / التظهير والارتداد">
+                                        <field name="endorse_date" readonly="1"/>
+                                        <field name="bounce_date" readonly="1"/>
+                                        <field name="bounce_reason" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Scan / صورة الشيك" name="image_page">
+                                <group>
+                                    <field name="check_image" widget="image" options="{'accepted_file_extensions': 'image/*'}"/>
+                                    <field name="check_image_name" invisible="1"/>
+                                </group>
+                            </page>
+                            <page string="Notes / ملاحظات" name="notes_page">
+                                <field name="notes" placeholder="ملاحظات إضافية حول الشيك..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             2. Account Check List View
+        ============================================================ -->
+        <record id="view_account_check_list" model="ir.ui.view">
+            <field name="name">account.check.list</field>
+            <field name="model">account.check</field>
+            <field name="arch" type="xml">
+                <list string="Paper Cheques" decoration-info="state == 'in_safe'" decoration-warning="state == 'deposited'" decoration-primary="state == 'endorsed'" decoration-success="state == 'cleared'" decoration-danger="state == 'bounced' or is_overdue">
+                    <field name="name"/>
+                    <field name="check_type" optional="show"/>
+                    <field name="partner_id" string="Original Partner"/>
+                    <field name="current_partner_id" optional="show" string="Current Beneficiary"/>
+                    <field name="bank_id"/>
+                    <field name="due_date"/>
+                    <field name="days_to_due" optional="hide"/>
+                    <field name="amount" sum="Total Amount"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="storage_drawer_id" optional="show"/>
+                    <field name="storage_division" optional="hide"/>
+                    <field name="is_guarantee" optional="hide"/>
+                    <field name="is_overdue" invisible="1"/>
+                    <field name="state" widget="badge" decoration-info="state == 'in_safe'" decoration-warning="state == 'deposited'" decoration-primary="state == 'endorsed'" decoration-success="state == 'cleared'" decoration-danger="state == 'bounced'"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             3. Account Check Kanban View
+        ============================================================ -->
+        <record id="view_account_check_kanban" model="ir.ui.view">
+            <field name="name">account.check.kanban</field>
+            <field name="model">account.check</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" sample="1">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="current_partner_id"/>
+                    <field name="bank_id"/>
+                    <field name="due_date"/>
+                    <field name="amount"/>
+                    <field name="currency_id"/>
+                    <field name="state"/>
+                    <field name="is_overdue"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold fs-6">
+                                    <i class="fa fa-ticket me-1 text-primary" title="Check"/>
+                                    <field name="name"/>
+                                </span>
+                                <field name="state" widget="badge"
+                                       decoration-info="state == 'in_safe'"
+                                       decoration-warning="state == 'deposited'"
+                                       decoration-primary="state == 'endorsed'"
+                                       decoration-success="state == 'cleared'"
+                                       decoration-danger="state == 'bounced'"/>
+                            </div>
+                            <div class="text-muted small">
+                                <i class="fa fa-user me-1" title="Partner"/> <field name="partner_id"/>
+                            </div>
+                            <div t-if="record.current_partner_id.raw_value" class="text-primary small">
+                                <i class="fa fa-share me-1" title="Endorsed To"/> مظهر إلى: <field name="current_partner_id"/>
+                            </div>
+                            <div class="text-muted small">
+                                <i class="fa fa-university me-1" title="Bank"/> <field name="bank_id"/>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-2 pt-1 border-top">
+                                <span t-attf-class="small #{record.is_overdue.raw_value ? 'text-danger fw-bold' : 'text-muted'}">
+                                    <i class="fa fa-calendar me-1" title="Due Date"/> <field name="due_date"/>
+                                </span>
+                                <span class="fw-bold text-dark">
+                                    <field name="amount"/>
+                                </span>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             4. Account Check Search View
+        ============================================================ -->
+        <record id="view_account_check_search" model="ir.ui.view">
+            <field name="name">account.check.search</field>
+            <field name="model">account.check</field>
+            <field name="arch" type="xml">
+                <search string="Search Checks">
+                    <field name="name" string="Check Number"/>
+                    <field name="partner_id" string="Partner / الطرف"/>
+                    <field name="current_partner_id" string="Beneficiary / المظهر له"/>
+                    <field name="drawer" string="Drawer / الساحب"/>
+                    <field name="bank_id" string="Bank / البنك"/>
+                    
+                    <separator/>
+                    <filter string="In Safe (في الخزينة)" name="in_safe" domain="[('state', '=', 'in_safe')]"/>
+                    <filter string="Under Collection (برسم التحصيل)" name="deposited" domain="[('state', '=', 'deposited')]"/>
+                    <filter string="Endorsed (شيكات مظهرة)" name="endorsed" domain="[('state', '=', 'endorsed')]"/>
+                    <filter string="Cleared (محصلة)" name="cleared" domain="[('state', '=', 'cleared')]"/>
+                    <filter string="Bounced (مرتدة / مرفوضة)" name="bounced" domain="[('state', '=', 'bounced')]"/>
+                    
+                    <separator/>
+                    <filter string="Overdue (متأخر الاستحقاق)" name="overdue" domain="[('is_overdue', '=', True)]"/>
+                    <filter string="Incoming Checks (شيكات واردة)" name="incoming" domain="[('check_type', '=', 'incoming')]"/>
+                    <filter string="Outgoing Checks (شيكات صادرة)" name="outgoing" domain="[('check_type', '=', 'outgoing')]"/>
+                    <filter string="Guarantee Checks (شيكات ضمان)" name="guarantee" domain="[('is_guarantee', '=', True)]"/>
+
+                    <group expand="0" string="Group By">
+                        <filter string="Status / الحالة" name="group_status" context="{'group_by': 'state'}"/>
+                        <filter string="Original Partner / الطرف المصدر" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Current Beneficiary / المظهر له" name="group_current_partner" context="{'group_by': 'current_partner_id'}"/>
+                        <filter string="Drawee Bank / البنك" name="group_bank" context="{'group_by': 'bank_id'}"/>
+                        <filter string="Safe / Drawer (الخزينة)" name="group_drawer" context="{'group_by': 'storage_drawer_id'}"/>
+                        <filter string="Due Date / تاريخ الاستحقاق" name="group_due_date" context="{'group_by': 'due_date:month'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             5. Actions & Pivot / Graph
+        ============================================================ -->
+        <record id="view_account_check_pivot" model="ir.ui.view">
+            <field name="name">account.check.pivot</field>
+            <field name="model">account.check</field>
+            <field name="arch" type="xml">
+                <pivot string="Cheques Analysis">
+                    <field name="state" type="col"/>
+                    <field name="partner_id" type="row"/>
+                    <field name="amount" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="view_account_check_graph" model="ir.ui.view">
+            <field name="name">account.check.graph</field>
+            <field name="model">account.check</field>
+            <field name="arch" type="xml">
+                <graph string="Cheques Analysis" type="bar">
+                    <field name="state"/>
+                    <field name="amount" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="action_account_check" model="ir.actions.act_window">
+            <field name="name">All Paper Cheques / جميع الشيكات</field>
+            <field name="res_model">account.check</field>
+            <field name="view_mode">list,kanban,form,pivot,graph</field>
+            <field name="search_view_id" ref="view_account_check_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    لا توجد شيكات مسجلة بعد. يمكنك استلام حوافظ شيكات واردة أو إضافة شيك جديد.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

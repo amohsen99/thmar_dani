@@ -1,0 +1,31 @@
+# -*- coding: utf-8 -*-
+{
+    'name': 'Thmar Cheque Cycle & Portfolio Management | دورة وحوافظ الشيكات - ثمار',
+    'version': '19.0.1.0.0',
+    'category': 'Accounting/Accounting',
+    'summary': 'إدارة دورة الشيكات، حوافظ الاستلام والصرف المجمعة، التظهير التبادلي، والداشبورد لمصانع الغزل والنسيج والشركات التجارية',
+    'author': 'Thmar Digital Solutions | ثمار للحلول الرقمية',
+    'website': 'https://www.thmar.com',
+    'license': 'LGPL-3',
+    'depends': [
+        'base',
+        'account',
+        'mail',
+    ],
+    'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'data/sequences.xml',
+        'views/check_wizard_views.xml',
+        'views/account_check_views.xml',
+        'views/check_batch_views.xml',
+        'views/check_storage_views.xml',
+        'views/check_dashboard_views.xml',
+        'views/res_config_settings_views.xml',
+        'views/menus.xml',
+    ],
+    'images': ['static/description/icon.png'],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+}

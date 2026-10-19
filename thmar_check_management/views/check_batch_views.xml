@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================
+             1. Check Batch Form View
+        ============================================================ -->
+        <record id="view_check_batch_form" model="ir.ui.view">
+            <field name="name">check.batch.form</field>
+            <field name="model">check.batch</field>
+            <field name="arch" type="xml">
+                <form string="Check Batch Portfolio / حافظة شيكات مجمعة">
+                    <header>
+                        <button name="action_post" string="اعتماد وترحيل الحافظة" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_cancel" string="إلغاء الحافظة" type="object" invisible="state in ('cancelled')"/>
+                        <button name="action_draft" string="إرجاع لمسودة" type="object" invisible="state != 'cancelled'"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_move" type="object" class="oe_stat_button" icon="fa-book" invisible="not move_id">
+                                <span class="o_stat_text">القيد المحاسبي</span>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" string="Batch Number / رقم الحافظة"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Basic Information / البيانات الأساسية">
+                                <field name="batch_type" widget="radio" readonly="state != 'draft'"/>
+                                <field name="partner_id" readonly="state != 'draft'" options="{'no_create_edit': True}"/>
+                                <field name="date" readonly="state != 'draft'"/>
+                            </group>
+                            <group string="Accounting Info / الحسابات واليومية">
+                                <field name="journal_id" readonly="state != 'draft'" options="{'no_create_edit': True}"/>
+                                <field name="account_id" readonly="state != 'draft'" options="{'no_create_edit': True}"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <!-- Tab for Inward checks (Batch of incoming checks) -->
+                            <page string="Incoming Checks / الشيكات المستلمة بالحافظة" name="inward_checks_page" invisible="batch_type != 'inward'">
+                                <field name="inward_check_ids" readonly="state != 'draft'">
+                                    <list editable="bottom">
+                                        <field name="name" string="Check No"/>
+                                        <field name="drawer" string="Drawer / الساحب" optional="show"/>
+                                        <field name="bank_id" string="Bank"/>
+                                        <field name="check_date" optional="hide"/>
+                                        <field name="due_date" string="Due Date"/>
+                                        <field name="amount" sum="Total Amount"/>
+                                        <field name="currency_id" column_invisible="1"/>
+                                        <field name="storage_drawer_id" optional="show"/>
+                                        <field name="storage_division" optional="hide"/>
+                                        <field name="is_guarantee" optional="show"/>
+                                        <field name="state" widget="badge" optional="show" decoration-info="state == 'in_safe'" decoration-success="state == 'cleared'"/>
+                                    </list>
+                                </field>
+                            </page>
+
+                            <!-- Tab for Outward / Endorsement checks (selected from safe pool) -->
+                            <page string="Selected Checks to Endorse / الشيكات المختارة للتظهير" name="outward_checks_page" invisible="batch_type != 'outward'">
+                                <div class="alert alert-info py-2" role="alert" invisible="state != 'draft'">
+                                    <i class="fa fa-info-circle me-1"/> اختر الشيكات من محفظة الخزينة المتاحة لتظهيرها وتسليمها للطرف المستلم (حتى لو كانت من موردين أو عملاء مختلفين).
+                                </div>
+                                <field name="outward_check_ids" readonly="state != 'draft'">
+                                    <list>
+                                        <field name="name" string="Check No"/>
+                                        <field name="partner_id" string="Source Partner (المصدر الأصلي)"/>
+                                        <field name="bank_id" string="Bank"/>
+                                        <field name="due_date" string="Due Date"/>
+                                        <field name="amount" sum="Total Amount"/>
+                                        <field name="storage_drawer_id" optional="show"/>
+                                        <field name="state" widget="badge" decoration-info="state == 'in_safe'" decoration-primary="state == 'endorsed'"/>
+                                    </list>
+                                </field>
+                            </page>
+
+                            <page string="Notes / ملاحظات" name="notes_page">
+                                <field name="notes" placeholder="ملاحظات الحافظة، سند الاستلام، أو تفاصيل التسوية..."/>
+                            </page>
+                        </notebook>
+
+                        <group class="oe_subtotal_footer oe_right">
+                            <field name="checks_count"/>
+                            <field name="total_amount" class="oe_subtotal_footer_separator"/>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             2. Check Batch List View
+        ============================================================ -->
+        <record id="view_check_batch_list" model="ir.ui.view">
+            <field name="name">check.batch.list</field>
+            <field name="model">check.batch</field>
+            <field name="arch" type="xml">
+                <list string="Check Batches" decoration-info="state == 'draft'" decoration-success="state == 'posted'" decoration-muted="state == 'cancelled'">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="batch_type"/>
+                    <field name="partner_id"/>
+                    <field name="checks_count"/>
+                    <field name="total_amount" sum="Total Amount"/>
+                    <field name="currency_id" column_invisible="1"/>
+                    <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'posted'" decoration-muted="state == 'cancelled'"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             3. Actions for Inward & Outward Batches
+        ============================================================ -->
+        <record id="action_check_batch_inward" model="ir.actions.act_window">
+            <field name="name">Inward Cheque Batches / حوافظ استلام شيكات واردة</field>
+            <field name="res_model">check.batch</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('batch_type', '=', 'inward')]</field>
+            <field name="context">{'default_batch_type': 'inward'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    استلم باقة أو حافظة شيكات مجمعة من عميل أو مورد وسجل بياناتها وادخلها الخزينة دفعة واحدة.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_check_batch_outward" model="ir.actions.act_window">
+            <field name="name">Outward / Endorsement Batches / حوافظ صرف وتظهير شيكات</field>
+            <field name="res_model">check.batch</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('batch_type', '=', 'outward')]</field>
+            <field name="context">{'default_batch_type': 'outward'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    اختر شيكات من محفظة الخزينة وقم بتظهيرها وتسليمها لمورد أو عميل لسداد مديونيته دفعة واحدة.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

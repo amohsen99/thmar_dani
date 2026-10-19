@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================
+             Root Menu: Cheque Management
+        ============================================================ -->
+        <menuitem id="menu_cheque_root"
+                  name="الشيكات"
+                  web_icon="thmar_check_management,static/description/icon.png"
+                  sequence="45"/>
+
+        <!-- 1. Dashboard -->
+        <menuitem id="menu_cheque_dashboard"
+                  name="لوحة المؤشرات (Dashboard)"
+                  parent="menu_cheque_root"
+                  action="action_check_dashboard"
+                  sequence="1"/>
+
+        <!-- 2. Cheque Batches & Portfolios -->
+        <menuitem id="menu_cheque_batches_root"
+                  name="حوافظ الشيكات المجمعة"
+                  parent="menu_cheque_root"
+                  sequence="10"/>
+
+        <menuitem id="menu_check_batch_inward"
+                  name="حوافظ استلام شيكات واردة"
+                  parent="menu_cheque_batches_root"
+                  action="action_check_batch_inward"
+                  sequence="10"/>
+
+        <menuitem id="menu_check_batch_outward"
+                  name="حوافظ صرف وتظهير شيكات"
+                  parent="menu_cheque_batches_root"
+                  action="action_check_batch_outward"
+                  sequence="20"/>
+
+        <!-- 3. Cheques Registry & Pool -->
+        <menuitem id="menu_cheque_registry_root"
+                  name="سجلات ومحفظة الشيكات"
+                  parent="menu_cheque_root"
+                  sequence="20"/>
+
+        <menuitem id="menu_account_check_all"
+                  name="جميع الشيكات (All Checks)"
+                  parent="menu_cheque_registry_root"
+                  action="action_account_check"
+                  sequence="10"/>
+
+        <!-- 4. Configuration & Storage -->
+        <menuitem id="menu_cheque_config_root"
+                  name="التهيئة والخزائن"
+                  parent="menu_cheque_root"
+                  sequence="90"/>
+
+        <menuitem id="menu_check_storage_drawer"
+                  name="خزائن وأدراج الشيكات"
+                  parent="menu_cheque_config_root"
+                  action="action_check_storage_drawer"
+                  sequence="10"/>
+
+        <menuitem id="menu_check_settings"
+                  name="إعدادات وحسابات الشيكات"
+                  parent="menu_cheque_config_root"
+                  action="action_check_config"
+                  sequence="20"/>
+
+        <!-- ============================================================
+             Integration Menu inside Accounting
+        ============================================================ -->
+        <menuitem id="menu_accounting_cheques"
+                  name="دورة وحوافظ الشيكات"
+                  parent="account.menu_finance_entries"
+                  action="action_account_check"
+                  sequence="25"/>
+
+    </data>
+</odoo>
