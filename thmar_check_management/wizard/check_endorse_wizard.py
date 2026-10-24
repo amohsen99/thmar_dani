@@ -42,6 +42,28 @@ class CheckEndorseWizard(models.TransientModel):
     )
     notes = fields.Text(string='Notes / ملاحظات')
 
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        check_ids = []
+        if res.get('check_ids'):
+            raw = res['check_ids']
+            if isinstance(raw, list) and len(raw) and isinstance(raw[0], (list, tuple)) and len(raw[0]) == 3 and raw[0][0] == 6:
+                check_ids = raw[0][2]
+            elif isinstance(raw, (list, tuple)):
+                check_ids = [i for i in raw if isinstance(i, int)]
+        elif self.env.context.get('active_model') == 'account.check' and self.env.context.get('active_ids'):
+            check_ids = self.env.context.get('active_ids')
+
+        if check_ids and 'check_ids' in fields_list:
+            valid_checks = self.env['account.check'].browse(check_ids).filtered(
+                lambda c: c.state == 'in_safe' and c.check_type == 'incoming'
+            )
+            if not valid_checks:
+                raise UserError(_("Only incoming checks in safe can be endorsed. / الشيكات الواردة في الخزينة فقط يمكن تظهيرها لطرف آخر."))
+            res['check_ids'] = [(6, 0, valid_checks.ids)]
+        return res
+
     @api.depends('check_ids.amount')
     def _compute_total_amount(self):
         for wiz in self:
@@ -61,10 +83,10 @@ class CheckEndorseWizard(models.TransientModel):
         if not self.check_ids:
             raise UserError(_("No checks selected for endorsement."))
 
-        invalid_checks = self.check_ids.filtered(lambda c: c.state != 'in_safe')
+        invalid_checks = self.check_ids.filtered(lambda c: c.state != 'in_safe' or c.check_type != 'incoming')
         if invalid_checks:
             names = ", ".join(invalid_checks.mapped('name'))
-            raise UserError(_("The following checks are not in safe: %s") % names)
+            raise UserError(_("The following checks cannot be endorsed (must be incoming checks in safe): %s") % names)
 
         company = self.env.company
         journal = company.check_journal_id or self.env['account.journal'].search([
@@ -95,14 +117,17 @@ class CheckEndorseWizard(models.TransientModel):
                     'partner_id': self.partner_id.id,
                     'debit': tot_amount,
                     'credit': 0.0,
-                },
-                {
-                    'name': _("خروج شيكات مظهرة من الخزينة (%s)") % check_names,
-                    'account_id': notes_rec_acc.id,
-                    'debit': 0.0,
-                    'credit': tot_amount,
                 }
             ]
+            for check in financial_checks:
+                line_vals.append({
+                    'name': _("خروج شيك مظهر رقم %s من الخزينة") % check.name,
+                    'account_id': notes_rec_acc.id,
+                    'partner_id': check.partner_id.id,
+                    'debit': 0.0,
+                    'credit': check.amount,
+                })
+
             move = self.env['account.move'].create({
                 'move_type': 'entry',
                 'date': self.endorse_date,

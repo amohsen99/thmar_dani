@@ -43,7 +43,7 @@ class HrEmployee(models.Model):
     def _compute_opening_balance_summary(self):
         today = fields.Date.today()
         for employee in self:
-            balances = employee.leave_opening_balance_ids.filtered(
+            balances = employee.sudo().leave_opening_balance_ids.filtered(
                 lambda b: b.balance_year == today.year and b.balance_basis == 'year_remaining'
             )
             employee.leave_balance_cutoff_date = max(balances.mapped('balance_date'), default=False)
@@ -52,12 +52,13 @@ class HrEmployee(models.Model):
             employee.leave_source_gross_balance = sum(balances.mapped('gross_balance_days'))
             employee.leave_source_used_balance = sum(balances.mapped('used_before_cutoff_days'))
             employee.leave_source_remaining_balance = sum(balances.mapped('amount'))
-            employee.leave_source_annual_balance = sum(balances.filtered('leave_type_id.is_annual_leave').mapped('amount'))
-            employee.leave_source_casual_balance = sum(balances.filtered('leave_type_id.is_casual_leave').mapped('amount'))
+            employee.leave_source_annual_balance = sum(balances.filtered(lambda b: b.leave_type_id.sudo().is_annual_leave).mapped('amount'))
+            employee.leave_source_casual_balance = sum(balances.filtered(lambda b: b.leave_type_id.sudo().is_casual_leave).mapped('amount'))
             annual = casual = 0.0
             for balance in balances:
-                status = employee._get_monthly_accrual_status(balance.leave_type_id, today.year, today)
-                if balance.leave_type_id.is_annual_leave:
+                leave_type = balance.leave_type_id.sudo()
+                status = employee._get_monthly_accrual_status(leave_type, today.year, today)
+                if leave_type.is_annual_leave:
                     annual += status['remaining_balance']
                 else:
                     casual += status['remaining_balance']
@@ -190,8 +191,8 @@ class HrEmployee(models.Model):
         therefore available in later months of the same calendar year.
         """
         self.ensure_one()
-        return self.env['hr.leave.allocation']._get_monthly_accrual_status(
-            self, leave_type, year, as_of_date=today,
+        return self.env['hr.leave.allocation'].sudo()._get_monthly_accrual_status(
+            self, leave_type.sudo() if leave_type else leave_type, year, as_of_date=today,
         )
 
     def _compute_accrual_status(self):

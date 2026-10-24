@@ -21,6 +21,8 @@
                 <field name="batch_ids" widget="many2many_tags" optional="hide"/>
                 <field name="weight_kg" optional="show"/>
                 <field name="meter" optional="show"/>
+                <field name="rolls_count" optional="show"/>
+                <field name="avg_roll_weight" optional="show"/>
                 <field name="message_number" optional="show"/>
                 <field name="operation_date" optional="show"/>
                 <field name="shift" optional="show"/>
@@ -80,6 +82,8 @@
                                     <field name="dyeing_type_id"/>
                                     <field name="weight_kg"/>
                                     <field name="meter"/>
+                                    <field name="rolls_count"/>
+                                    <field name="avg_roll_weight"/>
                                 </group>
                             </group>
                         </page>
@@ -338,5 +342,13 @@
         <field name="search_view_id" ref="view_dyeing_operation_search"/>
         <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_print_steamer'))]"/>
         <field name="context" eval="{'default_stage_type_id': ref('stage_type_print_steamer')}"/>
+    </record>
+    <record id="action_operation_rolling_packaging" model="ir.actions.act_window">
+        <field name="name">اللف والتغليف</field>
+        <field name="res_model">thamar.dyeing.operation</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="view_dyeing_operation_search"/>
+        <field name="domain" eval="[('stage_type_id', '=', ref('stage_type_rolling_packaging'))]"/>
+        <field name="context" eval="{'default_stage_type_id': ref('stage_type_rolling_packaging')}"/>
     </record>
 </odoo>

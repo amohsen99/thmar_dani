@@ -28,11 +28,52 @@ class CheckBounceWizard(models.TransientModel):
         string='Checks / الشيكات المرتدة',
         required=True
     )
+    total_amount = fields.Monetary(
+        string='Total Amount / إجمالي الشيكات',
+        compute='_compute_total_amount',
+        currency_field='currency_id'
+    )
+    currency_id = fields.Many2one(
+        'res.currency',
+        default=lambda self: self.env.company.currency_id
+    )
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        check_ids = []
+        if res.get('check_ids'):
+            raw = res['check_ids']
+            if isinstance(raw, list) and len(raw) and isinstance(raw[0], (list, tuple)) and len(raw[0]) == 3 and raw[0][0] == 6:
+                check_ids = raw[0][2]
+            elif isinstance(raw, (list, tuple)):
+                check_ids = [i for i in raw if isinstance(i, int)]
+        elif self.env.context.get('active_model') == 'account.check' and self.env.context.get('active_ids'):
+            check_ids = self.env.context.get('active_ids')
+
+        if check_ids and 'check_ids' in fields_list:
+            valid_checks = self.env['account.check'].browse(check_ids).filtered(
+                lambda c: c.state in ('deposited', 'endorsed', 'in_safe')
+            )
+            if not valid_checks:
+                raise UserError(_("Only deposited, endorsed, or in-safe checks can be marked as bounced. / الشيكات المودعة أو المظهرة أو في الخزينة فقط يمكن إثبات ارتدادها."))
+            res['check_ids'] = [(6, 0, valid_checks.ids)]
+        return res
+
+    @api.depends('check_ids.amount')
+    def _compute_total_amount(self):
+        for wiz in self:
+            wiz.total_amount = sum(wiz.check_ids.mapped('amount'))
 
     def action_confirm_bounce(self):
         self.ensure_one()
         if not self.check_ids:
             raise UserError(_("No checks selected."))
+
+        invalid_checks = self.check_ids.filtered(lambda c: c.state not in ('deposited', 'endorsed', 'in_safe'))
+        if invalid_checks:
+            names = ", ".join(invalid_checks.mapped('name'))
+            raise UserError(_("The following checks cannot be marked as bounced: %s") % names)
 
         company = self.env.company
         journal = company.check_journal_id or self.env['account.journal'].search([
@@ -42,7 +83,6 @@ class CheckBounceWizard(models.TransientModel):
 
         bounced_acc = company.check_bounced_account_id
         if not bounced_acc:
-            # Fallback to receivable account or create search
             bounced_acc = company.check_receivable_account_id
 
         financial_checks = self.check_ids.filtered(lambda c: not c.is_guarantee)
@@ -74,9 +114,6 @@ class CheckBounceWizard(models.TransientModel):
                 ]
             elif check.state == 'endorsed':
                 # The third party returned the check to us!
-                # We owe the third party (current_partner_id) again:
-                # Credit: current_partner_id (reopen their payable)
-                # Debit: bounced_acc or original partner_id (claim from original source)
                 curr_partner_acc = (
                     check.current_partner_id.property_account_payable_id
                     or check.current_partner_id.property_account_receivable_id

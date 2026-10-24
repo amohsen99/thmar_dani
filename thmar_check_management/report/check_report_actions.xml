@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Paper format for Cheque & Batch Reports -->
+    <record id="paperformat_check_report" model="report.paperformat">
+        <field name="name">Cheque Management Paper Format</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">25</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">20</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- 1. Report Action: Account Check (سند الشيك التجاري) -->
+    <record id="action_report_account_check" model="ir.actions.report">
+        <field name="name">سند الشيك / Cheque Voucher</field>
+        <field name="model">account.check</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">thmar_check_management.report_account_check</field>
+        <field name="report_file">thmar_check_management.report_account_check</field>
+        <field name="print_report_name">'Cheque Voucher - %s' % (object.name or '')</field>
+        <field name="binding_model_id" ref="model_account_check"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_check_report"/>
+    </record>
+
+    <!-- 2. Report Action: Check Batch (حافظة الشيكات) -->
+    <record id="action_report_check_batch" model="ir.actions.report">
+        <field name="name">حافظة الشيكات / Cheque Batch Slip</field>
+        <field name="model">check.batch</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">thmar_check_management.report_check_batch</field>
+        <field name="report_file">thmar_check_management.report_check_batch</field>
+        <field name="print_report_name">'Cheque Batch - %s' % (object.name or '')</field>
+        <field name="binding_model_id" ref="model_check_batch"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_check_report"/>
+    </record>
+
+</odoo>

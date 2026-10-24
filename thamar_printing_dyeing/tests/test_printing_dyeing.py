@@ -19,6 +19,9 @@ class TestPrintingDyeing(TransactionCase):
         cls.stage_preparation = cls.env.ref(
             "thamar_printing_dyeing.stage_type_preparation"
         )
+        cls.stage_rolling_packaging = cls.env.ref(
+            "thamar_printing_dyeing.stage_type_rolling_packaging"
+        )
         cls.machine = cls.env["thamar.dyeing.machine"].create(
             {
                 "name": "Test Jet",
@@ -104,6 +107,49 @@ class TestPrintingDyeing(TransactionCase):
         self.assertEqual(order.actual_meter, 1160)
         self.assertEqual(finishing.weight_kg, 285)
         self.assertEqual(finishing.meter, 1160)
+
+    def test_packaging_stage_output_and_loss_kpis(self):
+        order = self.env["thamar.dyeing.work.order"].create(
+            {
+                "partner_id": self.partner.id,
+                "message_number": "LOT-ROLLS",
+                "product_id": self.product.id,
+                "planned_weight_kg": 1000.0,
+                "planned_meter": 4000.0,
+                "operation_ids": [
+                    (0, 0, {"sequence": 10, "stage_type_id": self.stage_dye.id}),
+                    (0, 0, {"sequence": 20, "stage_type_id": self.stage_finish.id}),
+                    (
+                        0,
+                        0,
+                        {
+                            "sequence": 30,
+                            "stage_type_id": self.stage_rolling_packaging.id,
+                        },
+                    ),
+                ],
+            }
+        )
+        self.assertFalse(order.actual_quantities_set)
+        dye_op, finish_op, pack_op = order.operation_ids.sorted("sequence")
+        self.assertEqual(dye_op.weight_kg, 1000.0)
+        self.assertEqual(finish_op.weight_kg, 1000.0)
+
+        pack_op.write({
+            "weight_kg": 950.0,
+            "meter": 3800.0,
+            "rolls_count": 38,
+        })
+        self.assertEqual(pack_op.avg_roll_weight, 25.0)
+        self.assertTrue(order.actual_quantities_set)
+        self.assertEqual(order.actual_weight_kg, 950.0)
+        self.assertEqual(order.actual_meter, 3800.0)
+        self.assertEqual(order.rolls_count, 38)
+        self.assertEqual(order.avg_roll_weight, 25.0)
+        self.assertEqual(order.loss_weight_kg, 50.0)
+        self.assertEqual(order.loss_weight_percentage, 5.0)
+        self.assertEqual(order.loss_meter, 200.0)
+        self.assertEqual(order.loss_meter_percentage, 5.0)
 
     def test_wrong_machine_stage_is_rejected(self):
         order = self._create_order()

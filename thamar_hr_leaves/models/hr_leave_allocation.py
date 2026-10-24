@@ -260,7 +260,10 @@ class HrLeaveAllocation(models.Model):
             'remaining_balance': 0.0,
             'approved_taken': 0.0,
         }
-        if not leave_type or not leave_type.use_monthly_accrual:
+        if not leave_type:
+            return empty_status
+        leave_type = leave_type.sudo()
+        if not leave_type.use_monthly_accrual:
             return empty_status
 
         allocations = self.sudo().search([
@@ -781,7 +784,7 @@ class HrLeaveAllocation(models.Model):
         domain = [('is_annual_leave', '=', True)]
         if company:
             domain.append(('company_id', 'in', [company.id, False]))
-        return self.env['hr.leave.type'].search(domain, limit=1)
+        return self.env['hr.leave.type'].sudo().search(domain, limit=1)
 
     @api.model
     def _get_casual_leave_type(self, company=None):
@@ -789,4 +792,4 @@ class HrLeaveAllocation(models.Model):
         domain = [('is_casual_leave', '=', True)]
         if company:
             domain.append(('company_id', 'in', [company.id, False]))
-        return self.env['hr.leave.type'].search(domain, limit=1)
+        return self.env['hr.leave.type'].sudo().search(domain, limit=1)

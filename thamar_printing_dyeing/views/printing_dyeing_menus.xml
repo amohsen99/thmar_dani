@@ -50,6 +50,8 @@
               parent="menu_dyeing_operation" action="action_operation_print_washing" sequence="120"/>
     <menuitem id="menu_operation_print_steamer" name="استيمر مطبعة"
               parent="menu_dyeing_operation" action="action_operation_print_steamer" sequence="130"/>
+    <menuitem id="menu_operation_rolling_packaging" name="اللف والتغليف"
+              parent="menu_dyeing_operation" action="action_operation_rolling_packaging" sequence="140"/>
     <menuitem id="menu_dyeing_batch" name="التشغيلات المجمعة"
               parent="menu_printing_dyeing_root" action="action_dyeing_batch" sequence="25"/>
     <menuitem id="menu_dyeing_machine" name="الماكينات"

@@ -62,4 +62,8 @@
     <record id="stage_type_print_steamer" model="thamar.dyeing.stage.type">
         <field name="name">استيمر مطبعة</field><field name="code">PST</field><field name="sequence">130</field>
     </record>
+    <record id="stage_type_rolling_packaging" model="thamar.dyeing.stage.type">
+        <field name="name">اللف والتغليف</field><field name="code">RPK</field><field name="sequence">140</field>
+        <field name="is_packaging_stage" eval="True"/>
+    </record>
 </odoo>

@@ -17,6 +17,7 @@
                         <button name="action_bounce" string="إثبات ارتداد الشيك" type="object" class="btn-danger" invisible="state not in ('deposited', 'endorsed', 'in_safe')"/>
                         <button name="action_reset_to_safe" string="إرجاع للخزينة" type="object" invisible="state in ('in_safe', 'draft')"/>
                         <button name="action_cancel" string="إلغاء الشيك" type="object" invisible="state in ('cancelled', 'cleared')"/>
+                        <button name="action_print_check" string="طباعة السند" type="object" class="btn-secondary" icon="fa-print"/>
                         <field name="state" widget="statusbar" statusbar_visible="in_safe,deposited,endorsed,cleared"/>
                     </header>
                     <sheet>
@@ -74,6 +75,7 @@
                                         <field name="deposit_date" readonly="1"/>
                                         <field name="deposit_bank_journal_id" readonly="1"/>
                                         <field name="clear_date" readonly="1"/>
+                                        <field name="clear_journal_id" readonly="1"/>
                                     </group>
                                     <group string="Endorsement &amp; Bounce / التظهير والارتداد">
                                         <field name="endorse_date" readonly="1"/>
@@ -106,6 +108,14 @@
             <field name="model">account.check</field>
             <field name="arch" type="xml">
                 <list string="Paper Cheques" decoration-info="state == 'in_safe'" decoration-warning="state == 'deposited'" decoration-primary="state == 'endorsed'" decoration-success="state == 'cleared'" decoration-danger="state == 'bounced' or is_overdue">
+                    <header>
+                        <button name="action_deposit" string="إيداع بالبنك" type="object" class="btn-primary"/>
+                        <button name="action_clear" string="إثبات تحصيل أو صرف" type="object" class="btn-success"/>
+                        <button name="action_bounce" string="إثبات ارتداد" type="object" class="btn-danger"/>
+                        <button name="action_endorse" string="تظهير وتسليم" type="object" class="btn-warning"/>
+                        <button name="action_reset_to_safe" string="إرجاع للخزينة" type="object" class="btn-secondary"/>
+                        <button name="action_print_check" string="طباعة السند" type="object" class="btn-secondary" icon="fa-print"/>
+                    </header>
                     <field name="name"/>
                     <field name="check_type" optional="show"/>
                     <field name="partner_id" string="Original Partner"/>

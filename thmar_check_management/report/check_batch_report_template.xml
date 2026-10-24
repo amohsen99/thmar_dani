@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Document Template for Cheque Batch Portfolio Slip -->
+    <template id="report_check_batch_document">
+        <t t-call="web.external_layout">
+            <t t-set="o" t-value="o.with_context(lang=lang)"/>
+            <div class="page batch-report-container" dir="rtl" style="font-family: 'DejaVu Sans', 'Arial', sans-serif; color: #1e293b; font-size: 12px;">
+
+                <style>
+                    .batch-report-container {
+                        direction: rtl;
+                        text-align: right;
+                    }
+                    .batch-header-box {
+                        border-bottom: 2px solid #1e3a5f;
+                        padding-bottom: 10px;
+                        margin-bottom: 16px;
+                    }
+                    .batch-status-badge {
+                        font-size: 13px;
+                        font-weight: 600;
+                        padding: 5px 14px;
+                        border-radius: 20px;
+                        display: inline-block;
+                    }
+                    .badge-posted { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+                    .badge-draft { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+                    .badge-cancelled { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+
+                    .batch-summary-card {
+                        background-color: #f8fafc;
+                        border: 1px solid #cbd5e1;
+                        border-radius: 8px;
+                        padding: 10px 14px;
+                        margin-bottom: 16px;
+                    }
+                    .summary-label {
+                        font-weight: 600;
+                        color: #64748b;
+                        font-size: 11px;
+                    }
+                    .summary-val {
+                        font-weight: bold;
+                        color: #0f172a;
+                        font-size: 13px;
+                    }
+
+                    .batch-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 16px;
+                    }
+                    .batch-table th {
+                        background-color: #1e3a5f;
+                        color: #ffffff;
+                        font-weight: bold;
+                        font-size: 11px;
+                        padding: 7px 8px;
+                        text-align: center;
+                        border: 1px solid #1e3a5f;
+                    }
+                    .batch-table td {
+                        padding: 6px 8px;
+                        font-size: 11px;
+                        border: 1px solid #e2e8f0;
+                        vertical-align: middle;
+                        text-align: center;
+                    }
+                    .batch-table tbody tr:nth-child(even) {
+                        background-color: #f8fafc;
+                    }
+                    .batch-table .text-start {
+                        text-align: right !important;
+                    }
+                    .batch-table .text-end {
+                        text-align: left !important;
+                    }
+
+                    .totals-box {
+                        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                        border: 1px solid #cbd5e1;
+                        border-radius: 8px;
+                        padding: 12px 18px;
+                        margin-bottom: 18px;
+                        page-break-inside: avoid;
+                    }
+                    .totals-amount {
+                        font-size: 20px;
+                        font-weight: bold;
+                        color: #0f172a;
+                    }
+                    .totals-words {
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: #334155;
+                        margin-top: 4px;
+                    }
+
+                    .signatures-table {
+                        width: 100%;
+                        margin-top: 25px;
+                        border-collapse: collapse;
+                        page-break-inside: avoid;
+                    }
+                    .signatures-table td {
+                        width: 25%;
+                        text-align: center;
+                        vertical-align: top;
+                        padding: 8px;
+                    }
+                    .sig-title {
+                        font-weight: bold;
+                        font-size: 12px;
+                        color: #334155;
+                        margin-bottom: 45px;
+                    }
+                    .sig-line {
+                        border-bottom: 1px dashed #64748b;
+                        width: 80%;
+                        margin: 0 auto 5px auto;
+                    }
+                    .sig-sub {
+                        font-size: 11px;
+                        color: #64748b;
+                    }
+                </style>
+
+                <!-- 1. Header Box -->
+                <div class="batch-header-box">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h3 style="margin: 0 0 4px 0; font-weight: bold; color: #1e3a5f;">
+                                <t t-if="o.batch_type == 'inward'">
+                                    <span>حافظة استلام شيكات واردة</span>
+                                    <span style="font-size: 13px; color: #64748b; font-weight: normal;"> / Inward Cheque Portfolio Batch</span>
+                                </t>
+                                <t t-else="">
+                                    <span>حافظة صرف وتظهير شيكات</span>
+                                    <span style="font-size: 13px; color: #64748b; font-weight: normal;"> / Outward / Endorsement Cheque Batch</span>
+                                </t>
+                            </h3>
+                            <div style="font-size: 13px; color: #475569;">
+                                رقم الحافظة: <strong style="color: #0f172a; font-size: 16px;"><span t-field="o.name"/></strong>
+                            </div>
+                        </div>
+                        <div class="col-4 text-start">
+                            <t t-if="o.state == 'posted'">
+                                <span class="batch-status-badge badge-posted">معتمدة ومرحلة / Posted</span>
+                            </t>
+                            <t t-elif="o.state == 'draft'">
+                                <span class="batch-status-badge badge-draft">مسودة / Draft</span>
+                            </t>
+                            <t t-elif="o.state == 'cancelled'">
+                                <span class="batch-status-badge badge-cancelled">ملغاة / Cancelled</span>
+                            </t>
+                            <t t-else="">
+                                <span class="batch-status-badge badge-draft"><span t-field="o.state"/></span>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Batch Summary Info Grid -->
+                <div class="batch-summary-card">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="summary-label">تاريخ الحافظة / Date:</div>
+                            <div class="summary-val"><span t-field="o.date"/></div>
+                        </div>
+                        <div class="col-3">
+                            <div class="summary-label">
+                                <t t-if="o.batch_type == 'inward'">الطرف المسلم / From:</t>
+                                <t t-else="">المستفيد المستلم / To:</t>
+                            </div>
+                            <div class="summary-val"><span t-field="o.partner_id.name"/></div>
+                        </div>
+                        <div class="col-3">
+                            <div class="summary-label">دفتر اليومية / Journal:</div>
+                            <div class="summary-val"><span t-field="o.journal_id.name"/></div>
+                        </div>
+                        <div class="col-3">
+                            <div class="summary-label">القيد المحاسبي / Entry:</div>
+                            <div class="summary-val">
+                                <t t-if="o.move_id">
+                                    <span t-field="o.move_id.name"/>
+                                </t>
+                                <t t-else="">
+                                    <span style="color: #94a3b8;">غير مرحل</span>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2" t-if="o.account_id">
+                        <div class="col-6">
+                            <div class="summary-label">حساب التسوية / Counterpart Account:</div>
+                            <div class="summary-val"><span t-field="o.account_id.display_name"/></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Cheques Table -->
+                <t t-set="checks_list" t-value="o.inward_check_ids if o.batch_type == 'inward' else o.outward_check_ids"/>
+                <table class="batch-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 4%;">#</th>
+                            <th style="width: 14%;">رقم الشيك<br/><small style="font-size: 9px; opacity: 0.8;">Check No</small></th>
+                            <th style="width: 14%;">الساحب المدون<br/><small style="font-size: 9px; opacity: 0.8;">Drawer</small></th>
+                            <th t-if="o.batch_type == 'outward'" style="width: 14%;">الطرف المصدر<br/><small style="font-size: 9px; opacity: 0.8;">Original Partner</small></th>
+                            <th style="width: 14%;">البنك المسحوب عليه<br/><small style="font-size: 9px; opacity: 0.8;">Drawee Bank</small></th>
+                            <th style="width: 11%;">تاريخ الاستحقاق<br/><small style="font-size: 9px; opacity: 0.8;">Due Date</small></th>
+                            <th style="width: 12%;">مكان الحفظ<br/><small style="font-size: 9px; opacity: 0.8;">Storage</small></th>
+                            <th style="width: 10%;">الحالة / النوع<br/><small style="font-size: 9px; opacity: 0.8;">Status</small></th>
+                            <th style="width: 17%;">المبلغ<br/><small style="font-size: 9px; opacity: 0.8;">Amount</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="idx" t-value="1"/>
+                        <t t-foreach="checks_list" t-as="c">
+                            <tr>
+                                <td><t t-esc="idx"/></td>
+                                <td>
+                                    <strong><span t-field="c.name"/></strong>
+                                </td>
+                                <td class="text-start">
+                                    <span t-esc="c.drawer or (c.partner_id.name if c.partner_id else '-')"/>
+                                </td>
+                                <td t-if="o.batch_type == 'outward'" class="text-start">
+                                    <span t-esc="c.partner_id.name or '-'"/>
+                                </td>
+                                <td class="text-start">
+                                    <span t-esc="c.bank_id.name or '-'"/>
+                                </td>
+                                <td>
+                                    <span t-field="c.due_date"/>
+                                </td>
+                                <td>
+                                    <span t-esc="c.storage_drawer_id.name or 'الخزينة'"/>
+                                </td>
+                                <td>
+                                    <t t-if="c.is_guarantee">
+                                        <span style="color: #b45309; font-weight: bold;">ضمان</span>
+                                    </t>
+                                    <t t-elif="c.state == 'in_safe'">في الخزينة</t>
+                                    <t t-elif="c.state == 'deposited'">برسم التحصيل</t>
+                                    <t t-elif="c.state == 'endorsed'">مظهر</t>
+                                    <t t-elif="c.state == 'cleared'">محصل</t>
+                                    <t t-elif="c.state == 'bounced'">مرتد</t>
+                                    <t t-else=""><span t-field="c.state"/></t>
+                                </td>
+                                <td class="text-end">
+                                    <strong><span t-field="c.amount" t-options='{"widget": "monetary", "display_currency": c.currency_id}'/></strong>
+                                </td>
+                            </tr>
+                            <t t-set="idx" t-value="idx + 1"/>
+                        </t>
+                    </tbody>
+                </table>
+
+                <!-- 4. Grand Totals & Tafqeet Box -->
+                <div class="totals-box">
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600;">عدد الشيكات / Count:</div>
+                            <div style="font-size: 18px; font-weight: bold; color: #0f172a;">
+                                <span t-field="o.checks_count"/> شيك
+                            </div>
+                        </div>
+                        <div class="col-4" style="border-right: 1px solid #cbd5e1; padding-right: 15px;">
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600;">إجمالي مبلغ الحافظة / Total Amount:</div>
+                            <div class="totals-amount">
+                                <span t-field="o.total_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </div>
+                        </div>
+                        <div class="col-5" style="border-right: 1px solid #cbd5e1; padding-right: 15px;">
+                            <div style="font-size: 11px; color: #64748b; font-weight: 600;">المبلغ بالحروف / Amount in Words:</div>
+                            <div class="totals-words">
+                                فقط <span t-esc="o.amount_to_text_with_lang()"/> لا غير.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Notes (if any) -->
+                <div class="info-card" t-if="o.notes" style="page-break-inside: avoid; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 16px;">
+                    <div style="background-color: #f1f5f9; padding: 6px 12px; font-weight: bold; border-bottom: 1px solid #e2e8f0;">
+                        <i class="fa fa-commenting-o me-1"/> ملاحظات الحافظة / Notes:
+                    </div>
+                    <div style="padding: 8px 12px; font-size: 12px; color: #334155;" t-esc="o.notes"/>
+                </div>
+
+                <!-- 6. Official Signatures -->
+                <table class="signatures-table">
+                    <tr>
+                        <td>
+                            <div class="sig-title">
+                                <t t-if="o.batch_type == 'inward'">توقيع الطرف المسلم</t>
+                                <t t-else="">توقيع الطرف المستلم</t>
+                            </div>
+                            <div class="sig-line"/>
+                            <div class="sig-sub">الاسم والتوقيع</div>
+                        </td>
+                        <td>
+                            <div class="sig-title">أمين الخزينة</div>
+                            <div class="sig-line"/>
+                            <div class="sig-sub">الاستلام والحفظ بالخزينة</div>
+                        </td>
+                        <td>
+                            <div class="sig-title">المحاسب المسؤول</div>
+                            <div class="sig-line"/>
+                            <div class="sig-sub">مراجعة وتدقيق الحافظة</div>
+                        </td>
+                        <td>
+                            <div class="sig-title">الاعتماد المالي</div>
+                            <div class="sig-line"/>
+                            <div class="sig-sub">المدير المالي</div>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </t>
+    </template>
+
+    <!-- Main Wrapper Template for Check Batch -->
+    <template id="report_check_batch">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="lang" t-value="o.env.context.get('lang') or o.env.user.lang or (o.partner_id.lang if o.partner_id else False) or 'ar_001'"/>
+                <t t-call="thmar_check_management.report_check_batch_document" t-lang="lang"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -15,6 +15,10 @@
                 <field name="planned_meter" optional="show"/>
                 <field name="actual_weight_kg" optional="show"/>
                 <field name="actual_meter" optional="show"/>
+                <field name="rolls_count" optional="show"/>
+                <field name="avg_roll_weight" optional="show"/>
+                <field name="loss_weight_kg" optional="hide"/>
+                <field name="loss_weight_percentage" optional="show"/>
                 <field name="current_stage_id" optional="show"/>
                 <field name="operation_count" optional="show"/>
                 <field name="total_cost" sum="الإجمالي" optional="show"/>
@@ -67,6 +71,7 @@
                                     <field name="operation_date" optional="show"/>
                                     <field name="weight_kg" optional="show"/>
                                     <field name="meter" optional="show"/>
+                                    <field name="rolls_count" optional="hide"/>
                                     <field name="next_stage_type_id" optional="show"/>
                                     <field name="duration_hours" optional="show"/>
                                     <field name="total_cost" optional="show" sum="الإجمالي"/>
@@ -77,12 +82,22 @@
                         </page>
                         <page string="الملخص" name="summary">
                             <group>
-                                <group string="التنفيذ الفعلي">
+                                <group string="المنتج النهائي الفعلي">
                                     <field name="current_stage_id"/>
                                     <field name="actual_weight_kg" readonly="1"/>
                                     <field name="actual_meter" readonly="1"/>
+                                    <field name="rolls_count" readonly="1"/>
+                                    <field name="avg_roll_weight" readonly="1"/>
                                     <field name="actual_quantities_set" readonly="1"/>
                                 </group>
+                                <group string="تحليل الهالك والانكماش">
+                                    <field name="loss_weight_kg" readonly="1"/>
+                                    <field name="loss_weight_percentage" readonly="1"/>
+                                    <field name="loss_meter" readonly="1"/>
+                                    <field name="loss_meter_percentage" readonly="1"/>
+                                </group>
+                            </group>
+                            <group>
                                 <group string="الوقت والتكلفة">
                                     <field name="actual_start_time"/>
                                     <field name="actual_end_time"/>

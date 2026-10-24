@@ -334,3 +334,28 @@ class CheckBatch(models.Model):
             'res_id': self.move_id.id,
             'view_mode': 'form',
         }
+
+    def amount_to_text_with_lang(self):
+        """Convert total batch amount to words (Arabic or English)."""
+        self.ensure_one()
+        lang_code = self.env.user.lang or 'ar_001'
+        try:
+            from num2words import num2words
+            if lang_code.startswith('ar'):
+                amount = self.total_amount
+                integral = int(amount)
+                fractional = int(round((amount - integral) * 100))
+                curr_name = self.currency_id.currency_unit_label or self.currency_id.name or 'جنيه'
+                sub_name = self.currency_id.currency_subunit_label or 'قرش'
+                integral_text = num2words(integral, lang='ar')
+                if fractional > 0:
+                    fractional_text = num2words(fractional, lang='ar')
+                    return f"{integral_text} {curr_name} و {fractional_text} {sub_name}"
+                return f"{integral_text} {curr_name}"
+            return self.currency_id.amount_to_text(self.total_amount)
+        except Exception:
+            return self.currency_id.amount_to_text(self.total_amount)
+
+    def action_print_batch(self):
+        """Print the cheque batch portfolio report."""
+        return self.env.ref('thmar_check_management.action_report_check_batch').report_action(self)

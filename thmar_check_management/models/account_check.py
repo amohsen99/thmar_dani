@@ -101,6 +101,12 @@ class AccountCheck(models.Model):
         domain="[('type', '=', 'bank')]"
     )
     clear_date = fields.Date(string='Clear Date / تاريخ التحصيل أو الصرف')
+    clear_journal_id = fields.Many2one(
+        'account.journal',
+        string='Clearing Journal / بنك أو خزينة التحصيل والصرف',
+        domain="[('type', 'in', ('bank', 'cash'))]",
+        tracking=True
+    )
     bounce_date = fields.Date(string='Bounce Date / تاريخ الارتداد')
     bounce_reason = fields.Text(string='Bounce Reason / سبب الارتداد')
     endorse_date = fields.Date(string='Endorse Date / تاريخ التظهير')
@@ -186,74 +192,99 @@ class AccountCheck(models.Model):
     def name_get(self):
         return [(check.id, check.display_name) for check in self]
 
+    def amount_to_text_with_lang(self):
+        """Convert check amount to words (Arabic or English)."""
+        self.ensure_one()
+        lang_code = self.env.user.lang or 'ar_001'
+        try:
+            from num2words import num2words
+            if lang_code.startswith('ar'):
+                amount = self.amount
+                integral = int(amount)
+                fractional = int(round((amount - integral) * 100))
+                curr_name = self.currency_id.currency_unit_label or self.currency_id.name or 'جنيه'
+                sub_name = self.currency_id.currency_subunit_label or 'قرش'
+                integral_text = num2words(integral, lang='ar')
+                if fractional > 0:
+                    fractional_text = num2words(fractional, lang='ar')
+                    return f"{integral_text} {curr_name} و {fractional_text} {sub_name}"
+                return f"{integral_text} {curr_name}"
+            return self.currency_id.amount_to_text(self.amount)
+        except Exception:
+            return self.currency_id.amount_to_text(self.amount)
+
     # -------------------------------------------------------------------------
-    # ACTION METHODS / WIZARD LAUNCHERS
+    # ACTION METHODS / WIZARD LAUNCHERS (Single & Multi-Select Support)
     # -------------------------------------------------------------------------
     def action_deposit(self):
         """Open the Bank Deposit Wizard for selected check(s)."""
-        self.ensure_one()
-        if self.state != 'in_safe':
-            raise UserError(_("Only checks currently in safe can be deposited for collection."))
+        checks = self.filtered(lambda c: c.state == 'in_safe' and c.check_type == 'incoming')
+        if not checks:
+            raise UserError(_("Please select incoming checks in safe to deposit. / يرجى اختيار شيكات واردة وبحالة في الخزينة للإيداع."))
         return {
-            'name': _('Deposit Check to Bank / إيداع الشيك بالبنك برسم التحصيل'),
+            'name': _('Deposit Checks to Bank / إيداع الشيكات بالبنك برسم التحصيل'),
             'type': 'ir.actions.act_window',
             'res_model': 'check.deposit.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {
-                'default_check_ids': [self.id],
+                'default_check_ids': [(6, 0, checks.ids)],
                 'default_deposit_date': fields.Date.context_today(self),
+                'active_ids': checks.ids,
             }
         }
 
     def action_clear(self):
-        """Open the Clear / Collection Wizard."""
-        self.ensure_one()
-        if self.state not in ('deposited', 'in_safe', 'endorsed'):
-            raise UserError(_("This check cannot be cleared in its current status."))
+        """Open the Clear / Collection Wizard for selected check(s)."""
+        checks = self.filtered(lambda c: c.state in ('deposited', 'in_safe', 'endorsed'))
+        if not checks:
+            raise UserError(_("Selected check(s) cannot be cleared in their current status. / لا يمكن تحصيل أو صرف الشيكات المختارة في حالتها الحالية."))
         return {
-            'name': _('Clear / Collect Check / إثبات تحصيل أو صرف الشيك'),
+            'name': _('Clear / Collect Checks / إثبات تحصيل أو صرف الشيكات'),
             'type': 'ir.actions.act_window',
             'res_model': 'check.clear.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {
-                'default_check_ids': [self.id],
+                'default_check_ids': [(6, 0, checks.ids)],
                 'default_clear_date': fields.Date.context_today(self),
+                'active_ids': checks.ids,
             }
         }
 
     def action_bounce(self):
-        """Open the Bounce / Return Wizard."""
-        self.ensure_one()
-        if self.state not in ('deposited', 'endorsed', 'in_safe'):
-            raise UserError(_("Only deposited, in safe, or endorsed checks can be marked as bounced."))
+        """Open the Bounce / Return Wizard for selected check(s)."""
+        checks = self.filtered(lambda c: c.state in ('deposited', 'endorsed', 'in_safe'))
+        if not checks:
+            raise UserError(_("Only deposited, endorsed, or in-safe checks can be marked as bounced. / الشيكات المودعة أو المظهرة أو في الخزينة فقط يمكن إثبات ارتدادها."))
         return {
-            'name': _('Bounce / Return Check / إثبات ارتداد الشيك'),
+            'name': _('Bounce / Return Checks / إثبات ارتداد الشيكات'),
             'type': 'ir.actions.act_window',
             'res_model': 'check.bounce.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {
-                'default_check_ids': [self.id],
+                'default_check_ids': [(6, 0, checks.ids)],
                 'default_bounce_date': fields.Date.context_today(self),
+                'active_ids': checks.ids,
             }
         }
 
     def action_endorse(self):
-        """Open the Endorsement Wizard."""
-        self.ensure_one()
-        if self.state != 'in_safe' or self.check_type != 'incoming':
-            raise UserError(_("Only incoming checks in safe can be endorsed to another partner."))
+        """Open the Endorsement Wizard for selected check(s)."""
+        checks = self.filtered(lambda c: c.state == 'in_safe' and c.check_type == 'incoming')
+        if not checks:
+            raise UserError(_("Only incoming checks in safe can be endorsed to another partner. / الشيكات الواردة في الخزينة فقط يمكن تظهيرها لطرف آخر."))
         return {
-            'name': _('Endorse Check to Partner / تظهير وتسليم الشيك لطرف آخر'),
+            'name': _('Endorse Checks to Partner / تظهير وتسليم الشيكات لطرف آخر'),
             'type': 'ir.actions.act_window',
             'res_model': 'check.endorse.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {
-                'default_check_ids': [self.id],
+                'default_check_ids': [(6, 0, checks.ids)],
                 'default_endorse_date': fields.Date.context_today(self),
+                'active_ids': checks.ids,
             }
         }
 
@@ -270,11 +301,19 @@ class AccountCheck(models.Model):
         }
 
     def action_reset_to_safe(self):
-        """Reset check back to safe."""
-        for check in self:
-            check.write({'state': 'in_safe'})
+        """Reset check(s) back to safe."""
+        checks = self.filtered(lambda c: c.state not in ('in_safe', 'draft'))
+        if not checks:
+            raise UserError(_("Selected checks are already in safe or draft. / الشيكات المختارة بالفعل في الخزينة أو مسودة."))
+        checks.write({'state': 'in_safe'})
 
     def action_cancel(self):
-        """Cancel the check."""
-        for check in self:
-            check.write({'state': 'cancelled'})
+        """Cancel the check(s)."""
+        checks = self.filtered(lambda c: c.state not in ('cancelled', 'cleared'))
+        if not checks:
+            raise UserError(_("Selected checks are already cancelled or cleared. / الشيكات المختارة بالفعل ملغاة أو محصلة."))
+        checks.write({'state': 'cancelled'})
+
+    def action_print_check(self):
+        """Print the check voucher report for current or selected checks."""
+        return self.env.ref('thmar_check_management.action_report_account_check').report_action(self)

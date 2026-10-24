@@ -122,6 +122,21 @@ class DyeingOperation(models.Model):
         string="الوزن الفعلي (كجم)", digits=(16, 3), tracking=True
     )
     meter = fields.Float(string="الأمتار الفعلية", digits=(16, 2), tracking=True)
+    is_packaging_stage = fields.Boolean(
+        related="stage_type_id.is_packaging_stage",
+        string="مرحلة لف وتغليف",
+        store=True,
+    )
+    rolls_count = fields.Integer(
+        string="عدد الأتواب",
+        tracking=True,
+    )
+    avg_roll_weight = fields.Float(
+        string="متوسط وزن التوب (كجم)",
+        compute="_compute_roll_weight",
+        store=True,
+        digits=(16, 2),
+    )
     next_stage_type_id = fields.Many2one(
         "thamar.dyeing.stage.type",
         string="التوجيه بعد الانتهاء",
@@ -230,6 +245,14 @@ class DyeingOperation(models.Model):
             operation.duration_hours = duration
             operation.total_cost = duration * operation.hourly_cost
 
+    @api.depends("weight_kg", "rolls_count")
+    def _compute_roll_weight(self):
+        for operation in self:
+            if operation.rolls_count and operation.rolls_count > 0 and operation.weight_kg:
+                operation.avg_roll_weight = operation.weight_kg / operation.rolls_count
+            else:
+                operation.avg_roll_weight = 0.0
+
     @api.constrains("entry_time", "exit_time")
     def _check_operation_times(self):
         for operation in self:
@@ -240,7 +263,7 @@ class DyeingOperation(models.Model):
             ):
                 raise ValidationError("وقت الخروج يجب أن يكون بعد وقت الدخول.")
 
-    @api.constrains("weight_kg", "meter", "speed", "temperature")
+    @api.constrains("weight_kg", "meter", "speed", "temperature", "rolls_count")
     def _check_non_negative_values(self):
         for operation in self:
             if any(
@@ -250,9 +273,10 @@ class DyeingOperation(models.Model):
                     operation.meter,
                     operation.speed,
                     operation.temperature,
+                    operation.rolls_count,
                 )
             ):
-                raise ValidationError("الوزن والأمتار والسرعة والحرارة لا يمكن أن تكون سالبة.")
+                raise ValidationError("الوزن والأمتار والسرعة والحرارة وعدد الأتواب لا يمكن أن تكون سالبة.")
 
     @api.constrains("machine_id", "stage_type_id")
     def _check_machine_stage(self):
@@ -266,7 +290,7 @@ class DyeingOperation(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         actual_quantity_was_entered = [
-            "weight_kg" in vals or "meter" in vals for vals in vals_list
+            "weight_kg" in vals or "meter" in vals or "rolls_count" in vals for vals in vals_list
         ]
         for vals in vals_list:
             order_id = vals.get("work_order_id")
@@ -324,6 +348,7 @@ class DyeingOperation(models.Model):
             "partner_id",
             "weight_kg",
             "meter",
+            "rolls_count",
             "entry_time",
             "exit_time",
         }
@@ -357,7 +382,7 @@ class DyeingOperation(models.Model):
                         )
                     )
                 self.work_order_id.write({"partner_id": values["partner_id"]})
-            if {"weight_kg", "meter"}.intersection(values):
+            if {"weight_kg", "meter", "rolls_count"}.intersection(values):
                 self._sync_actual_quantities_to_plan()
         return result
 
@@ -366,14 +391,16 @@ class DyeingOperation(models.Model):
             return
         for operation in self.filtered(
             lambda record: record.stage_type_id.updates_actual_quantities
+            or record.stage_type_id.is_packaging_stage
         ):
-            operation.work_order_id.write(
-                {
-                    "actual_weight_kg": operation.weight_kg,
-                    "actual_meter": operation.meter,
-                    "actual_quantities_set": True,
-                }
-            )
+            vals = {
+                "actual_weight_kg": operation.weight_kg,
+                "actual_meter": operation.meter,
+                "actual_quantities_set": True,
+            }
+            if operation.stage_type_id.is_packaging_stage:
+                vals["rolls_count"] = operation.rolls_count
+            operation.work_order_id.write(vals)
             ordered_operations = operation.work_order_id.operation_ids.sorted(
                 lambda record: (record.sequence, record.id)
             )
@@ -388,8 +415,11 @@ class DyeingOperation(models.Model):
             if operation_index < 0:
                 continue
             following_operations = ordered_operations[operation_index + 1 :]
+            sync_vals = {"weight_kg": operation.weight_kg, "meter": operation.meter}
+            if operation.stage_type_id.is_packaging_stage:
+                sync_vals["rolls_count"] = operation.rolls_count
             following_operations.with_context(skip_actual_quantity_sync=True).write(
-                {"weight_kg": operation.weight_kg, "meter": operation.meter}
+                sync_vals
             )
 
     @api.onchange("work_order_id")

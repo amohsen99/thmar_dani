@@ -53,6 +53,12 @@ class DyeingWorkOrder(models.Model):
         ondelete="restrict",
         tracking=True,
     )
+    finished_product_id = fields.Many2one(
+        "product.product",
+        string="صنف المنتج التام",
+        ondelete="restrict",
+        tracking=True,
+    )
     color_id = fields.Many2one(
         "thamar.dyeing.color", string="اللون", ondelete="restrict", tracking=True
     )
@@ -72,13 +78,13 @@ class DyeingWorkOrder(models.Model):
         string="الأمتار المتوقعة", digits=(16, 2), tracking=True
     )
     actual_weight_kg = fields.Float(
-        string="الوزن الفعلي (كجم)",
+        string="الوزن الفعلي النهائي (كجم)",
         digits=(16, 3),
         tracking=True,
         copy=False,
     )
     actual_meter = fields.Float(
-        string="الأمتار الفعلية",
+        string="الأمتار الفعلية النهائية",
         digits=(16, 2),
         tracking=True,
         copy=False,
@@ -87,6 +93,41 @@ class DyeingWorkOrder(models.Model):
         string="تم اعتماد الكميات الفعلية",
         tracking=True,
         copy=False,
+    )
+    rolls_count = fields.Integer(
+        string="عدد الأتواب",
+        tracking=True,
+        copy=False,
+    )
+    avg_roll_weight = fields.Float(
+        string="متوسط وزن التوب (كجم)",
+        compute="_compute_output_and_loss_kpis",
+        store=True,
+        digits=(16, 2),
+    )
+    loss_weight_kg = fields.Float(
+        string="وزن الهالك (كجم)",
+        compute="_compute_output_and_loss_kpis",
+        store=True,
+        digits=(16, 3),
+    )
+    loss_weight_percentage = fields.Float(
+        string="نسبة الهالك (%)",
+        compute="_compute_output_and_loss_kpis",
+        store=True,
+        digits=(16, 2),
+    )
+    loss_meter = fields.Float(
+        string="عجز / انكماش الأمتار",
+        compute="_compute_output_and_loss_kpis",
+        store=True,
+        digits=(16, 2),
+    )
+    loss_meter_percentage = fields.Float(
+        string="نسبة انكماش الأمتار (%)",
+        compute="_compute_output_and_loss_kpis",
+        store=True,
+        digits=(16, 2),
     )
     operation_ids = fields.One2many(
         "thamar.dyeing.operation",
@@ -134,6 +175,39 @@ class DyeingWorkOrder(models.Model):
     notes = fields.Text(string="ملاحظات")
 
     @api.depends(
+        "planned_weight_kg",
+        "actual_weight_kg",
+        "planned_meter",
+        "actual_meter",
+        "rolls_count",
+        "actual_quantities_set",
+    )
+    def _compute_output_and_loss_kpis(self):
+        for order in self:
+            if order.rolls_count and order.rolls_count > 0 and order.actual_weight_kg:
+                order.avg_roll_weight = order.actual_weight_kg / order.rolls_count
+            else:
+                order.avg_roll_weight = 0.0
+
+            if order.actual_quantities_set and order.planned_weight_kg:
+                order.loss_weight_kg = order.planned_weight_kg - order.actual_weight_kg
+                order.loss_weight_percentage = (
+                    (order.loss_weight_kg / order.planned_weight_kg) * 100.0
+                )
+            else:
+                order.loss_weight_kg = 0.0
+                order.loss_weight_percentage = 0.0
+
+            if order.actual_quantities_set and order.planned_meter:
+                order.loss_meter = order.planned_meter - order.actual_meter
+                order.loss_meter_percentage = (
+                    (order.loss_meter / order.planned_meter) * 100.0
+                )
+            else:
+                order.loss_meter = 0.0
+                order.loss_meter_percentage = 0.0
+
+    @api.depends(
         "operation_ids",
         "operation_ids.sequence",
         "operation_ids.stage_type_id",
@@ -166,7 +240,11 @@ class DyeingWorkOrder(models.Model):
             order.actual_end_time = max(exit_times) if exit_times else False
 
     @api.constrains(
-        "planned_weight_kg", "planned_meter", "actual_weight_kg", "actual_meter"
+        "planned_weight_kg",
+        "planned_meter",
+        "actual_weight_kg",
+        "actual_meter",
+        "rolls_count",
     )
     def _check_planned_quantities(self):
         for order in self:
@@ -177,9 +255,10 @@ class DyeingWorkOrder(models.Model):
                     order.planned_meter,
                     order.actual_weight_kg,
                     order.actual_meter,
+                    order.rolls_count,
                 )
             ):
-                raise ValidationError("الوزن والأمتار لا يمكن أن تكون سالبة.")
+                raise ValidationError("الوزن والأمتار وعدد الأتواب لا يمكن أن تكون سالبة.")
 
     @api.model_create_multi
     def create(self, vals_list):

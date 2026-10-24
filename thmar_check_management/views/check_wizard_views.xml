@@ -53,17 +53,18 @@
             <field name="name">check.clear.wizard.form</field>
             <field name="model">check.clear.wizard</field>
             <field name="arch" type="xml">
-                <form string="Clear / Collect Check / إثبات تحصيل أو صرف الشيك">
+                <form string="Clear / Collect Check / إثبات تحصيل أو صرف الشيك (بنك أو خزينة)">
                     <sheet>
                         <group>
                             <group>
-                                <field name="bank_journal_id" options="{'no_create': True}"/>
+                                <field name="journal_id" string="الحساب (بنك أو خزينة)" options="{'no_create': True}"/>
+                                <field name="journal_type" invisible="1"/>
                                 <field name="clear_date"/>
                             </group>
                             <group>
                                 <field name="total_amount"/>
-                                <field name="fee_amount"/>
-                                <field name="fee_account_id" invisible="fee_amount == 0" options="{'no_create': True}"/>
+                                <field name="fee_amount" invisible="journal_type == 'cash'"/>
+                                <field name="fee_account_id" invisible="fee_amount == 0 or journal_type == 'cash'" options="{'no_create': True}"/>
                                 <field name="currency_id" invisible="1"/>
                             </group>
                         </group>
@@ -80,12 +81,12 @@
                                 </field>
                             </page>
                             <page string="Notes / ملاحظات" name="notes_page">
-                                <field name="notes" placeholder="ملاحظات التحصيل أو رقم إشعار البنك..."/>
+                                <field name="notes" placeholder="ملاحظات التحصيل أو رقم إشعار البنك أو سند الخزينة..."/>
                             </page>
                         </notebook>
                     </sheet>
                     <footer>
-                        <button name="action_confirm_clear" string="تأكيد التحصيل والإيداع بالحساب" type="object" class="btn-success"/>
+                        <button name="action_confirm_clear" string="تأكيد التحصيل / الصرف (بالخزينة أو البنك)" type="object" class="btn-success"/>
                         <button string="إلغاء" class="btn-secondary" special="cancel"/>
                     </footer>
                 </form>
@@ -107,6 +108,8 @@
                                 <field name="bounce_reason"/>
                             </group>
                             <group>
+                                <field name="total_amount"/>
+                                <field name="currency_id" invisible="1"/>
                                 <field name="notes" placeholder="تفاصيل سبب الرفض من البنك أو الطرف المسلم إليه..."/>
                             </group>
                         </group>
@@ -174,6 +177,54 @@
                     </footer>
                 </form>
             </field>
+        </record>
+
+        <!-- ============================================================
+             5. Actions Bound to Account Check (Action Menu & Multi-select)
+        ============================================================ -->
+        <record id="action_check_deposit_wizard" model="ir.actions.act_window">
+            <field name="name">إيداع بالبنك برسم التحصيل</field>
+            <field name="res_model">check.deposit.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_account_check"/>
+            <field name="binding_view_types">list,form</field>
+        </record>
+
+        <record id="action_check_clear_wizard" model="ir.actions.act_window">
+            <field name="name">إثبات تحصيل أو صرف الشيك</field>
+            <field name="res_model">check.clear.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_account_check"/>
+            <field name="binding_view_types">list,form</field>
+        </record>
+
+        <record id="action_check_bounce_wizard" model="ir.actions.act_window">
+            <field name="name">إثبات ارتداد الشيك</field>
+            <field name="res_model">check.bounce.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_account_check"/>
+            <field name="binding_view_types">list,form</field>
+        </record>
+
+        <record id="action_check_endorse_wizard" model="ir.actions.act_window">
+            <field name="name">تظهير وتسليم لطرف آخر</field>
+            <field name="res_model">check.endorse.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_account_check"/>
+            <field name="binding_view_types">list,form</field>
+        </record>
+
+        <record id="action_check_reset_to_safe" model="ir.actions.server">
+            <field name="name">إرجاع للخزينة</field>
+            <field name="model_id" ref="model_account_check"/>
+            <field name="binding_model_id" ref="model_account_check"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">records.action_reset_to_safe()</field>
         </record>
 
     </data>

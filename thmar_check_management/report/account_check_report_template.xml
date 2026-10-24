@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Document Template for Single Cheque Voucher -->
+    <template id="report_account_check_document">
+        <t t-call="web.external_layout">
+            <t t-set="o" t-value="o.with_context(lang=lang)"/>
+            <div class="page check-report-container" dir="rtl" style="font-family: 'DejaVu Sans', 'Arial', sans-serif; color: #1e293b; font-size: 13px;">
+
+                <style>
+                    .check-report-container {
+                        direction: rtl;
+                        text-align: right;
+                    }
+                    .voucher-title-box {
+                        border-bottom: 2px solid #1e3a5f;
+                        padding-bottom: 10px;
+                        margin-bottom: 18px;
+                    }
+                    .voucher-badge {
+                        font-size: 13px;
+                        font-weight: 600;
+                        padding: 5px 14px;
+                        border-radius: 20px;
+                        display: inline-block;
+                    }
+                    .badge-safe { background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+                    .badge-deposited { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+                    .badge-endorsed { background-color: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
+                    .badge-cleared { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+                    .badge-bounced { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+                    .badge-cancelled { background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+
+                    .amount-highlight-card {
+                        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                        border: 1px solid #cbd5e1;
+                        border-radius: 8px;
+                        padding: 12px 18px;
+                        margin-bottom: 18px;
+                    }
+                    .amount-number {
+                        font-size: 22px;
+                        font-weight: bold;
+                        color: #0f172a;
+                    }
+                    .amount-words {
+                        font-size: 13px;
+                        font-weight: 600;
+                        color: #334155;
+                        margin-top: 4px;
+                    }
+
+                    .info-card {
+                        border: 1px solid #e2e8f0;
+                        border-radius: 8px;
+                        overflow: hidden;
+                        margin-bottom: 16px;
+                    }
+                    .info-card-header {
+                        background-color: #f1f5f9;
+                        color: #1e293b;
+                        font-weight: bold;
+                        padding: 8px 14px;
+                        border-bottom: 1px solid #e2e8f0;
+                        font-size: 13px;
+                    }
+                    .info-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+                    .info-table td {
+                        padding: 7px 12px;
+                        vertical-align: top;
+                        border-bottom: 1px solid #f1f5f9;
+                    }
+                    .info-label {
+                        width: 32%;
+                        font-weight: 600;
+                        color: #64748b;
+                        font-size: 12px;
+                    }
+                    .info-value {
+                        width: 68%;
+                        font-weight: 500;
+                        color: #0f172a;
+                        font-size: 13px;
+                    }
+
+                    .signatures-table {
+                        width: 100%;
+                        margin-top: 25px;
+                        border-collapse: collapse;
+                        page-break-inside: avoid;
+                    }
+                    .signatures-table td {
+                        width: 25%;
+                        text-align: center;
+                        vertical-align: top;
+                        padding: 8px;
+                    }
+                    .sig-title {
+                        font-weight: bold;
+                        font-size: 12px;
+                        color: #334155;
+                        margin-bottom: 45px;
+                    }
+                    .sig-line {
+                        border-bottom: 1px dashed #64748b;
+                        width: 80%;
+                        margin: 0 auto 5px auto;
+                    }
+                    .sig-sub {
+                        font-size: 11px;
+                        color: #64748b;
+                    }
+                </style>
+
+                <!-- 1. Voucher Header -->
+                <div class="voucher-title-box">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h3 style="margin: 0 0 5px 0; font-weight: bold; color: #1e3a5f;">
+                                <t t-if="o.check_type == 'incoming'">
+                                    <span>سند استلام شيك ورقي</span>
+                                    <span style="font-size: 14px; color: #64748b; font-weight: normal;"> / Cheque Receipt Voucher</span>
+                                </t>
+                                <t t-else="">
+                                    <span>سند صرف شيك تجاري</span>
+                                    <span style="font-size: 14px; color: #64748b; font-weight: normal;"> / Cheque Payment Voucher</span>
+                                </t>
+                            </h3>
+                            <div style="font-size: 14px; color: #475569;">
+                                رقم الشيك: <strong style="color: #0f172a; font-size: 16px;">#<span t-field="o.name"/></strong>
+                            </div>
+                        </div>
+                        <div class="col-4 text-start">
+                            <t t-if="o.state == 'in_safe'">
+                                <span class="voucher-badge badge-safe">في الخزينة / In Safe</span>
+                            </t>
+                            <t t-elif="o.state == 'deposited'">
+                                <span class="voucher-badge badge-deposited">برسم التحصيل / Deposited</span>
+                            </t>
+                            <t t-elif="o.state == 'endorsed'">
+                                <span class="voucher-badge badge-endorsed">مظهر للغير / Endorsed</span>
+                            </t>
+                            <t t-elif="o.state == 'cleared'">
+                                <span class="voucher-badge badge-cleared">محصل أو منصرف / Cleared</span>
+                            </t>
+                            <t t-elif="o.state == 'bounced'">
+                                <span class="voucher-badge badge-bounced">مرتد أو مرفوض / Bounced</span>
+                            </t>
+                            <t t-elif="o.state == 'cancelled'">
+                                <span class="voucher-badge badge-cancelled">ملغي / Cancelled</span>
+                            </t>
+                            <t t-else="">
+                                <span class="voucher-badge badge-safe"><span t-field="o.state"/></span>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Amount & Tafqeet Box -->
+                <div class="amount-highlight-card">
+                    <div class="row align-items-center">
+                        <div class="col-4">
+                            <div style="font-size: 12px; color: #64748b; font-weight: 600;">مبلغ الشيك / Cheque Amount</div>
+                            <div class="amount-number">
+                                <span t-field="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </div>
+                        </div>
+                        <div class="col-8" style="border-right: 1px solid #cbd5e1; padding-right: 15px;">
+                            <div style="font-size: 12px; color: #64748b; font-weight: 600;">المبلغ بالحروف / Amount in Words:</div>
+                            <div class="amount-words">
+                                فقط <span t-esc="o.amount_to_text_with_lang()"/> لا غير.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Cheque & Parties Information Grid -->
+                <div class="row">
+                    <!-- Column 1: Parties & Bank -->
+                    <div class="col-6">
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <i class="fa fa-university me-1"/> بيانات الطرف والبنك / Partner &amp; Bank
+                            </div>
+                            <table class="info-table">
+                                <tr>
+                                    <td class="info-label">الطرف المصدر:</td>
+                                    <td class="info-value">
+                                        <strong t-esc="o.partner_id.name or '-'"/>
+                                    </td>
+                                </tr>
+                                <tr t-if="o.drawer">
+                                    <td class="info-label">الساحب بالورقة:</td>
+                                    <td class="info-value" t-esc="o.drawer"/>
+                                </tr>
+                                <tr t-if="o.current_partner_id">
+                                    <td class="info-label">المظهر له (المستفيد):</td>
+                                    <td class="info-value">
+                                        <strong style="color: #6d28d9;" t-esc="o.current_partner_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">البنك المسحوب عليه:</td>
+                                    <td class="info-value" t-esc="o.bank_id.name or '-'"/>
+                                </tr>
+                                <tr t-if="o.bank_branch">
+                                    <td class="info-label">فرع البنك:</td>
+                                    <td class="info-value" t-esc="o.bank_branch"/>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">نوع الشيك:</td>
+                                    <td class="info-value">
+                                        <t t-if="o.check_type == 'incoming'">شيك وارد (أوراق قبض)</t>
+                                        <t t-else="">شيك صادر (أوراق دفع)</t>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Dates & Storage -->
+                    <div class="col-6">
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <i class="fa fa-calendar me-1"/> التواريخ ومكان الحفظ / Dates &amp; Storage
+                            </div>
+                            <table class="info-table">
+                                <tr>
+                                    <td class="info-label">تاريخ التحرير:</td>
+                                    <td class="info-value" t-esc="o.check_date or '-'"/>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">تاريخ الاستحقاق:</td>
+                                    <td class="info-value">
+                                        <strong style="color: #0f172a;" t-esc="o.due_date"/>
+                                        <span t-if="o.is_overdue" style="color: #dc2626; font-size: 11px; font-weight: bold; margin-right: 5px;">
+                                            (متأخر الاستحقاق)
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">مكان الحفظ بالخزينة:</td>
+                                    <td class="info-value" t-esc="o.storage_drawer_id.name or 'الخزينة الرئيسية'"/>
+                                </tr>
+                                <tr t-if="o.storage_division">
+                                    <td class="info-label">الخانة / الرف / الملف:</td>
+                                    <td class="info-value" t-esc="o.storage_division"/>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">شيك ضمان وأمانة:</td>
+                                    <td class="info-value">
+                                        <t t-if="o.is_guarantee">
+                                            <span style="color: #b45309; font-weight: bold;">نعم (شيك ضمان لا ينشئ قيد مالي)</span>
+                                        </t>
+                                        <t t-else="">لا (شيك مالي نظامي)</t>
+                                    </td>
+                                </tr>
+                                <tr t-if="o.inward_batch_id or o.outward_batch_id">
+                                    <td class="info-label">الحافظة المرتبطة:</td>
+                                    <td class="info-value">
+                                        <t t-if="o.inward_batch_id">
+                                            <span>حافظة استلام: </span><strong t-esc="o.inward_batch_id.name"/>
+                                        </t>
+                                        <t t-if="o.outward_batch_id">
+                                            <span>حافظة صرف: </span><strong t-esc="o.outward_batch_id.name"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Lifecycle Tracking Details (Conditional) -->
+                <div class="info-card" t-if="o.deposit_date or o.clear_date or o.endorse_date or o.bounce_date">
+                    <div class="info-card-header">
+                        <i class="fa fa-history me-1"/> مراحل ومحطات دورة الشيك / Cheque Lifecycle
+                    </div>
+                    <div class="p-2" style="background-color: #fff;">
+                        <div class="row">
+                            <div class="col-6" t-if="o.deposit_date">
+                                <div><strong>تاريخ الإيداع بالبنك:</strong> <span t-esc="o.deposit_date"/></div>
+                                <div t-if="o.deposit_bank_journal_id"><strong>بنك التحصيل:</strong> <span t-esc="o.deposit_bank_journal_id.name"/></div>
+                            </div>
+                            <div class="col-6" t-if="o.endorse_date">
+                                <div><strong>تاريخ التظهير والتسليم:</strong> <span t-esc="o.endorse_date"/></div>
+                                <div t-if="o.current_partner_id"><strong>المظهر له:</strong> <span t-esc="o.current_partner_id.name"/></div>
+                            </div>
+                            <div class="col-6" t-if="o.clear_date">
+                                <div><strong>تاريخ التحصيل أو الصرف:</strong> <span t-esc="o.clear_date"/></div>
+                                <div t-if="o.clear_journal_id">
+                                    <strong>
+                                        <t t-if="o.clear_journal_id.type == 'cash'">الخزينة (نقدي):</t>
+                                        <t t-else="">بنك التحصيل/الصرف:</t>
+                                    </strong>
+                                    <span t-esc="o.clear_journal_id.name"/>
+                                </div>
+                            </div>
+                            <div class="col-6" t-if="o.bounce_date">
+                                <div style="color: #dc2626;"><strong>تاريخ الارتداد:</strong> <span t-esc="o.bounce_date"/></div>
+                                <div t-if="o.bounce_reason" style="color: #dc2626;"><strong>سبب الارتداد:</strong> <span t-esc="o.bounce_reason"/></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Cheque Scanned Image (if uploaded) -->
+                <div class="info-card" t-if="o.check_image" style="page-break-inside: avoid;">
+                    <div class="info-card-header">
+                        <i class="fa fa-picture-o me-1"/> صورة الشيك الورقي / Physical Cheque Scan
+                    </div>
+                    <div class="text-center p-3" style="background-color: #f8fafc;">
+                        <img t-att-src="image_data_uri(o.check_image)" style="max-height: 250px; max-width: 95%; border: 1px solid #cbd5e1; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);"/>
+                    </div>
+                </div>
+
+                <!-- 6. Notes (if any) -->
+                <div class="info-card" t-if="o.notes" style="page-break-inside: avoid;">
+                    <div class="info-card-header">
+                        <i class="fa fa-commenting-o me-1"/> ملاحظات / Notes
+                    </div>
+                    <div class="p-2" style="font-size: 12px; color: #334155;" t-esc="o.notes"/>
+                </div>
+
+                <!-- 7. Official Signatures -->
+                <table class="signatures-table">
+                    <tr>
+                        <td>
+                            <div class="sig-title">توقيع الطرف المسلم</div>
+                            <div class="sig-line"/>
+                            <div class="sig-sub">الاسم والتوقيع</div>
+                        </td>
+                        <td>
+                            <div class="sig-title">أمين الخزينة / المستلم</div>
+                            <div class="sig-line"/>
+                            <div class="sig-sub">الختم والتوقيع</div>
+                        </td>
+                        <td>
+                            <div class="sig-title">المحاسب المسؤول</div>
+                            <div class="sig-line"/>
+                            <div class="sig-sub">مراجعة الحسابات</div>
+                        </td>
+                        <td>
+                            <div class="sig-title">الاعتماد المالي</div>
+                            <div class="sig-line"/>
+                            <div class="sig-sub">المدير المالي</div>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </t>
+    </template>
+
+    <!-- Main Wrapper Template for Account Check -->
+    <template id="report_account_check">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="lang" t-value="o.env.context.get('lang') or o.env.user.lang or (o.partner_id.lang if o.partner_id else False) or 'ar_001'"/>
+                <t t-call="thmar_check_management.report_account_check_document" t-lang="lang"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>
