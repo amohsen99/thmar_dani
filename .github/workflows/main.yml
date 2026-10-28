@@ -1,18 +1,82 @@
-name: Deploy Odoo Modules
+name: CI/CD Pipeline - Odoo Modules
 
 on:
   push:
     branches:
       - master
+  workflow_dispatch:
+    inputs:
+      upgrade_module:
+        description: "Custom module to upgrade (e.g. thamar_weaving). Leave empty for code-only restart. DO NOT use 'web' or 'base'."
+        required: false
+        default: ""
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  validate:
+    name: Code & XML Quality Check
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
+      - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Check Python Syntax
+        run: |
+          echo "==> Checking Python syntax..."
+          python -m compileall -q .
+
+      - name: Validate XML Files
+        run: |
+          echo "==> Validating XML files..."
+          python -c '
+          import glob, xml.etree.ElementTree as ET, sys
+          errors = 0
+          for f in glob.glob("**/*.xml", recursive=True):
+              if "/." in f or f.startswith("."):
+                  continue
+              try:
+                  ET.parse(f)
+              except Exception as e:
+                  print(f"XML Error in {f}: {e}")
+                  errors += 1
+          if errors:
+              print(f"Total XML errors found: {errors}")
+              sys.exit(1)
+          print("All XML files are well-formed!")
+          '
+
+      - name: Validate Odoo Manifests
+        run: |
+          echo "==> Validating __manifest__.py files..."
+          python -c '
+          import ast, glob, sys
+          errors = 0
+          for f in glob.glob("**/__manifest__.py", recursive=True):
+              try:
+                  with open(f, "r", encoding="utf-8") as m:
+                      ast.parse(m.read())
+              except Exception as e:
+                  print(f"Manifest Error in {f}: {e}")
+                  errors += 1
+          if errors:
+              print(f"Total manifest errors found: {errors}")
+              sys.exit(1)
+          print("All manifests are valid!")
+          '
+
+  deploy:
+    name: Safe Deploy to Production
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy to remote Odoo server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -25,6 +89,13 @@ jobs:
             COMPOSE_FILE="docker/server/odoo.yaml"
             PROJECT_DIR="/root/odoo19/thamar_dani"
             DB_NAME="HR-Production"
+            UPGRADE_MOD="${{ github.event.inputs.upgrade_module }}"
+
+            # Security / Asset protection: prevent running -u on web or base
+            if [ "$UPGRADE_MOD" = "web" ] || [ "$UPGRADE_MOD" = "base" ]; then
+              echo "Error: Upgrading 'web' or 'base' is blocked to protect enterprise assets."
+              exit 1
+            fi
 
             cd "$PROJECT_DIR"
 
@@ -34,15 +105,25 @@ jobs:
             fi
 
             echo "Syncing with latest changes..."
+            PREV_COMMIT=$(git rev-parse HEAD)
             git fetch origin master
             git reset --hard origin/master
+            NEW_COMMIT=$(git rev-parse HEAD)
 
-            echo "Building the updated Odoo image..."
-            docker compose -f "$COMPOSE_FILE" build odoo
+            # Smart build: only rebuild the image if Dockerfile/docker configuration changed
+            if [ "$PREV_COMMIT" != "$NEW_COMMIT" ] && git diff --name-only "$PREV_COMMIT" "$NEW_COMMIT" | grep -q "^docker/server/odoo_e/"; then
+              echo "Dockerfile or server docker configs changed. Rebuilding Odoo image..."
+              docker compose -f "$COMPOSE_FILE" build odoo
+            else
+              echo "No Dockerfile changes detected. Skipping image build to save time & resources."
+            fi
 
-            # IMPORTANT:
-            # Do not run '-u web' automatically on production.
-            # A previous web upgrade failed while loading Enterprise account_reports.
+            # Optional manual module upgrade (only for specific custom modules)
+            if [ -n "$UPGRADE_MOD" ]; then
+              echo "Upgrading custom module: $UPGRADE_MOD on $DB_NAME..."
+              docker compose -f "$COMPOSE_FILE" exec -T odoo odoo -d "$DB_NAME" -u "$UPGRADE_MOD" --stop-after-init
+            fi
+
             echo "Recreating Odoo with the updated image/code..."
             docker compose -f "$COMPOSE_FILE" up -d --no-deps --force-recreate odoo
 
@@ -51,7 +132,7 @@ jobs:
             for i in {1..24}; do
               if curl -fsS "http://localhost:8069/web/login?db=$DB_NAME" >/dev/null; then
                 healthy=1
-                echo "Odoo is up and responding for $DB_NAME."
+                echo "Odoo is up and responding for $DB_NAME (took ~$((i * 5))s)."
                 break
               fi
 

@@ -14,7 +14,7 @@
                 <filter string="أعطال كهربائية" name="filter_elec" domain="[('stop_type', '=', 'electrical')]"/>
                 <filter string="قطع خيط وغزل" name="filter_yarn" domain="[('stop_type', '=', 'yarn_break')]"/>
                 <filter string="ضبط وعيار" name="filter_setup" domain="[('stop_type', '=', 'setup')]"/>
-                <group expand="0" string="تجميع حسب">
+                <group name="group_by">
                     <filter string="الماكينة" name="group_machine" context="{'group_by': 'machine_id'}"/>
                     <filter string="سبب التوقف" name="group_reason" context="{'group_by': 'reason_id'}"/>
                     <filter string="تصنيف التوقف" name="group_type" context="{'group_by': 'stop_type'}"/>

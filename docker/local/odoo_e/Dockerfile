@@ -2,9 +2,15 @@
 FROM odoo:18.0
 # Switch to root user
 USER root
-RUN apt-get update && apt-get install -y nodejs npm \
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        nodejs \
+        npm \
     && npm install -g less less-plugin-clean-css \
-    && apt-get clean
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 # Install Python package hijri-converter to /usr/lib/python3/dist-packages # default odoo path
 # RUN pip install --target=/usr/lib/python3/dist-packages hijri_converter==2.3.1
 # Install Python package hijri-converter

@@ -19,7 +19,7 @@
                 <separator/>
                 <filter string="إنتاج داخلي" name="filter_internal" domain="[('is_internal', '=', True)]"/>
                 <filter string="تشغيل للغير" name="filter_customer" domain="[('is_internal', '=', False)]"/>
-                <group expand="0" string="تجميع حسب">
+                <group name="group_by">
                     <filter string="نوع النسيج" name="group_type" context="{'group_by': 'weaving_type'}"/>
                     <filter string="الماكينة" name="group_machine" context="{'group_by': 'machine_id'}"/>
                     <filter string="الحالة" name="group_state" context="{'group_by': 'state'}"/>

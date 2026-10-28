@@ -17,7 +17,7 @@
                 <filter string="تعمل" name="filter_running" domain="[('state', '=', 'running')]"/>
                 <filter string="تحت الصيانة" name="filter_maintenance" domain="[('state', '=', 'maintenance')]"/>
                 <filter string="متوقفة" name="filter_stopped" domain="[('state', '=', 'stopped')]"/>
-                <group expand="0" string="تجميع حسب">
+                <group name="group_by">
                     <filter string="نوع النسيج" name="group_weaving_type" context="{'group_by': 'weaving_type'}"/>
                     <filter string="الحالة" name="group_state" context="{'group_by': 'state'}"/>
                     <filter string="العنبر / الصالة" name="group_hall" context="{'group_by': 'hall_location'}"/>

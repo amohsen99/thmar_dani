@@ -21,7 +21,7 @@
                 <separator/>
                 <filter string="جاهز في المخزن" name="filter_stock" domain="[('state', '=', 'stock')]"/>
                 <filter string="تم التسليم للطباعة والصباغة" name="filter_delivered" domain="[('state', '=', 'delivered_dyeing')]"/>
-                <group expand="0" string="تجميع حسب">
+                <group name="group_by">
                     <filter string="أمر التشغيل" name="group_order" context="{'group_by': 'order_id'}"/>
                     <filter string="الماكينة" name="group_machine" context="{'group_by': 'machine_id'}"/>
                     <filter string="صنف القماش" name="group_product" context="{'group_by': 'product_id'}"/>
