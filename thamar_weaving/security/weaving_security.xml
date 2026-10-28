@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_weaving" model="ir.module.category">
+        <field name="name">النسيج</field>
+        <field name="description">صلاحيات إدارة تشغيل مصنع النسيج الدائري والمستطيل</field>
+        <field name="sequence">36</field>
+    </record>
+
+    <record id="privilege_weaving" model="res.groups.privilege">
+        <field name="name">النسيج</field>
+        <field name="category_id" ref="module_category_weaving"/>
+        <field name="sequence">36</field>
+    </record>
+
+    <record id="group_weaving_user" model="res.groups">
+        <field name="name">مستخدم النسيج</field>
+        <field name="privilege_id" ref="privilege_weaving"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('stock.group_stock_user'))]"/>
+    </record>
+
+    <record id="group_weaving_manager" model="res.groups">
+        <field name="name">مدير النسيج</field>
+        <field name="privilege_id" ref="privilege_weaving"/>
+        <field name="implied_ids" eval="[(4, ref('group_weaving_user'))]"/>
+    </record>
+
+    <!-- Multi-Company Rules -->
+    <record id="rule_weaving_machine_company" model="ir.rule">
+        <field name="name">ماكينات النسيج حسب الشركة</field>
+        <field name="model_id" ref="model_thamar_weaving_machine"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_weaving_user'))]"/>
+    </record>
+
+    <record id="rule_weaving_order_company" model="ir.rule">
+        <field name="name">أوامر تشغيل النسيج حسب الشركة</field>
+        <field name="model_id" ref="model_thamar_weaving_order"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_weaving_user'))]"/>
+    </record>
+
+    <record id="rule_weaving_roll_company" model="ir.rule">
+        <field name="name">أتواب ولوطات النسيج حسب الشركة</field>
+        <field name="model_id" ref="model_thamar_weaving_roll"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_weaving_user'))]"/>
+    </record>
+
+    <record id="rule_weaving_stop_company" model="ir.rule">
+        <field name="name">توقفات وأعطال ماكينات النسيج حسب الشركة</field>
+        <field name="model_id" ref="model_thamar_weaving_machine_stop"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_weaving_user'))]"/>
+    </record>
+</odoo>

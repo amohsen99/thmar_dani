@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Weaving Roll Search View -->
+    <record id="view_weaving_roll_search" model="ir.ui.view">
+        <field name="name">thamar.weaving.roll.search</field>
+        <field name="model">thamar.weaving.roll</field>
+        <field name="arch" type="xml">
+            <search string="بحث الأتواب واللوطات">
+                <field name="name"/>
+                <field name="lot_name"/>
+                <field name="order_id"/>
+                <field name="product_id"/>
+                <field name="machine_id"/>
+                <field name="partner_id"/>
+                <filter string="درجة أولى (ممتاز)" name="filter_grade_a" domain="[('grade', '=', 'grade_a')]"/>
+                <filter string="درجة ثانية" name="filter_grade_b" domain="[('grade', '=', 'grade_b')]"/>
+                <filter string="هالك / فضلات" name="filter_scrap" domain="[('grade', '=', 'scrap')]"/>
+                <separator/>
+                <filter string="نسيج دائري" name="filter_circular" domain="[('weaving_type', '=', 'circular')]"/>
+                <filter string="نسيج مستطيل" name="filter_rectangular" domain="[('weaving_type', '=', 'rectangular')]"/>
+                <separator/>
+                <filter string="جاهز في المخزن" name="filter_stock" domain="[('state', '=', 'stock')]"/>
+                <filter string="تم التسليم للطباعة والصباغة" name="filter_delivered" domain="[('state', '=', 'delivered_dyeing')]"/>
+                <group expand="0" string="تجميع حسب">
+                    <filter string="أمر التشغيل" name="group_order" context="{'group_by': 'order_id'}"/>
+                    <filter string="الماكينة" name="group_machine" context="{'group_by': 'machine_id'}"/>
+                    <filter string="صنف القماش" name="group_product" context="{'group_by': 'product_id'}"/>
+                    <filter string="درجة الجودة" name="group_grade" context="{'group_by': 'grade'}"/>
+                    <filter string="الوردية" name="group_shift" context="{'group_by': 'shift'}"/>
+                    <filter string="الحالة" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="تاريخ النزول" name="group_date" context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Weaving Roll List View -->
+    <record id="view_weaving_roll_list" model="ir.ui.view">
+        <field name="name">thamar.weaving.roll.list</field>
+        <field name="model">thamar.weaving.roll</field>
+        <field name="arch" type="xml">
+            <list string="سجل الأتواب واللوطات" default_order="date desc, id desc">
+                <field name="name"/>
+                <field name="lot_name"/>
+                <field name="date"/>
+                <field name="order_id"/>
+                <field name="weaving_type"/>
+                <field name="machine_id"/>
+                <field name="product_id"/>
+                <field name="gross_weight_kg" optional="hide"/>
+                <field name="tare_weight_kg" optional="hide"/>
+                <field name="net_weight_kg" sum="إجمالي الوزن الصافي"/>
+                <field name="length_meter" sum="إجمالي الأمتار"/>
+                <field name="measured_gsm" optional="show"/>
+                <field name="measured_width_cm" optional="show"/>
+                <field name="grade" widget="badge"
+                       decoration-success="grade == 'grade_a'"
+                       decoration-warning="grade == 'grade_b'"
+                       decoration-danger="grade == 'scrap'"/>
+                <field name="shift" optional="show"/>
+                <field name="operator_name" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'inspected'"
+                       decoration-primary="state == 'stock'"
+                       decoration-success="state == 'delivered_dyeing'"/>
+                <field name="lot_id" optional="show"/>
+                <button name="action_create_dyeing_work_order"
+                        string="تحويل للصباغة" type="object"
+                        icon="fa-tint" title="سحب هذا اللوط لإنشاء أمر تشغيل في مصنع الطباعة والصباغة"
+                        invisible="state == 'delivered_dyeing'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Weaving Roll Form View -->
+    <record id="view_weaving_roll_form" model="ir.ui.view">
+        <field name="name">thamar.weaving.roll.form</field>
+        <field name="model">thamar.weaving.roll</field>
+        <field name="arch" type="xml">
+            <form string="ثوب القماش واللوط">
+                <header>
+                    <button name="action_inspect" string="اعتماد الفحص والجودة" type="object"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_create_dyeing_work_order"
+                            string="سحب اللوط للطباعة والصباغة" type="object"
+                            class="btn-success" invisible="state == 'delivered_dyeing'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,inspected,stock,delivered_dyeing"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                        <div class="h3 text-primary">
+                            <label for="lot_name" string="رقم اللوط: "/>
+                            <field name="lot_name" class="oe_inline fw-bold"/>
+                        </div>
+                    </div>
+                    <group>
+                        <group string="بيانات النزول والتشغيل">
+                            <field name="order_id" options="{'no_create_edit': True}"/>
+                            <field name="weaving_type"/>
+                            <field name="machine_id"/>
+                            <field name="product_id"/>
+                            <field name="partner_id"/>
+                            <field name="date"/>
+                            <field name="shift"/>
+                            <field name="operator_name"/>
+                        </group>
+                        <group string="الأوزان والمقاسات المقاسة">
+                            <field name="gross_weight_kg"/>
+                            <field name="tare_weight_kg"/>
+                            <field name="net_weight_kg" class="fw-bold fs-4 text-success"/>
+                            <field name="length_meter"/>
+                            <field name="measured_gsm"/>
+                            <field name="measured_width_cm"/>
+                            <field name="barcode"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="تقييم الجودة">
+                            <field name="grade" widget="radio"/>
+                            <field name="defect_type"/>
+                            <field name="defect_notes"/>
+                        </group>
+                        <group string="الربط مع المخازن ومصنع الصباغة">
+                            <field name="lot_id" options="{'no_create_edit': True}"/>
+                            <field name="dyeing_work_order_id" invisible="not dyeing_work_order_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Weaving Roll Actions -->
+    <record id="action_weaving_roll_all" model="ir.actions.act_window">
+        <field name="name">كل الأتواب واللوطات</field>
+        <field name="res_model">thamar.weaving.roll</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="action_weaving_roll_circular" model="ir.actions.act_window">
+        <field name="name">أتواب النسيج الدائري</field>
+        <field name="res_model">thamar.weaving.roll</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('weaving_type', '=', 'circular')]</field>
+        <field name="context">{'default_weaving_type': 'circular'}</field>
+    </record>
+
+    <record id="action_weaving_roll_rectangular" model="ir.actions.act_window">
+        <field name="name">أتواب النسيج المستطيل (الأنوال)</field>
+        <field name="res_model">thamar.weaving.roll</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('weaving_type', '=', 'rectangular')]</field>
+        <field name="context">{'default_weaving_type': 'rectangular'}</field>
+    </record>
+</odoo>

@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+{
+    "name": "النسيج",
+    "summary": "إدارة تشغيل مصانع النسيج الدائري والمستطيل وتتبع الأتواب واللوطات وتكاليف الماكينات",
+    "version": "19.0.1.0.0",
+    "category": "Manufacturing",
+    "author": "Thamar",
+    "license": "LGPL-3",
+    "depends": ["base", "mail", "product", "stock"],
+    "data": [
+        "security/weaving_security.xml",
+        "security/ir.model.access.csv",
+        "data/ir_sequence_data.xml",
+        "data/weaving_data.xml",
+        "views/weaving_order_views.xml",
+        "views/weaving_roll_views.xml",
+        "views/weaving_machine_views.xml",
+        "views/weaving_stop_views.xml",
+        "views/stock_lot_views.xml",
+        "views/weaving_menus.xml",
+        "report/weaving_roll_label_report.xml",
+    ],
+    "application": True,
+    "installable": True,
+}

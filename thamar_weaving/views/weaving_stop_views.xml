@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Machine Stop Search View -->
+    <record id="view_weaving_machine_stop_search" model="ir.ui.view">
+        <field name="name">thamar.weaving.machine.stop.search</field>
+        <field name="model">thamar.weaving.machine.stop</field>
+        <field name="arch" type="xml">
+            <search string="بحث التوقفات">
+                <field name="machine_id"/>
+                <field name="order_id"/>
+                <field name="reason_id"/>
+                <field name="technician_id"/>
+                <filter string="أعطال ميكانيكية" name="filter_mech" domain="[('stop_type', '=', 'mechanical')]"/>
+                <filter string="أعطال كهربائية" name="filter_elec" domain="[('stop_type', '=', 'electrical')]"/>
+                <filter string="قطع خيط وغزل" name="filter_yarn" domain="[('stop_type', '=', 'yarn_break')]"/>
+                <filter string="ضبط وعيار" name="filter_setup" domain="[('stop_type', '=', 'setup')]"/>
+                <group expand="0" string="تجميع حسب">
+                    <filter string="الماكينة" name="group_machine" context="{'group_by': 'machine_id'}"/>
+                    <filter string="سبب التوقف" name="group_reason" context="{'group_by': 'reason_id'}"/>
+                    <filter string="تصنيف التوقف" name="group_type" context="{'group_by': 'stop_type'}"/>
+                    <filter string="التاريخ" name="group_date" context="{'group_by': 'start_time:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Machine Stop List View -->
+    <record id="view_weaving_machine_stop_list" model="ir.ui.view">
+        <field name="name">thamar.weaving.machine.stop.list</field>
+        <field name="model">thamar.weaving.machine.stop</field>
+        <field name="arch" type="xml">
+            <list string="سجل توقفات وأعطال الماكينات" default_order="start_time desc">
+                <field name="machine_id"/>
+                <field name="order_id" optional="show"/>
+                <field name="reason_id"/>
+                <field name="stop_type"/>
+                <field name="start_time"/>
+                <field name="end_time"/>
+                <field name="duration_minutes" sum="إجمالي الدقائق"/>
+                <field name="technician_id" optional="show"/>
+                <field name="notes" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Machine Stop Form View -->
+    <record id="view_weaving_machine_stop_form" model="ir.ui.view">
+        <field name="name">thamar.weaving.machine.stop.form</field>
+        <field name="model">thamar.weaving.machine.stop</field>
+        <field name="arch" type="xml">
+            <form string="سجل توقف ماكينة">
+                <sheet>
+                    <group>
+                        <group string="بيانات الماكينة والعطل">
+                            <field name="machine_id"/>
+                            <field name="order_id"/>
+                            <field name="reason_id"/>
+                            <field name="stop_type"/>
+                        </group>
+                        <group string="توقيت العطل">
+                            <field name="start_time"/>
+                            <field name="end_time"/>
+                            <field name="duration_minutes"/>
+                            <field name="technician_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="ملاحظات والإجراء التصحيحي">
+                        <field name="notes" placeholder="وصف العطل والإجراء الذي تم لإعادة تشغيل الماكينة..."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Stop Reason List View -->
+    <record id="view_weaving_stop_reason_list" model="ir.ui.view">
+        <field name="name">thamar.weaving.stop.reason.list</field>
+        <field name="model">thamar.weaving.stop.reason</field>
+        <field name="arch" type="xml">
+            <list string="أسباب توقف الماكينات" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="stop_type"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_weaving_machine_stop" model="ir.actions.act_window">
+        <field name="name">سجل التوقفات والأعطال</field>
+        <field name="res_model">thamar.weaving.machine.stop</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="action_weaving_stop_reason" model="ir.actions.act_window">
+        <field name="name">أسباب توقف الماكينات</field>
+        <field name="res_model">thamar.weaving.stop.reason</field>
+        <field name="view_mode">list</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>

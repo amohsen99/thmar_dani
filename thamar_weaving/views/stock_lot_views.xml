@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Standard Stock Lot Form -->
+    <record id="view_stock_lot_weaving_form" model="ir.ui.view">
+        <field name="name">stock.lot.weaving.form</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="تتبع ومواصفات النسيج" name="weaving_traceability" invisible="not weaving_order_id">
+                        <group>
+                            <group string="بيانات التشغيل الأصلية">
+                                <field name="weaving_order_id"/>
+                                <field name="weaving_roll_id"/>
+                                <field name="weaving_machine_id"/>
+                                <field name="weaving_type"/>
+                            </group>
+                            <group string="المواصفات الفنية للوت">
+                                <field name="fabric_grade"/>
+                                <field name="net_weight_kg"/>
+                                <field name="length_meter"/>
+                                <field name="fabric_gsm"/>
+                                <field name="fabric_width_cm"/>
+                                <field name="yarn_lot_summary"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Dedicated Weaving Fabric Lots List View -->
+    <record id="view_weaving_stock_lot_list" model="ir.ui.view">
+        <field name="name">stock.lot.weaving.list</field>
+        <field name="model">stock.lot</field>
+        <field name="arch" type="xml">
+            <list string="لوطات أقمشة النسيج الخام" create="false">
+                <field name="name" string="رقم اللوط"/>
+                <field name="product_id" string="صنف القماش"/>
+                <field name="weaving_type"/>
+                <field name="weaving_machine_id"/>
+                <field name="weaving_order_id"/>
+                <field name="fabric_grade" widget="badge"/>
+                <field name="net_weight_kg" sum="إجمالي الوزن الصافي"/>
+                <field name="length_meter" sum="إجمالي الأمتار"/>
+                <field name="fabric_gsm"/>
+                <field name="fabric_width_cm"/>
+                <field name="yarn_lot_summary"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action for Weaving Stock Lots -->
+    <record id="action_weaving_stock_lot" model="ir.actions.act_window">
+        <field name="name">لوطات أقمشة النسيج بالمخازن</field>
+        <field name="res_model">stock.lot</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('weaving_order_id', '!=', False)]</field>
+        <field name="view_id" ref="view_weaving_stock_lot_list"/>
+        <field name="context">{'search_default_group_by_product': 1}</field>
+    </record>
+</odoo>

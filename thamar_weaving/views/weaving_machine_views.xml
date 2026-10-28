@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Machine Search View -->
+    <record id="view_weaving_machine_search" model="ir.ui.view">
+        <field name="name">thamar.weaving.machine.search</field>
+        <field name="model">thamar.weaving.machine</field>
+        <field name="arch" type="xml">
+            <search string="بحث الماكينات">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="hall_location"/>
+                <field name="brand_model"/>
+                <filter string="نسيج دائري" name="filter_circular" domain="[('weaving_type', '=', 'circular')]"/>
+                <filter string="نسيج مستطيل / أنوال" name="filter_rectangular" domain="[('weaving_type', '=', 'rectangular')]"/>
+                <separator/>
+                <filter string="متاحة / جاهزة" name="filter_available" domain="[('state', '=', 'available')]"/>
+                <filter string="تعمل" name="filter_running" domain="[('state', '=', 'running')]"/>
+                <filter string="تحت الصيانة" name="filter_maintenance" domain="[('state', '=', 'maintenance')]"/>
+                <filter string="متوقفة" name="filter_stopped" domain="[('state', '=', 'stopped')]"/>
+                <group expand="0" string="تجميع حسب">
+                    <filter string="نوع النسيج" name="group_weaving_type" context="{'group_by': 'weaving_type'}"/>
+                    <filter string="الحالة" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="العنبر / الصالة" name="group_hall" context="{'group_by': 'hall_location'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Machine List View -->
+    <record id="view_weaving_machine_list" model="ir.ui.view">
+        <field name="name">thamar.weaving.machine.list</field>
+        <field name="model">thamar.weaving.machine</field>
+        <field name="arch" type="xml">
+            <list string="ماكينات النسيج" default_order="weaving_type, name">
+                <field name="name"/>
+                <field name="code" optional="show"/>
+                <field name="weaving_type"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'running'"
+                       decoration-info="state == 'available'"
+                       decoration-warning="state == 'maintenance'"
+                       decoration-danger="state == 'stopped'"/>
+                <field name="hall_location" optional="show"/>
+                <field name="brand_model" optional="show"/>
+                <field name="diameter_inch" optional="show"/>
+                <field name="gauge" optional="show"/>
+                <field name="feeders_count" optional="hide"/>
+                <field name="reed_width_cm" optional="show"/>
+                <field name="loom_type" optional="show"/>
+                <field name="hourly_cost" optional="show"/>
+                <field name="order_count" optional="show"/>
+                <field name="roll_count" optional="show"/>
+                <field name="total_produced_weight_kg" optional="show" sum="الإجمالي"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Machine Form View -->
+    <record id="view_weaving_machine_form" model="ir.ui.view">
+        <field name="name">thamar.weaving.machine.form</field>
+        <field name="model">thamar.weaving.machine</field>
+        <field name="arch" type="xml">
+            <form string="ماكينة النسيج">
+                <header>
+                    <button name="action_set_available" string="تعيين كمتاحة" type="object"
+                            class="oe_highlight" invisible="state == 'available'"/>
+                    <button name="action_set_maintenance" string="بدء صيانة" type="object"
+                            invisible="state == 'maintenance'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="available,running,maintenance,stopped"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_orders" type="object" class="oe_stat_button" icon="fa-tasks">
+                            <field name="order_count" widget="statinfo" string="أوامر التشغيل"/>
+                        </button>
+                        <button name="action_view_rolls" type="object" class="oe_stat_button" icon="fa-cubes">
+                            <field name="roll_count" widget="statinfo" string="الأتواب"/>
+                        </button>
+                        <button name="action_view_stops" type="object" class="oe_stat_button" icon="fa-pause-circle">
+                            <field name="stop_count" widget="statinfo" string="التوقفات"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="مثال: ماكينة دائري سنجل 1 أو نول رابير 10"/></h1>
+                    </div>
+                    <group>
+                        <group string="البيانات الأساسية">
+                            <field name="code"/>
+                            <field name="weaving_type" widget="radio"/>
+                            <field name="hall_location"/>
+                            <field name="brand_model"/>
+                            <field name="manufacture_year"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="المواصفات الفنية للنسيج الدائري" invisible="weaving_type != 'circular'">
+                            <field name="diameter_inch"/>
+                            <field name="gauge"/>
+                            <field name="feeders_count"/>
+                            <field name="rpm"/>
+                        </group>
+                        <group string="المواصفات الفنية للنسيج المستطيل / الأنوال" invisible="weaving_type != 'rectangular'">
+                            <field name="reed_width_cm"/>
+                            <field name="loom_type"/>
+                            <field name="speed_ppm"/>
+                            <field name="shafts_count"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="التكاليف التشغيلية للساعة" name="costs">
+                            <group>
+                                <group string="بنود تكلفة الساعة">
+                                    <field name="electricity_cost_hour"/>
+                                    <field name="labor_cost_hour"/>
+                                    <field name="spare_parts_cost_hour"/>
+                                    <field name="other_cost_hour"/>
+                                    <field name="hourly_cost" class="oe_subtotal_footer_separator"/>
+                                </group>
+                                <group string="معدلات الإنتاج المعيارية">
+                                    <field name="standard_production_rate_kg"/>
+                                    <field name="standard_production_rate_meter"/>
+                                    <field name="total_produced_weight_kg"/>
+                                    <field name="total_stop_minutes"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="سجل التوقفات والأعطال" name="stops">
+                            <field name="stop_ids">
+                                <list editable="bottom" default_order="start_time desc">
+                                    <field name="reason_id"/>
+                                    <field name="stop_type"/>
+                                    <field name="start_time"/>
+                                    <field name="end_time"/>
+                                    <field name="duration_minutes" sum="إجمالي الدقائق"/>
+                                    <field name="technician_id"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="ملاحظات فنية" name="notes">
+                            <field name="notes" placeholder="ملاحظات وإرشادات صيانة الماكينة..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Machine Kanban View -->
+    <record id="view_weaving_machine_kanban" model="ir.ui.view">
+        <field name="name">thamar.weaving.machine.kanban</field>
+        <field name="model">thamar.weaving.machine</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" sample="1">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="weaving_type"/>
+                <field name="state"/>
+                <field name="hourly_cost"/>
+                <field name="total_produced_weight_kg"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="fs-5"><field name="name"/></strong>
+                                <field name="state" widget="label_selection"
+                                       options="{'classes': {'available': 'info', 'running': 'success', 'maintenance': 'warning', 'stopped': 'danger'}}"/>
+                            </div>
+                            <div class="text-muted small mb-2">
+                                <t t-if="record.code.value"><span class="badge bg-light text-dark"><field name="code"/></span></t>
+                                <span class="ms-1"><field name="weaving_type"/></span>
+                            </div>
+                            <div class="row g-2 border-top pt-2 mt-1">
+                                <div class="col-6">
+                                    <div class="text-muted small">الإنتاج الكلي</div>
+                                    <div class="fw-bold"><field name="total_produced_weight_kg"/> كجم</div>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <div class="text-muted small">تكلفة الساعة</div>
+                                    <div class="fw-bold"><field name="hourly_cost"/></div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Machine Actions -->
+    <record id="action_weaving_machine_all" model="ir.actions.act_window">
+        <field name="name">كل ماكينات النسيج</field>
+        <field name="res_model">thamar.weaving.machine</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                سجّل أول ماكينة نسيج (دائري أو مستطيل)!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_weaving_machine_circular" model="ir.actions.act_window">
+        <field name="name">ماكينات النسيج الدائري</field>
+        <field name="res_model">thamar.weaving.machine</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('weaving_type', '=', 'circular')]</field>
+        <field name="context">{'default_weaving_type': 'circular'}</field>
+    </record>
+
+    <record id="action_weaving_machine_rectangular" model="ir.actions.act_window">
+        <field name="name">ماكينات النسيج المستطيل (الأنوال)</field>
+        <field name="res_model">thamar.weaving.machine</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('weaving_type', '=', 'rectangular')]</field>
+        <field name="context">{'default_weaving_type': 'rectangular'}</field>
+    </record>
+</odoo>

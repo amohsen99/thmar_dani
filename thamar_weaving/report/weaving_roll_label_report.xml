@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_weaving_roll_label" model="ir.actions.report">
+        <field name="name">طباعة استيكر الثوب واللوط</field>
+        <field name="model">thamar.weaving.roll</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">thamar_weaving.report_weaving_roll_label</field>
+        <field name="report_file">thamar_weaving.report_weaving_roll_label</field>
+        <field name="binding_model_id" ref="model_thamar_weaving_roll"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_weaving_roll_label">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.basic_layout">
+                    <div class="page" style="direction: rtl; font-family: Arial, sans-serif; font-size: 13px; padding: 10px; border: 2px solid #000; margin-bottom: 20px; page-break-after: always; max-width: 500px;">
+                        <!-- Header -->
+                        <div style="border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 8px; text-align: center;">
+                            <h3 style="margin: 0; font-size: 18px; font-weight: bold;"><t t-esc="doc.company_id.name"/></h3>
+                            <div style="font-size: 14px; font-weight: bold; color: #555;">مصنع النسيج - بطاقة ثوب قماش خام</div>
+                        </div>
+
+                        <!-- Main Table -->
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">
+                            <tr>
+                                <td style="padding: 4px; font-weight: bold; width: 30%;">رقم الثوب:</td>
+                                <td style="padding: 4px; width: 70%; font-size: 16px; font-weight: bold;"><t t-esc="doc.name"/></td>
+                            </tr>
+                            <tr style="background-color: #f2f2f2;">
+                                <td style="padding: 4px; font-weight: bold;">رقم اللوط (Lot No):</td>
+                                <td style="padding: 4px; font-size: 18px; font-weight: bold; color: #004085;"><t t-esc="doc.lot_name"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 4px; font-weight: bold;">صنف القماش:</td>
+                                <td style="padding: 4px; font-weight: bold;"><t t-esc="doc.product_id.name"/></td>
+                            </tr>
+                            <tr style="background-color: #f2f2f2;">
+                                <td style="padding: 4px; font-weight: bold;">نوع النسيج:</td>
+                                <td style="padding: 4px;">
+                                    <t t-if="doc.weaving_type == 'circular'">نسيج دائري (Circular)</t>
+                                    <t t-else="">نسيج مستطيل (Looms)</t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 4px; font-weight: bold;">الماكينة:</td>
+                                <td style="padding: 4px;"><t t-esc="doc.machine_id.name"/></td>
+                            </tr>
+                            <tr style="background-color: #f2f2f2;">
+                                <td style="padding: 4px; font-weight: bold;">أمر التشغيل:</td>
+                                <td style="padding: 4px;"><t t-esc="doc.order_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 4px; font-weight: bold;">الوزن الصافي:</td>
+                                <td style="padding: 4px; font-size: 18px; font-weight: bold; color: #28a745;">
+                                    <t t-esc="doc.net_weight_kg"/> كجم
+                                    <span style="font-size: 12px; color: #666; font-weight: normal;">(القائم: <t t-esc="doc.gross_weight_kg"/> كجم)</span>
+                                </td>
+                            </tr>
+                            <tr style="background-color: #f2f2f2;">
+                                <td style="padding: 4px; font-weight: bold;">الطول:</td>
+                                <td style="padding: 4px; font-weight: bold;"><t t-esc="doc.length_meter"/> متر</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 4px; font-weight: bold;">الجراماج / العرض:</td>
+                                <td style="padding: 4px;"><t t-esc="doc.measured_gsm"/> GSM / <t t-esc="doc.measured_width_cm"/> سم</td>
+                            </tr>
+                            <tr style="background-color: #f2f2f2;">
+                                <td style="padding: 4px; font-weight: bold;">درجة الجودة:</td>
+                                <td style="padding: 4px; font-weight: bold;">
+                                    <t t-if="doc.grade == 'grade_a'"><span style="color: #28a745;">درجة أولى (ممتاز)</span></t>
+                                    <t t-elif="doc.grade == 'grade_b'"><span style="color: #ffc107;">درجة ثانية</span></t>
+                                    <t t-else=""><span style="color: #dc3545;">هالك / فضلات</span></t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 4px; font-weight: bold;">الوردية / التاريخ:</td>
+                                <td style="padding: 4px;">
+                                    <t t-esc="dict(doc._fields['shift'].selection).get(doc.shift)"/> |
+                                    <t t-esc="doc.date.strftime('%Y-%m-%d %H:%M') if doc.date else ''"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Barcode Area -->
+                        <div style="text-align: center; margin-top: 10px; border-top: 1px dashed #000; padding-top: 8px;">
+                            <t t-if="doc.barcode">
+                                <img t-att-src="'/report/barcode/?barcode_type=Code128&amp;value=%s&amp;width=400&amp;height=80' % doc.barcode"
+                                     style="width: 250px; height: 50px;" alt="Barcode"/>
+                                <div style="font-family: monospace; font-size: 14px; font-weight: bold; margin-top: 3px;">
+                                    *<t t-esc="doc.barcode"/>*
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Circular Weaving Orders -->
+        <record id="seq_weaving_order_circular" model="ir.sequence">
+            <field name="name">أوامر النسيج الدائري</field>
+            <field name="code">thamar.weaving.order.circular</field>
+            <field name="prefix">WO-CIRC/%(range_year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Rectangular Weaving Orders -->
+        <record id="seq_weaving_order_rectangular" model="ir.sequence">
+            <field name="name">أوامر النسيج المستطيل</field>
+            <field name="code">thamar.weaving.order.rectangular</field>
+            <field name="prefix">WO-RECT/%(range_year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- General Weaving Order Sequence -->
+        <record id="seq_weaving_order_general" model="ir.sequence">
+            <field name="name">أوامر تشغيل النسيج</field>
+            <field name="code">thamar.weaving.order</field>
+            <field name="prefix">WO-WEAV/%(range_year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Fabric Rolls -->
+        <record id="seq_weaving_roll" model="ir.sequence">
+            <field name="name">أتواب النسيج</field>
+            <field name="code">thamar.weaving.roll</field>
+            <field name="prefix">ROLL/%(range_year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

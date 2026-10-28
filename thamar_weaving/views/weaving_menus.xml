@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu -->
+    <menuitem id="menu_weaving_root" name="النسيج"
+              sequence="44" groups="group_weaving_user"
+              web_icon="thamar_weaving,static/description/icon.png"/>
+
+    <!-- 1. أوامر التشغيل -->
+    <menuitem id="menu_weaving_order_root" name="أوامر التشغيل"
+              parent="menu_weaving_root" sequence="10"/>
+    <menuitem id="menu_weaving_order_all" name="كل أوامر التشغيل"
+              parent="menu_weaving_order_root" action="action_weaving_order_all" sequence="1"/>
+    <menuitem id="menu_weaving_order_circular" name="نسيج دائري (Circular)"
+              parent="menu_weaving_order_root" action="action_weaving_order_circular" sequence="10"/>
+    <menuitem id="menu_weaving_order_rectangular" name="نسيج مستطيل (أنوال)"
+              parent="menu_weaving_order_root" action="action_weaving_order_rectangular" sequence="20"/>
+
+    <!-- 2. الأتواب واللوطات -->
+    <menuitem id="menu_weaving_roll_root" name="الأتواب واللوطات"
+              parent="menu_weaving_root" sequence="20"/>
+    <menuitem id="menu_weaving_roll_all" name="سجل الأتواب واللوطات"
+              parent="menu_weaving_roll_root" action="action_weaving_roll_all" sequence="1"/>
+    <menuitem id="menu_weaving_roll_circular" name="أتواب النسيج الدائري"
+              parent="menu_weaving_roll_root" action="action_weaving_roll_circular" sequence="10"/>
+    <menuitem id="menu_weaving_roll_rectangular" name="أتواب النسيج المستطيل"
+              parent="menu_weaving_roll_root" action="action_weaving_roll_rectangular" sequence="20"/>
+    <menuitem id="menu_weaving_stock_lot" name="لوطات الأقمشة بالمخازن"
+              parent="menu_weaving_roll_root" action="action_weaving_stock_lot" sequence="30"/>
+
+    <!-- 3. الماكينات (قائمة الماكينات المطلوبة في الطلب) -->
+    <menuitem id="menu_weaving_machine_root" name="الماكينات"
+              parent="menu_weaving_root" sequence="30"/>
+    <menuitem id="menu_weaving_machine_all" name="كل الماكينات"
+              parent="menu_weaving_machine_root" action="action_weaving_machine_all" sequence="1"/>
+    <menuitem id="menu_weaving_machine_circular" name="ماكينات النسيج الدائري"
+              parent="menu_weaving_machine_root" action="action_weaving_machine_circular" sequence="10"/>
+    <menuitem id="menu_weaving_machine_rectangular" name="ماكينات النسيج المستطيل (الأنوال)"
+              parent="menu_weaving_machine_root" action="action_weaving_machine_rectangular" sequence="20"/>
+    <menuitem id="menu_weaving_machine_stops" name="سجل التوقفات والأعطال"
+              parent="menu_weaving_machine_root" action="action_weaving_machine_stop" sequence="30"/>
+
+    <!-- 4. الإعدادات -->
+    <menuitem id="menu_weaving_configuration" name="الإعدادات"
+              parent="menu_weaving_root" sequence="90"
+              groups="group_weaving_manager"/>
+    <menuitem id="menu_weaving_stop_reason" name="أسباب التوقف والأعطال"
+              parent="menu_weaving_configuration" action="action_weaving_stop_reason" sequence="10"/>
+</odoo>

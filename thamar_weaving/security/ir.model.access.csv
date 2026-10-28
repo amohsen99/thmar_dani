@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_weaving_stop_reason_user,weaving.stop.reason.user,model_thamar_weaving_stop_reason,group_weaving_user,1,0,0,0
+access_weaving_stop_reason_manager,weaving.stop.reason.manager,model_thamar_weaving_stop_reason,group_weaving_manager,1,1,1,1
+access_weaving_machine_stop_user,weaving.machine.stop.user,model_thamar_weaving_machine_stop,group_weaving_user,1,1,1,0
+access_weaving_machine_stop_manager,weaving.machine.stop.manager,model_thamar_weaving_machine_stop,group_weaving_manager,1,1,1,1
+access_weaving_machine_user,weaving.machine.user,model_thamar_weaving_machine,group_weaving_user,1,1,1,0
+access_weaving_machine_manager,weaving.machine.manager,model_thamar_weaving_machine,group_weaving_manager,1,1,1,1
+access_weaving_order_user,weaving.order.user,model_thamar_weaving_order,group_weaving_user,1,1,1,0
+access_weaving_order_manager,weaving.order.manager,model_thamar_weaving_order,group_weaving_manager,1,1,1,1
+access_weaving_yarn_line_user,weaving.yarn.line.user,model_thamar_weaving_yarn_line,group_weaving_user,1,1,1,1
+access_weaving_yarn_line_manager,weaving.yarn.line.manager,model_thamar_weaving_yarn_line,group_weaving_manager,1,1,1,1
+access_weaving_roll_user,weaving.roll.user,model_thamar_weaving_roll,group_weaving_user,1,1,1,0
+access_weaving_roll_manager,weaving.roll.manager,model_thamar_weaving_roll,group_weaving_manager,1,1,1,1
